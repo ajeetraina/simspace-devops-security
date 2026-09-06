@@ -13,16 +13,9 @@ Note: The question in the title is a real one - who approved that build? By the 
 
 ---
 
-<!--
-layout: section
-eyebrow: "Meet the speaker"
--->
+<!-- chrome: false -->
 
-# Ajeet Singh Raina
-
-Developer Advocate at **Docker** · former Docker Captain
-
-Co-author of **_Operational AI with Docker_** (Packt) · runs the 17,000-member Docker Bengaluru meetup
+<img src="assets/slide-02.webp" alt="Meet your instructor: Ajeet Singh Raina, Developer Advocate at Docker, co-author of Operational AI with Docker" width="1600" height="900" loading="eager" fetchpriority="high" decoding="async" style="position:absolute;inset:0;width:100%;height:100%;max-width:none;max-height:none;object-fit:fill" />
 
 Note: Quick hello - I'm Ajeet Singh Raina, Developer Advocate at Docker. Twenty-plus years across system integration testing, consulting and developer relations; former Docker Captain, and I run the 17,000-member Docker Bengaluru meetup. I co-authored Operational AI with Docker with Harsh Manvar - on deploying, scaling and operating agentic AI services with Docker and Kubernetes, which is exactly the world this talk lives in, right down to the operations section at the end. Treat this as hands-on and interrupt me with questions.
 
@@ -31,18 +24,20 @@ Note: Quick hello - I'm Ajeet Singh Raina, Developer Advocate at Docker. Twenty-
 <!-- chrome: false -->
 
 <svg viewBox="0 0 1600 900" width="100%" height="100%" role="img" aria-label="Agenda" style="position:absolute;inset:0;width:100%;height:100%;object-fit:contain;background:#ffffff" font-family="Arial, Helvetica, sans-serif">
+  <defs>
+    <linearGradient id="agrow1" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#2E86E6"/><stop offset="1" stop-color="#5FA8F1"/>
+    </linearGradient>
+  </defs>
   <rect x="0" y="0" width="1600" height="900" fill="#ffffff"/>
-  <text x="130" y="152" font-size="82" font-weight="800" fill="#0B1533">Agenda</text>
-  <rect x="134" y="180" width="156" height="9" rx="4" fill="#1E9BF0"/>
-  <text x="134" y="246" font-size="27" fill="#5B6B8C">From an unapproved build to a governed one - then ship it and run it.</text>
-  <text x="134" y="828" font-size="24" fill="#5B6B8C">Built for developers <tspan font-weight="800" fill="#0B1533">and</tspan> platform / SRE / ops.</text>
+  <text x="96" y="168" font-size="96" font-weight="800" fill="#0A0A23">Agenda</text>
   <g>
-    <g transform="translate(470,300)"><rect width="1010" height="82" rx="41" fill="#1E9BF0"/><circle cx="46" cy="41" r="33" fill="#ffffff"/><text x="46" y="41" text-anchor="middle" dominant-baseline="central" font-size="25" font-weight="800" fill="#1E9BF0">01</text><text x="102" y="41" dominant-baseline="central" font-size="30" font-weight="600" fill="#ffffff">The 02:47 AM incident</text></g>
-    <g transform="translate(470,392)"><rect width="1010" height="82" rx="41" fill="#1A82DA"/><circle cx="46" cy="41" r="33" fill="#ffffff"/><text x="46" y="41" text-anchor="middle" dominant-baseline="central" font-size="25" font-weight="800" fill="#1A82DA">02</text><text x="102" y="41" dominant-baseline="central" font-size="30" font-weight="600" fill="#ffffff">Evidence · SBOM · VEX · SLSA</text></g>
-    <g transform="translate(470,484)"><rect width="1010" height="82" rx="41" fill="#1668C0"/><circle cx="46" cy="41" r="33" fill="#ffffff"/><text x="46" y="41" text-anchor="middle" dominant-baseline="central" font-size="25" font-weight="800" fill="#1668C0">03</text><text x="102" y="41" dominant-baseline="central" font-size="30" font-weight="600" fill="#ffffff">Baseline · Docker Hardened Images</text></g>
-    <g transform="translate(470,576)"><rect width="1010" height="82" rx="41" fill="#114EA2"/><circle cx="46" cy="41" r="33" fill="#ffffff"/><text x="46" y="41" text-anchor="middle" dominant-baseline="central" font-size="25" font-weight="800" fill="#114EA2">04</text><text x="102" y="41" dominant-baseline="central" font-size="30" font-weight="600" fill="#ffffff">Gate · CI sign + policy gate</text></g>
-    <g transform="translate(470,668)"><rect width="1010" height="82" rx="41" fill="#0D3B7E"/><circle cx="46" cy="41" r="33" fill="#ffffff"/><text x="46" y="41" text-anchor="middle" dominant-baseline="central" font-size="25" font-weight="800" fill="#0D3B7E">05</text><text x="102" y="41" dominant-baseline="central" font-size="30" font-weight="600" fill="#ffffff">Boundary · sandbox + MCP gateway</text></g>
-    <g transform="translate(470,760)"><rect width="1010" height="82" rx="41" fill="#0B1533"/><circle cx="46" cy="41" r="33" fill="#ffffff"/><text x="46" y="41" text-anchor="middle" dominant-baseline="central" font-size="25" font-weight="800" fill="#0B1533">06</text><text x="102" y="41" dominant-baseline="central" font-size="30" font-weight="600" fill="#ffffff">Make it yours · sbx kit + operate</text></g>
+    <g transform="translate(560,208)"><rect width="960" height="96" rx="48" fill="url(#agrow1)"/><circle cx="60" cy="48" r="37" fill="#EDEEF2"/><text x="60" y="48" text-anchor="middle" dominant-baseline="central" font-size="30" font-weight="800" fill="#3A3A4A">01</text><text x="122" y="48" dominant-baseline="central" font-size="32" font-weight="700" fill="#ffffff">The 02:47 AM incident</text></g>
+    <g transform="translate(560,318)"><rect width="960" height="96" rx="48" fill="#2A6BD6"/><circle cx="60" cy="48" r="37" fill="#EDEEF2"/><text x="60" y="48" text-anchor="middle" dominant-baseline="central" font-size="30" font-weight="800" fill="#3A3A4A">02</text><text x="122" y="48" dominant-baseline="central" font-size="32" font-weight="700" fill="#ffffff">Evidence · SBOM · VEX · SLSA</text></g>
+    <g transform="translate(560,428)"><rect width="960" height="96" rx="48" fill="#0B1550"/><circle cx="60" cy="48" r="37" fill="#EDEEF2"/><text x="60" y="48" text-anchor="middle" dominant-baseline="central" font-size="30" font-weight="800" fill="#3A3A4A">03</text><text x="122" y="48" dominant-baseline="central" font-size="32" font-weight="700" fill="#ffffff">Baseline · Docker Hardened Images</text></g>
+    <g transform="translate(560,538)"><rect width="960" height="96" rx="48" fill="#0B1550"/><circle cx="60" cy="48" r="37" fill="#EDEEF2"/><text x="60" y="48" text-anchor="middle" dominant-baseline="central" font-size="30" font-weight="800" fill="#3A3A4A">04</text><text x="122" y="48" dominant-baseline="central" font-size="32" font-weight="700" fill="#ffffff">Gate · Securing your CI pipeline</text></g>
+    <g transform="translate(560,648)"><rect width="960" height="96" rx="48" fill="#0B1550"/><circle cx="60" cy="48" r="37" fill="#EDEEF2"/><text x="60" y="48" text-anchor="middle" dominant-baseline="central" font-size="30" font-weight="800" fill="#3A3A4A">05</text><text x="122" y="48" dominant-baseline="central" font-size="32" font-weight="700" fill="#ffffff">Boundary · Securing the agentic stack</text></g>
+    <g transform="translate(560,758)"><rect width="960" height="96" rx="48" fill="#0B1550"/><circle cx="60" cy="48" r="37" fill="#EDEEF2"/><text x="60" y="48" text-anchor="middle" dominant-baseline="central" font-size="30" font-weight="800" fill="#3A3A4A">06</text><text x="122" y="48" dominant-baseline="central" font-size="32" font-weight="700" fill="#ffffff">Make it yours · sbx kit + operate in prod</text></g>
   </g>
 </svg>
 
