@@ -1,0 +1,204 @@
+title: "Who Approved That Build?"
+description: >
+  An AI agent committed at 02:47 AM - it bumped a base image, regenerated the
+  Dockerfile and triggered a build, and CI approved it. No human did. Over the
+  next ninety minutes you govern that build: prove what is in it and where it
+  came from (SBOM/VEX/SLSA), give the agent a hardened baseline to start from,
+  and turn CI into a signing + policy gate that holds agents to the same bar as
+  humans.
+
+# Landing-page card. Only shown when this repo has two or more labs (here: the
+# slides deck is the sibling). `order: 2` puts the hands-on lab after the deck.
+# labs.json is GENERATED from this block - never edit labs.json by hand.
+catalog:
+  icon: shield_lock
+  order: 2
+  tags: ["ai governance", "supply chain", "sbom", "dhi", "signing"]
+  estimatedMinutes: 90
+
+# Command behaviour lives in simulator.yaml (relative to this file).
+simulator: simulator.yaml
+
+# Two terminals share one virtual machine and filesystem.
+terminals:
+  - id: main
+    title: Terminal
+    icon: terminal
+  - id: build
+    title: Build
+    icon: deployed_code
+
+# Engine-backed CI tab in the right-hand pane. A `git push` scenario fires a run
+# via `then.ci` (simulator.yaml); the tab renders it GitHub-Actions style, with a
+# Re-run button. See simulator.yaml `workflows:` for the pipeline definition.
+features:
+  ci:
+    title: CI Pipeline
+    icon: rocket_launch
+
+# Seed the virtual filesystem. Built-in `ls`/`cat` reflect these immediately; the
+# agent (and later save-as blocks) add more files on top.
+files:
+  README.md: |
+    # catalog-service-node
+
+    Product Catalog service: a REST API over a PostgreSQL product database, wired to
+    Kafka (events), LocalStack (S3 uploads) and WireMock (an upstream pricing API),
+    with a small React frontend.
+
+    Layout:
+      backend    src/            Express API (Node.js)
+      frontend   frontend/       React SPA (Vite)
+      database   db/schema.sql   PostgreSQL schema + seed data
+
+    Run locally:  npm install && npm start   (needs Postgres, Kafka, LocalStack, WireMock)
+    API:          http://localhost:3000/api/products
+
+    There is no Dockerfile and no compose file yet. In the workshop you hand this to an
+    agent and watch it containerise the whole thing.
+  package.json: |
+    {
+      "name": "catalog-service-node",
+      "version": "1.0.0",
+      "description": "Product Catalog REST API over Postgres, with Kafka, LocalStack (S3) and WireMock",
+      "main": "src/index.js",
+      "scripts": {
+        "start": "node src/index.js",
+        "dev": "nodemon src/index.js",
+        "test": "vitest run"
+      },
+      "dependencies": {
+        "express": "^4.19.2",
+        "pg": "^8.11.5",
+        "kafkajs": "^2.2.4",
+        "@aws-sdk/client-s3": "^3.588.0",
+        "axios": "^1.7.2",
+        "dotenv": "^16.4.5",
+        "pino": "^9.1.0"
+      },
+      "devDependencies": {
+        "nodemon": "^3.1.0",
+        "vitest": "^1.6.0"
+      }
+    }
+  package-lock.json: |
+    {
+      "name": "catalog-service-node",
+      "version": "1.0.0",
+      "lockfileVersion": 3,
+      "requires": true,
+      "packages": {}
+    }
+  src/index.js: |
+    const express = require("express");
+    const products = require("./routes/products");
+
+    const app = express();
+    app.use(express.json());
+    app.use("/api/products", products);
+
+    app.listen(3000, () => console.log("catalog-service listening on :3000"));
+  src/routes/products.js: |
+    const { Router } = require("express");
+    const { pool } = require("../db/pool");
+    const axios = require("axios");
+
+    const upstream = process.env.CATALOG_UPSTREAM || "http://wiremock:8080";
+    const router = Router();
+
+    router.get("/", async (_req, res) => {
+      const { rows } = await pool.query("SELECT * FROM products ORDER BY id");
+      res.json(rows);
+    });
+
+    router.get("/:id", async (req, res) => {
+      const { rows } = await pool.query("SELECT * FROM products WHERE id = $1", [req.params.id]);
+      if (!rows.length) return res.status(404).json({ error: "not found" });
+      // upstream pricing comes from WireMock in dev
+      const price = await axios.get(`${upstream}/price/${req.params.id}`).then(r => r.data).catch(() => null);
+      res.json({ ...rows[0], price });
+    });
+
+    module.exports = router;
+  src/db/pool.js: |
+    const { Pool } = require("pg");
+
+    const pool = new Pool({ connectionString: process.env.DATABASE_URL });
+
+    module.exports = { pool };
+  src/events/kafka.js: |
+    const { Kafka } = require("kafkajs");
+
+    const kafka = new Kafka({ brokers: [process.env.KAFKA_BROKER || "kafka:9092"] });
+
+    module.exports = { producer: kafka.producer() };
+  db/schema.sql: |
+    CREATE TABLE IF NOT EXISTS products (
+      id    SERIAL PRIMARY KEY,
+      name  TEXT NOT NULL,
+      sku   TEXT UNIQUE NOT NULL,
+      price NUMERIC(10, 2) NOT NULL DEFAULT 0
+    );
+
+    INSERT INTO products (name, sku, price) VALUES
+      ('Widget', 'WGT-001', 9.99),
+      ('Gadget', 'GDG-002', 19.99)
+    ON CONFLICT (sku) DO NOTHING;
+  frontend/package.json: |
+    {
+      "name": "catalog-frontend",
+      "version": "1.0.0",
+      "private": true,
+      "scripts": { "dev": "vite", "build": "vite build", "preview": "vite preview" },
+      "dependencies": {
+        "react": "^18.3.1",
+        "react-dom": "^18.3.1"
+      },
+      "devDependencies": {
+        "vite": "^5.2.0"
+      }
+    }
+  frontend/src/App.jsx: |
+    import { useEffect, useState } from "react";
+
+    export default function App() {
+      const [products, setProducts] = useState([]);
+      useEffect(() => {
+        fetch("/api/products").then((r) => r.json()).then(setProducts);
+      }, []);
+      return (
+        <main>
+          <h1>Product Catalog</h1>
+          <ul>
+            {products.map((p) => (
+              <li key={p.id}>{p.name} - ${p.price}</li>
+            ))}
+          </ul>
+        </main>
+      );
+    }
+
+# Ordered instruction pages (markdown), rendered in the left-hand panel.
+sections:
+  - title: Introduction
+    contentPath: 00-introduction.md
+  - title: Setup
+    contentPath: 01-setup.md
+  - title: "02:47 AM - An Agent Built This"
+    contentPath: 02-agent-builds-it.md
+  - title: "Move 1 - Evidence: SBOM, VEX, SLSA"
+    contentPath: 03-sbom-vex-slsa.md
+  - title: "Move 2 - A Governed Baseline (DHI)"
+    contentPath: 04-dhi-migration.md
+  - title: "Move 3 - Sign It, Then Gate It"
+    contentPath: 05-ci-policy.md
+  - title: "Move 4 - Govern the Agent Itself"
+    contentPath: 06-agent-sandbox.md
+  - title: Conclusion
+    contentPath: 07-conclusion.md
+
+# $$name$$ in markdown is replaced with these values. `org` is overridden by the
+# :variableDefinition prompt in Setup.
+variables:
+  org: demo-org
+  dhiPrefix: "dhi.io/"

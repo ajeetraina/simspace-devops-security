@@ -1,0 +1,45 @@
+# "Who Approved That Build?" — the talk deck, presented in Simspace as native
+# markdown slides (no image assets: every slide is authored text/layout in
+# deck.md, so the deck is diffable and edited in place). The sibling hands-on
+# lab's simulator is wired in, so the scripted terminal demos from the lab can be
+# spliced straight into the deck (see spec/slidedeck.md in dockersamples/simspace).
+kind: slides
+title: "Who Approved That Build? — Slides"
+description: >
+  Docker AI governance for the agentic DevOps pipeline. SBOM/VEX/SLSA as the
+  evidence layer, Docker Hardened Images as a governed baseline, and signing +
+  build policies as an enforceable CI gate that holds agents to the same bar as
+  humans. Watch the talk, then do the lab.
+
+# Landing-page card. `order: 1` puts the deck ahead of the lab, so it reads as
+# "watch the talk, then do the lab". labs.json is GENERATED from this block —
+# never edit labs.json by hand.
+catalog:
+  icon: slideshow
+  order: 1
+  tags: ["ai governance", "supply chain", "sbom", "slsa", "signing", "start here"]
+  estimatedMinutes: 40
+
+version: "2.0.0"
+
+# Dark surface matches the deck's deep-blue Docker palette, so any native
+# live-demo slides sit seamlessly among the content slides.
+theme: dark
+
+# Reuse the SIBLING LAB's simulator so any spliced-in demo runs the exact scripted
+# commands learners run in the lab — the two can't drift apart. State is NOT
+# shared: this deck gets its own fresh machine (spec/slidedeck.md 7.2).
+simulator: ../who-approved-that-build/simulator.yaml
+
+# One demo terminal. The lab's scenarios aren't terminal-scoped, so any id fires
+# them; `demo` is the conventional deck id referenced by `::terminal{id=demo}`.
+terminals:
+  - id: demo
+    title: Demo
+    icon: terminal
+
+# `slides:` is the deck alias for `sections:`. One chapter holds the whole deck;
+# slides within it are split on lines of exactly `---`.
+slides:
+  - title: Talk
+    contentPath: deck.md

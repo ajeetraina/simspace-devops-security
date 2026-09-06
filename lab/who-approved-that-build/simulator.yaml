@@ -1,0 +1,1187 @@
+version: "2.0"
+
+metadata:
+  id: who-approved-that-build
+  title: "Who Approved That Build?"
+  summary: >
+    An agent committed at 02:47 AM and CI approved it - no human did. Govern that
+    build: prove what is in it and where it came from, start it from a hardened
+    baseline, and gate it in CI so agents clear the same bar as humans.
+
+# In-memory state. Scenarios read it in `when.state` and write it in `then.state`.
+state:
+  baseline:
+    built: false
+  dhi:
+    built: false
+  registry:
+    pushed: false
+    tampered: false
+    # Truthy when the tag on the registry carries signed SBOM + provenance. The
+    # CI `secure-build` workflow gates on this (verify-attestations step). Set by
+    # the hardened builds; cleared by the tamper rebuild. See `workflows:` below.
+    attested: false
+  mcp:
+    built: false
+    running: false
+  sandbox:
+    mcpAdded: false
+
+settings:
+  pace:
+    pull: 700 # simulated layer download
+    build: 900 # simulated build step
+    scan: 1200 # simulated Scout analysis
+    clone: 800 # simulated git clone transfer
+
+defaults:
+  unmatched:
+    stderr: ["command not found - this command isn't part of the lab."]
+    exit: 1
+
+# ---------------------------------------------------------------------------
+# CI workflow catalog - rendered in the CI Pipeline tab (labspace `features.ci`).
+# A `git push` scenario fires a run via `then.ci` with NO scripted conclusion, so
+# the outcome is derived from state: the `verify-attestations` step `requires`
+# registry.attested. Push a tampered (unsigned) tag and the run goes red at that
+# step; rebuild with attestations and hit Re-run and the same pipeline goes green.
+# ---------------------------------------------------------------------------
+workflows:
+  - id: secure-build
+    name: "secure-build"
+    on: push
+    steps:
+      - id: setup
+        name: "Set up job"
+        logs:
+          - "act_runner v0.2.11 · image catthehacker/ubuntu:act-latest"
+
+      - id: checkout
+        name: "actions/checkout@v4"
+        logs:
+          - "Cloning git.dockerlabs.xyz/moby/catalog-service @ a9d0e42"
+
+      # The by-hand `docker scout attest ... --verify` from earlier in Lab 3,
+      # now a gate. A tag rebuilt without --sbom/--provenance carries nothing to
+      # verify, so this step fails and everything after it is skipped.
+      - id: verify-attestations
+        name: "Verify attestations (docker/scout-action@v1)"
+        requires: registry.attested
+        logs:
+          - "$ docker scout attest get …/catalog-service:dhi \\"
+          - "    --predicate-type https://slsa.dev/provenance/v0.2 --verify"
+          - "  ✓ SBOM (CycloneDX) present"
+          - "  ✓ SLSA provenance present"
+          - "  ✓ Signature verified - traces to trusted builder (Sigstore)"
+        failure:
+          error: "No signed attestations on this digest - the tag was rebuilt without --sbom/--provenance. Blocked before push."
+          logs:
+            - "$ docker scout attest get …/catalog-service:dhi \\"
+            - "    --predicate-type https://slsa.dev/provenance/v0.2 --verify"
+            - "  ✗ No attestations found on this digest"
+            - "  ✗ Nothing to verify - signature check cannot run"
+            - "Error: Process completed with exit code 1."
+
+      - id: policy-gate
+        name: "Policy gate"
+        logs:
+          - "command: policy   exit-on: policy"
+          - "  ✓ no-critical-cves     PASSED"
+          - "  ✓ require-sbom         PASSED"
+          - "  ✓ require-provenance   PASSED"
+          - "  gate: 3/3 passed → image allowed"
+
+      - id: push
+        name: "Push"
+        logs:
+          - "pushed …/catalog-service:dhi (attestations bound to digest)"
+
+scenarios:
+  # ---------------------------------------------------------------------------
+  # Section 0 - environment checks
+  # ---------------------------------------------------------------------------
+  - id: docker-version
+    when:
+      command: [docker, version]
+    then:
+      output:
+        - "Client:"
+        - " Version:    29.6.2"
+        - "Server:"
+        - " Version:    29.6.2"
+
+  - id: git-version
+    when:
+      command: [git]
+      args: { --version: { any: true } }
+    then:
+      output: ["git version 2.45.2"]
+
+  # ---------------------------------------------------------------------------
+  # Section 1 - setup / login / config
+  # ---------------------------------------------------------------------------
+  - id: docker-login-dhi
+    when:
+      command: [docker, login]
+      args: { 0: { oneOf: [dhi.io] } }
+    then:
+      output:
+        - "Authenticating with existing credentials..."
+        - "Login Succeeded"
+
+  - id: docker-login
+    when:
+      command: [docker, login]
+    then:
+      output:
+        - "Authenticating with existing credentials..."
+        - "Login Succeeded"
+
+  - id: docker-scout-config
+    when:
+      command: [docker, scout, config]
+      args: { 0: { oneOf: [organization] }, 1: { any: true } }
+    then:
+      output: ["Set organization to {{ args.1 }}"]
+
+  # Clone the project into the workspace. Cosmetic - the app files are already
+  # seeded at the workspace root (labspace.yaml `files:`), which is what the
+  # built-in ls/cat/tree reflect; this step just makes the "fetch it first" flow
+  # match a real laptop before the agent containerises it in Section 2.
+  - id: git-clone
+    when:
+      command: [git, clone]
+    then:
+      output:
+        - "Cloning into 'product-catalog-demo-showcase'..."
+        - { text: "remote: Enumerating objects: 142, done.", delay: short }
+        - "remote: Counting objects: 100% (142/142), done."
+        - "remote: Compressing objects: 100% (94/94), done."
+        - { text: "Receiving objects: 100% (142/142), 48.71 KiB | 4.87 MiB/s, done.", delay: clone }
+        - "Resolving deltas: 100% (38/38), done."
+
+  # ---------------------------------------------------------------------------
+  # Section 2 - the agent containerises the app (one-shot prompt)
+  # ---------------------------------------------------------------------------
+  # `claude -p "..."` may be dispatched either as a command (execute) or as a
+  # one-shot agent prompt (oneShotPrompt -> prompt). Handle both with one shared
+  # `then` (YAML anchor) so the build fires whichever path the terminal takes.
+  - id: agent-containerise
+    when:
+      command: [claude]
+      args: { -p: { any: true } }
+    then: &agent_build
+      state: { baseline.built: true }
+      files:
+        - create: Dockerfile
+          content: |
+            # Generated by the agent - containerise catalog-service for production.
+            FROM node:20
+
+            WORKDIR /usr/src/app
+
+            COPY package*.json ./
+            RUN npm install --production
+
+            COPY . .
+
+            EXPOSE 3000
+            CMD ["node", "src/index.js"]
+        - create: frontend/Dockerfile
+          content: |
+            # Generated by the agent - containerise the React frontend.
+            FROM node:20
+
+            WORKDIR /usr/src/app
+
+            COPY package*.json ./
+            RUN npm install
+
+            COPY . .
+            RUN npm run build
+
+            EXPOSE 3000
+            CMD ["npm", "run", "preview"]
+        - create: compose.yaml
+          content: |
+            services:
+              frontend:
+                build: ./frontend
+                ports: ["3000:3000"]
+                depends_on: [backend]
+
+              backend:
+                build: .
+                ports: ["3050:3000"]
+                environment:
+                  DATABASE_URL: postgres://postgres:postgres@postgres:5432/catalog
+                  KAFKA_BROKER: kafka:9092
+                  AWS_ENDPOINT: http://localstack:4566
+                  CATALOG_UPSTREAM: http://wiremock:8080
+                depends_on: [postgres, kafka, localstack, wiremock]
+
+              postgres:
+                image: postgres:16
+                environment:
+                  POSTGRES_PASSWORD: postgres
+                  POSTGRES_DB: catalog
+
+              kafka:
+                image: confluentinc/cp-kafka:7.6.0
+
+              localstack:
+                image: localstack/localstack:3
+                environment:
+                  SERVICES: s3
+
+              wiremock:
+                image: wiremock/wiremock:3.5.4
+                command: ["--global-response-templating"]
+      output:
+        - "● Reading the project..."
+        - { text: "  - package.json: express, pg, kafkajs, @aws-sdk/client-s3, axios", delay: short }
+        - { text: "  - src/: Express REST API over Postgres, Kafka producer, S3 client", delay: short }
+        - { text: "  - frontend/: React SPA (Vite)", delay: short }
+        - ""
+        - "● The runtime is Node.js. I'll containerise the backend and the frontend, and write"
+        - "  a compose.yaml wiring in the services they need (postgres, kafka, localstack, wiremock)."
+        - { text: "● Choosing a base image: node:20 (widely used, well documented).", delay: medium }
+        - "● Writing Dockerfile, frontend/Dockerfile and compose.yaml..."
+        - { text: "  created Dockerfile, frontend/Dockerfile, compose.yaml", delay: short }
+        - "● Building the image..."
+        - { text: "  [+] Building 0.4s (2/9) FROM docker.io/library/node:20", delay: build }
+        - { text: "  [+] Building 6.1s (5/9) RUN npm install --production", delay: build }
+        - { text: "  => resolved 431 packages from the public npm registry", delay: short }
+        - { text: "  [+] Building 58.7s (9/9) exporting to image", delay: build }
+        - { text: "  => naming to docker.io/library/catalog-service:baseline", delay: short }
+        - ""
+        - "● Done. Built catalog-service:baseline. It runs; nothing failed."
+        - ""
+        - { text: "  ┌── what the agent built ─────────────────────────────", delay: short }
+        - "  │"
+        - "  │   image      catalog-service:baseline"
+        - "  │   base       node:20   (~1.1GB, 431 packages)"
+        - "  │"
+        - "  │   contains   Frontend  ->  Backend API  (Express / Node.js)"
+        - "  │   talks to   PostgreSQL / Kafka / LocalStack (S3) / WireMock"
+        - "  │"
+        - "  │   evidence   SBOM [x]   provenance [x]   signature [x]   -- none yet"
+        - { text: "  └─────────────────────────────────────────────────────", delay: short }
+        - ""
+        - "Run  tree  to see the files, or carry on to measure this image."
+
+  - id: agent-containerise-prompt
+    when:
+      agent: true
+      promptContains: [containeri]
+    then: *agent_build
+
+  - id: claude-bare
+    when:
+      command: [claude]
+    then:
+      output:
+        - "Usage: claude -p \"<prompt>\"  (run the agent with a single instruction)"
+
+  # Project structure. After the agent builds, the tree includes the Dockerfile
+  # it wrote; before that, the source tree only.
+  - id: tree-built
+    when:
+      command: [tree]
+      state: { baseline.built: true }
+    then:
+      output:
+        - "."
+        - "├── Dockerfile              ← the agent added this"
+        - "├── compose.yaml            ← the agent added this"
+        - "├── README.md"
+        - "├── package.json"
+        - "├── package-lock.json"
+        - "├── db"
+        - "│   └── schema.sql"
+        - "├── src"
+        - "│   ├── index.js"
+        - "│   ├── routes"
+        - "│   │   └── products.js"
+        - "│   ├── db"
+        - "│   │   └── pool.js"
+        - "│   └── events"
+        - "│       └── kafka.js"
+        - "└── frontend"
+        - "    ├── Dockerfile          ← the agent added this"
+        - "    ├── package.json"
+        - "    └── src"
+        - "        └── App.jsx"
+        - ""
+        - "7 directories, 13 files"
+
+  - id: tree-src
+    when:
+      command: [tree]
+    then:
+      output:
+        - "."
+        - "├── README.md"
+        - "├── package.json"
+        - "├── package-lock.json"
+        - "├── db"
+        - "│   └── schema.sql"
+        - "├── src"
+        - "│   ├── index.js"
+        - "│   ├── routes"
+        - "│   │   └── products.js"
+        - "│   ├── db"
+        - "│   │   └── pool.js"
+        - "│   └── events"
+        - "│       └── kafka.js"
+        - "└── frontend"
+        - "    ├── package.json"
+        - "    └── src"
+        - "        └── App.jsx"
+        - ""
+        - "7 directories, 10 files"
+
+  - id: npm-ls-count
+    when:
+      command: [npm, ls]
+    then:
+      output: ["431"]
+
+  # ---------------------------------------------------------------------------
+  # docker build - specific cases first, then generic
+  # ---------------------------------------------------------------------------
+  - id: build-registry-nocache
+    when:
+      command: [docker, build]
+      args:
+        -t: { oneOf: [registry.dockerlabs.xyz/catalog-service:dhi] }
+        --no-cache: { any: true }
+    then:
+      state: { registry.tampered: true, registry.attested: false }
+      output:
+        - { text: "[+] Building 61.3s (12/12) FINISHED", delay: build }
+        - " => => naming to registry.dockerlabs.xyz/catalog-service:dhi (new digest sha256:b7c9d1...)"
+        - "A different image now sits on the same tag - and it carries no attestations."
+
+  # Rebuild WITH attestations (--sbom/--provenance) re-binds SBOM + provenance to
+  # a fresh digest, clearing the tampered state so the rest of the lab works.
+  - id: build-registry-attested
+    when:
+      command: [docker, build]
+      args:
+        -t: { oneOf: [registry.dockerlabs.xyz/catalog-service:dhi] }
+        --sbom: { any: true }
+    then:
+      state: { registry.tampered: false, registry.attested: true }
+      output:
+        - { text: "[+] Building 32.0s (12/12) FINISHED", delay: build }
+        - " => exporting sbom attestation"
+        - " => exporting provenance attestation mode=max"
+        - " => => naming to registry.dockerlabs.xyz/catalog-service:dhi"
+
+  # Dockerfile linter - the "validate" step of Lab 2's edit -> Save -> validate
+  # loop. Deterministic like every command in this lab: it models a clean pass on
+  # the multi-stage hardened Dockerfile the learner writes via the save-as block.
+  - id: hadolint-dockerfile
+    when:
+      command: [hadolint]
+    then:
+      output:
+        - { text: "Linting Dockerfile...", delay: short }
+        - { text: "Dockerfile: no issues detected", delay: short }
+        - "  ✓ multi-stage build - builder stage separated from runtime"
+        - "  ✓ pinned base images (node:24-debian13-dev, node:24-debian13)"
+        - "  ✓ npm ci --ignore-scripts - no install-time lifecycle scripts"
+        - "  ✓ non-root distroless runtime - no shell in the final image"
+
+  - id: build-dhi
+    when:
+      command: [docker, build]
+      args:
+        -t: { oneOf: [catalog-service:dhi] }
+    then:
+      state: { dhi.built: true, registry.attested: true }
+      output:
+        - { text: "[+] Building 0.3s FROM dhi.io/node:24-debian13-dev", delay: pull }
+        - { text: "[+] Building 7.4s (7/12) RUN npm ci --production --ignore-scripts", delay: build }
+        - { text: "[+] Building 9.1s FROM dhi.io/node:24-debian13 (distroless)", delay: build }
+        - { text: "[+] Building 31.2s (12/12) exporting to image", delay: build }
+        - " => exporting sbom attestation"
+        - " => exporting provenance attestation mode=max"
+        - " => => naming to docker.io/library/catalog-service:dhi"
+
+  - id: build-mcp
+    when:
+      command: [docker, build]
+      args:
+        -t: { oneOf: [catalog-mcp:dhi] }
+    then:
+      state: { mcp.built: true }
+      output:
+        - { text: "[+] Building 0.3s FROM dhi.io/python:3.13", delay: pull }
+        - { text: "[+] Building 4.8s (6/7) RUN pip install --no-cache-dir -r requirements.txt", delay: build }
+        - { text: "[+] Building 6.0s (7/7) exporting to image", delay: build }
+        - " => => naming to docker.io/library/catalog-mcp:dhi"
+
+  - id: build-generic
+    when:
+      command: [docker, build]
+      args:
+        -t: { any: true }
+    then:
+      state: { baseline.built: true }
+      output:
+        - { text: "[+] Building 58.9s (9/9) FINISHED", delay: build }
+        - " => => naming to {{ args.t }}"
+
+  # ---------------------------------------------------------------------------
+  # docker images
+  # ---------------------------------------------------------------------------
+  - id: images-baseline
+    when:
+      command: [docker, images]
+      args: { 0: { oneOf: [catalog-service:baseline] } }
+    then:
+      output:
+        - "REPOSITORY        TAG        IMAGE ID       CREATED         SIZE"
+        - "catalog-service   baseline   3af1c9e0b2d4   2 minutes ago   1.1GB"
+
+  - id: images-catalog
+    when:
+      command: [docker, images]
+      args: { 0: { oneOf: [catalog-service] } }
+    then:
+      output:
+        - "REPOSITORY        TAG        IMAGE ID       CREATED         SIZE"
+        - "catalog-service   baseline   3af1c9e0b2d4   5 minutes ago   1.1GB"
+        - "catalog-service   dhi        9e2b71c4a0f8   1 minute ago    248MB"
+
+  - id: images-any
+    when:
+      command: [docker, images]
+    then:
+      output:
+        - "REPOSITORY        TAG        IMAGE ID       CREATED         SIZE"
+        - "catalog-service   baseline   3af1c9e0b2d4   5 minutes ago   1.1GB"
+
+  # ---------------------------------------------------------------------------
+  # docker scout quickview / cves / compare / policy
+  # ---------------------------------------------------------------------------
+  - id: quickview-baseline
+    when:
+      command: [docker, scout, quickview]
+      args: { 0: { oneOf: [catalog-service:baseline] } }
+    then:
+      output:
+        - { text: "    ✓ Image stored for indexing", delay: short }
+        - { text: "    ✓ Indexed 431 packages", delay: scan }
+        - "  Target             │  catalog-service:baseline  │    0C     8H    41M    93L"
+        - "    digest           │  3af1c9e0b2d4              │"
+        - "  Base image  node:20 │  updatable to node:24     │    0C     6H    30M    54L"
+        - ""
+        - "  What's next:"
+        - "    View base image update recommendations → docker scout recommendations catalog-service:baseline"
+
+  - id: quickview-dhi
+    when:
+      command: [docker, scout, quickview]
+      args: { 0: { oneOf: [catalog-service:dhi] } }
+    then:
+      output:
+        - { text: "    ✓ Indexed 78 packages", delay: scan }
+        - "  Target                          │  catalog-service:dhi  │    0C     0H     1M     4L"
+        - "    digest                        │  9e2b71c4a0f8         │"
+        - "  Base image  dhi.io/node:24-debian13  (hardened, distroless)  │    0C     0H     0M     0L"
+
+  - id: quickview-mcp
+    when:
+      command: [docker, scout, quickview]
+      args: { 0: { oneOf: [catalog-mcp:dhi] } }
+    then:
+      output:
+        - { text: "    ✓ Indexed 41 packages", delay: scan }
+        - "  Target                        │  catalog-mcp:dhi  │    0C     0H     0M     2L"
+        - "  Base image  dhi.io/python:3.13  (hardened)  │    0C     0H     0M     0L"
+
+  - id: scout-cves
+    when:
+      command: [docker, scout, cves]
+    then:
+      output:
+        - { text: "    ✓ Indexed 431 packages", delay: scan }
+        - "    ✗ Detected 8 vulnerable packages with 8 vulnerabilities"
+        - ""
+        - "   ✗ HIGH CVE-2024-4068  in  braces 3.0.2"
+        - "   ✗ HIGH CVE-2024-37890 in  ws 8.11.0"
+        - "   ✗ HIGH CVE-2024-28849 in  follow-redirects 1.15.5"
+        - "   ✗ HIGH CVE-2023-45857 in  axios 1.7.2"
+        - "   ... 4 more high-severity findings"
+        - ""
+        - "8 vulnerabilities found in 8 packages"
+
+  - id: scout-compare
+    when:
+      command: [docker, scout, compare]
+    then:
+      output:
+        - { text: "    ✓ Indexed both images", delay: scan }
+        - "  Comparing catalog-service:dhi  to  catalog-service:baseline"
+        - ""
+        - "  Critical      0   =   0"
+        - "  High          0   ←   8   (-8)"
+        - "  Medium        1   ←  41   (-40)"
+        - "  Low           4   ←  93   (-89)"
+        - "  Packages     78   ← 431   (-353)"
+        - "  Size       248MB  ← 1.1GB (-77%)"
+
+  - id: policy-baseline
+    when:
+      command: [docker, scout, policy]
+      args: { 0: { oneOf: [catalog-service:baseline] } }
+    then:
+      output:
+        - { text: "    ✓ Evaluating policies", delay: scan }
+        - "  Policy evaluation for catalog-service:baseline"
+        - ""
+        - "  ✗ no-critical-cves        FAILED   8 high, review required"
+        - "  ✗ require-sbom            FAILED   no SBOM attestation present"
+        - "  ✗ require-provenance      FAILED   no SLSA provenance attestation"
+        - ""
+        - "  Policy status: FAILED (3 of 3 policies not met)"
+
+  - id: policy-dhi
+    when:
+      command: [docker, scout, policy]
+      args: { 0: { oneOf: [catalog-service:dhi] } }
+    then:
+      output:
+        - { text: "    ✓ Evaluating policies", delay: scan }
+        - "  Policy evaluation for catalog-service:dhi"
+        - ""
+        - "  ✓ no-critical-cves        PASSED"
+        - "  ✓ require-sbom            PASSED   sbom attestation present"
+        - "  ✓ require-provenance      PASSED   slsa-provenance (mode=max) present"
+        - ""
+        - "  Policy status: PASSED (3 of 3 policies met)"
+
+  # ---------------------------------------------------------------------------
+  # docker scout sbom  (creates files so later jq works)
+  # ---------------------------------------------------------------------------
+  - id: sbom-baseline-spdx
+    when:
+      command: [docker, scout, sbom]
+      args: { --output: { oneOf: [baseline.spdx.json] } }
+    then:
+      files:
+        - create: baseline.spdx.json
+          content: |
+            { "spdxVersion": "SPDX-2.3", "name": "catalog-service:baseline",
+              "_note": "sample truncated for display - 431 packages total (jq '.packages | length' returns 431)",
+              "packages": [
+                {"name": "@aws-sdk/client-s3", "versionInfo": "3.658.1", "licenseConcluded": "Apache-2.0"},
+                {"name": "@smithy/protocol-http", "versionInfo": "4.1.0", "licenseConcluded": "Apache-2.0"},
+                {"name": "abbrev", "versionInfo": "2.0.0", "licenseConcluded": "ISC"},
+                {"name": "accepts", "versionInfo": "1.3.8", "licenseConcluded": "MIT"},
+                {"name": "acorn", "versionInfo": "8.12.0", "licenseConcluded": "MIT"},
+                {"name": "ansi-regex", "versionInfo": "6.0.1", "licenseConcluded": "MIT"},
+                {"name": "axios", "versionInfo": "1.7.2", "licenseConcluded": "MIT"},
+                {"name": "body-parser", "versionInfo": "1.20.2", "licenseConcluded": "MIT"},
+                {"name": "braces", "versionInfo": "3.0.3", "licenseConcluded": "MIT"},
+                {"name": "express", "versionInfo": "4.19.2", "licenseConcluded": "MIT"},
+                {"name": "openssl", "versionInfo": "3.0.13", "licenseConcluded": "Apache-2.0"},
+                {"name": "zlib", "versionInfo": "1.2.13", "licenseConcluded": "Zlib"}
+              ] }
+      output:
+        - { text: "    ✓ Indexed 431 packages", delay: scan }
+        - "    ✓ Wrote SBOM (SPDX 2.3) to baseline.spdx.json"
+
+  - id: sbom-baseline-cdx
+    when:
+      command: [docker, scout, sbom]
+      args: { --output: { oneOf: [baseline.cdx.json] } }
+    then:
+      files:
+        - create: baseline.cdx.json
+          content: |
+            { "bomFormat": "CycloneDX", "specVersion": "1.5",
+              "components": [{"name": "express", "version": "4.19.2"}] }
+      output:
+        - { text: "    ✓ Wrote SBOM (CycloneDX 1.5) to baseline.cdx.json", delay: scan }
+
+  - id: sbom-dhi-spdx
+    when:
+      command: [docker, scout, sbom]
+      args: { --output: { oneOf: [dhi.spdx.json] } }
+    then:
+      files:
+        - create: dhi.spdx.json
+          content: |
+            { "spdxVersion": "SPDX-2.3", "name": "catalog-service:dhi",
+              "_note": "sample truncated for display - 78 packages total (jq '.packages | length' returns 78)",
+              "packages": [
+                {"name": "express", "versionInfo": "4.19.2", "licenseConcluded": "MIT"},
+                {"name": "openssl", "versionInfo": "3.0.13", "licenseConcluded": "Apache-2.0"},
+                {"name": "zlib", "versionInfo": "1.2.13", "licenseConcluded": "Zlib"},
+                {"name": "ca-certificates", "versionInfo": "2024.02", "licenseConcluded": "MPL-2.0"},
+                {"name": "tzdata", "versionInfo": "2024a", "licenseConcluded": "ICU"}
+              ] }
+      output:
+        - { text: "    ✓ Indexed 78 packages", delay: scan }
+        - "    ✓ Wrote SBOM (SPDX 2.3) to dhi.spdx.json"
+
+  # ---------------------------------------------------------------------------
+  # docker scout attest  (get / list)
+  # ---------------------------------------------------------------------------
+  - id: attest-get-slsa-verify
+    when:
+      command: [docker, scout, attest, get]
+      args:
+        --predicate-type: { oneOf: ["https://slsa.dev/provenance/v0.2"] }
+        --verify: { any: true }
+    then:
+      output:
+        - { text: "    ✓ Signature verified (keyless, Fulcio root)", delay: scan }
+        - "{"
+        - '  "buildType": "https://docker.com/dhi/build/v1",'
+        - '  "builder": { "id": "https://docker.com/dhi/builder" },'
+        - '  "invocation": {'
+        - '    "configSource": {'
+        - '      "uri": "git+https://github.com/docker-hardened-images/node@refs/tags/24-debian13",'
+        - '      "digest": { "sha1": "e83c516f3d2a...  " }'
+        - "    }"
+        - "  }"
+        - "}"
+        - ""
+        - "Traceable to a source commit you can open and read."
+
+  - id: attest-get-vex
+    when:
+      command: [docker, scout, attest, get]
+      args:
+        --predicate-type: { oneOf: ["https://openvex.dev/ns/v0.2.0"] }
+    then:
+      output:
+        - "{"
+        - '  "vulnerability": { "name": "CVE-2023-45853" },'
+        - '  "products": [ "pkg:oci/node@sha256:1f0e...debian13" ],'
+        - '  "status": "not_affected",'
+        - '  "justification": "vulnerable_code_not_in_execute_path"'
+        - "}"
+
+  - id: attest-list-mcp
+    when:
+      command: [docker, scout, attest, list]
+      args: { 0: { oneOf: [catalog-mcp:dhi] } }
+    then:
+      output:
+        - { text: "    ✓ Fetching attestations for catalog-mcp:dhi", delay: scan }
+        - "  TYPE                                          SIGNED   BY"
+        - "  https://spdx.dev/Document                     yes      (you, at build)"
+        - "  https://slsa.dev/provenance/v0.2              yes      (you, mode=max)"
+        - ""
+        - "  Base dhi.io/python:3.13 also ships VEX + a Docker signature."
+
+  # The image you pushed in Lab 3, still carrying the build-time attestations.
+  - id: attest-list-registry-tampered
+    when:
+      command: [docker, scout, attest, list]
+      args: { 0: { oneOf: [registry.dockerlabs.xyz/catalog-service:dhi] } }
+      state: { registry.tampered: true }
+    then:
+      output:
+        - { text: "    ✓ Fetching attestations for registry.dockerlabs.xyz/catalog-service:dhi", delay: scan }
+        - "  digest  sha256:b7c9d1...  (the tag was moved to a new image)"
+        - ""
+        - "  No attestations found on this digest."
+        - "  The tag was rebuilt without --sbom/--provenance and re-pushed."
+      exit: 1
+
+  - id: attest-list-registry-ok
+    when:
+      command: [docker, scout, attest, list]
+      args: { 0: { oneOf: [registry.dockerlabs.xyz/catalog-service:dhi] } }
+    then:
+      output:
+        - { text: "    ✓ Fetching attestations for registry.dockerlabs.xyz/catalog-service:dhi", delay: scan }
+        - "  TYPE                                          PRESENT   ADDED"
+        - "  https://spdx.dev/Document                     yes       attached at build"
+        - "  https://slsa.dev/provenance/v0.2  (mode=max)  yes       attached at build"
+        - ""
+        - "  Bound to digest sha256:9e2b71c4a0f8. Move the tag and this binding breaks."
+        - "  Attached to the digest, not cryptographically signed - the binding is what matters here."
+
+  - id: attest-list-node
+    when:
+      command: [docker, scout, attest, list]
+      args: { 0: { any: true } }
+    then:
+      output:
+        - { text: "    ✓ Fetching attestations for {{ args.0 }}", delay: scan }
+        - "  TYPE                                          SIGNED   BY"
+        - "  https://spdx.dev/Document                     yes      Docker, Inc."
+        - "  https://openvex.dev/ns/v0.2.0                 yes      Docker, Inc."
+        - "  https://slsa.dev/provenance/v0.2  (L3)        yes      Docker, Inc."
+
+  # ---------------------------------------------------------------------------
+  # docker buildx imagetools inspect (provenance)
+  # ---------------------------------------------------------------------------
+  - id: imagetools-provenance
+    when:
+      command: [docker, buildx, imagetools, inspect]
+    then:
+      output:
+        - "{"
+        - '  "id": "https://docker.com/buildkit@v0.15",'
+        - '  "version": "1"'
+        - "}"
+        - ""
+        - "Provenance exists (SLSA L1-L2): build metadata your build recorded."
+
+  # ---------------------------------------------------------------------------
+  # jq queries against the SBOMs
+  # ---------------------------------------------------------------------------
+  - id: jq-count-baseline
+    when:
+      command: [jq]
+      args: { 0: { oneOf: [".packages | length"] }, 1: { oneOf: [baseline.spdx.json] } }
+    then:
+      output: ["431"]
+
+  - id: jq-count-dhi
+    when:
+      command: [jq]
+      args: { 0: { oneOf: [".packages | length"] }, 1: { oneOf: [dhi.spdx.json] } }
+    then:
+      output: ["78"]
+
+  - id: jq-names
+    when:
+      command: [jq]
+      args: { r: { oneOf: [".packages[].name"] } }
+    then:
+      output:
+        - "@aws-sdk/client-s3"
+        - "@smithy/protocol-http"
+        - "abbrev"
+        - "accepts"
+        - "acorn"
+        - "ansi-regex"
+        - "axios"
+        - "body-parser"
+        - "braces"
+        - "... (most of these you did not choose, install, or can name)"
+
+  - id: jq-openssl
+    when:
+      command: [jq]
+      args: { r: { oneOf: ['.packages[] | select(.name | test("openssl|zlib|libxml")) | "\(.name) \(.versionInfo)"'] } }
+    then:
+      output:
+        - "openssl 3.0.13"
+        - "zlib 1.2.13"
+
+  - id: jq-licenses
+    when:
+      command: [jq]
+      args: { r: { oneOf: ['.packages[] | "\(.licenseConcluded)"'] } }
+    then:
+      output:
+        - "  381 MIT"
+        - "   22 ISC"
+        - "   14 Apache-2.0"
+        - "    9 BSD-3-Clause"
+        - "    3 (no license found)"
+        - "    2 GPL-3.0"
+
+  - id: jq-generic
+    when:
+      command: [jq]
+    then:
+      output: ["(jq output)"]
+
+  # ---------------------------------------------------------------------------
+  # Section 4 - docker run checks
+  # ---------------------------------------------------------------------------
+  # `docker run --rm IMG node --version`: --rm consumes IMG, leaving positional 0 = node.
+  - id: run-node-version
+    when:
+      command: [docker, run]
+      args: { 0: { oneOf: [node] } }
+    then:
+      output: ["v24.8.0"]
+
+  # `docker run --rm IMG sh -c "..."`: --rm consumes IMG, leaving positional 0 = sh.
+  - id: run-dhi-noshell
+    when:
+      command: [docker, run]
+      args: { 0: { oneOf: [sh] } }
+    then:
+      output: ["No shell in this image."]
+
+  # ---------------------------------------------------------------------------
+  # Section 5 - tag / push to the local registry
+  # ---------------------------------------------------------------------------
+  - id: docker-tag
+    when:
+      command: [docker, tag]
+    then:
+      output: [""]
+
+  - id: docker-push
+    when:
+      command: [docker, push]
+    then:
+      state: { registry.pushed: true }
+      output:
+        - { text: "The push refers to repository [registry.dockerlabs.xyz/catalog-service]", delay: short }
+        - { text: "dhi: digest: sha256:a1b2c3d4... size: 1996", delay: pull }
+
+  # ---------------------------------------------------------------------------
+  # Section 5 - git + simulated CI pipeline
+  # ---------------------------------------------------------------------------
+  - id: git-add
+    when:
+      command: [git, add]
+    then:
+      output: [""]
+
+  - id: git-commit
+    when:
+      command: [git, commit]
+    then:
+      output:
+        - "[main 7f3a2c1] Add secure build pipeline"
+        - " 1 file changed, 42 insertions(+)"
+
+  # git push fires a CI run in the CI Pipeline tab. NO scripted conclusion - the
+  # outcome is derived from state (workflows.secure-build `verify-attestations`
+  # requires registry.attested). Push while the tag is tampered -> red run; fix
+  # the artifact and hit Re-run -> the same pipeline goes green.
+  - id: git-push
+    when:
+      command: [git, push]
+    then:
+      output:
+        - { text: "Enumerating objects: 8, done.", delay: short }
+        - "To http://git.dockerlabs.xyz/moby/catalog-service.git"
+        - "   7f3a2c1..a9d0e42  main -> main"
+        - ""
+        - "remote: Gitea Actions: secure-build triggered"
+        - "remote:   open the CI Pipeline tab (top right) to watch the run"
+      ci:
+        workflow: secure-build
+        commit: "Add secure build pipeline"
+
+  # ---------------------------------------------------------------------------
+  # Section 2 - run the app the agent wired up, then curl the API
+  # ---------------------------------------------------------------------------
+  # Plain `docker compose up` in Section 2 (the full app stack). Gated on
+  # mcp.built:false so it wins BEFORE compose-up-mcp until Lab 6 builds the MCP
+  # server; the MCP compose (Lab 6) falls through to compose-up-mcp below.
+  - id: compose-up-app
+    when:
+      command: [docker, compose]
+      args: { 0: { oneOf: [up] } }
+      state: { mcp.built: false }
+    then:
+      output:
+        - { text: " ✔ Network catalog-service_default  Created", delay: short }
+        - { text: " ✔ Container catalog-postgres        Started", delay: pull }
+        - { text: " ✔ Container catalog-kafka           Started", delay: pull }
+        - { text: " ✔ Container catalog-localstack      Started", delay: pull }
+        - { text: " ✔ Container catalog-wiremock        Started", delay: short }
+        - { text: " ✔ Container catalog-backend         Started", delay: build }
+        - { text: " ✔ Container catalog-frontend        Started", delay: short }
+        - "catalog-service listening on :3000"
+
+  - id: curl-products
+    when:
+      command: [curl]
+      args:
+        0: { oneOf: ["http://localhost:3000/api/products"] }
+    then:
+      output:
+        - "["
+        - "  {\"id\":1,\"name\":\"Widget\",\"sku\":\"WGT-001\",\"price\":\"9.99\"},"
+        - "  {\"id\":2,\"name\":\"Gadget\",\"sku\":\"GDG-002\",\"price\":\"19.99\"}"
+        - "]"
+
+  # ---------------------------------------------------------------------------
+  # Section 6 - MCP: compose up, inspect, gateway
+  # ---------------------------------------------------------------------------
+  # `docker compose -f FILE up -d`: -f consumes FILE, leaving positional 0 = up.
+  - id: compose-up-mcp
+    when:
+      command: [docker, compose]
+      args: { 0: { oneOf: [up] } }
+    then:
+      state: { mcp.running: true }
+      output:
+        - { text: " ✔ Container catalog-mcp  Started", delay: pull }
+
+  - id: docker-inspect-mcp
+    when:
+      command: [docker, inspect]
+    then:
+      output: ["true [ALL]"]
+
+  # DHI MCP catalog - Docker's pre-hardened MCP servers (docker/mcp-catalog-dhi).
+  - id: mcp-catalog-pull-dhi
+    when:
+      command: [docker, mcp, catalog, pull]
+    then:
+      output:
+        - { text: "Pulling catalog docker/mcp-catalog-dhi:latest ...", delay: pull }
+        - { text: "  ✓ pulled 11 hardened MCP servers", delay: scan }
+        - "  ✓ signatures verified (Docker, Inc.)"
+        - "Catalog 'docker/mcp-catalog-dhi' stored locally."
+        - "Next: docker mcp catalog server ls docker/mcp-catalog-dhi"
+
+  - id: mcp-catalog-server-ls-dhi
+    when:
+      command: [docker, mcp, catalog, server, ls]
+    then:
+      output:
+        - "SERVER       DESCRIPTION"
+        - "context7     Up-to-date code documentation for LLMs and AI code editors"
+        - "fetch        Fetches a URL from the internet, extracts contents as markdown"
+        - "filesystem   Local filesystem access with configurable allowed paths"
+        - "firecrawl    Web scraping and crawling with structured content extraction"
+        - "git          Git repository interaction and automation"
+        - "github       Tools for interacting with the GitHub API (files, repos, search)"
+        - "grafana      Grafana dashboards, datasources, metrics, logs, traces, alerting"
+        - "dockerhub    Docker Hub official MCP server"
+        - "memory       Knowledge graph-based persistent memory system"
+        - "mongodb      Query collections, discover schemas, operate on MongoDB and Atlas"
+        - "time         Time and timezone conversion capabilities"
+        - ""
+        - "11 servers from the Docker Hardened Images MCP Catalog - each labelled"
+        - "(Hardened) in Docker Desktop's MCP Toolkit, built on a DHI base with"
+        - "SBOM + provenance + signature."
+
+  # `--catalog` variant of the gateway run - must precede the generic one below.
+  - id: mcp-gateway-run-catalog
+    when:
+      command: [docker, mcp, gateway, run]
+      args: { --catalog: { any: true } }
+    then:
+      output:
+        - { text: "MCP Gateway starting (--verify-signatures)", delay: short }
+        - { text: "  loading catalog docker/mcp-catalog-dhi:latest", delay: short }
+        - { text: "  filesystem (Hardened)  → verifying provenance...  ✓ signed by Docker, Inc., SBOM present", delay: scan }
+        - "  read_only rootfs · cap_drop ALL · secrets mounted into target only"
+        - "  registered tools: read_file, list_directory, search_files"
+        - "Gateway ready. A hardened server you did not have to build - verified before it ran."
+
+  - id: mcp-gateway-run
+    when:
+      command: [docker, mcp, gateway, run]
+    then:
+      output:
+        - { text: "MCP Gateway starting (--verify-signatures)", delay: short }
+        - { text: "  catalog-mcp:dhi  → verifying provenance...  ✓ signed, SBOM present", delay: scan }
+        - "  mounting secrets into target container only"
+        - "  registered tools: list_products, search_products, get_product"
+        - "Gateway ready. An unsigned or tampered server image would be refused here."
+
+  # ---------------------------------------------------------------------------
+  # Section 7 - the agent's build sandbox (sbx microVM + remote DHI MCP server)
+  # ---------------------------------------------------------------------------
+  - id: sbx-daemon-start
+    when:
+      command: [sbx, daemon, start]
+    then:
+      output:
+        - { text: "Starting sbx daemon...", delay: short }
+        - "  microVM booted: own daemon, own network, host mounted read-only."
+        - "sbx daemon running (background)."
+
+  - id: sbx-daemon-stop
+    when:
+      command: [sbx, daemon, stop]
+    then:
+      output: ["sbx daemon stopped."]
+
+  # Register the remote DHI MCP server by URL. Positional 0 = name, --url = URL.
+  - id: sbx-mcp-add
+    when:
+      command: [sbx, mcp, add]
+      args: { 0: { any: true }, --url: { any: true } }
+    then:
+      state: { sandbox.mcpAdded: true }
+      output:
+        - "Added MCP server '{{ args.0 }}' (remote) -> {{ args.url }}"
+        - "  transport: streamable-http"
+        - "  its tools are available to agents in the sandbox, governed by your MCP policy."
+
+  - id: sbx-mcp-inspect
+    when:
+      command: [sbx, mcp, inspect]
+      args: { 0: { any: true } }
+    then:
+      output:
+        - "Name:      {{ args.0 }}"
+        - "Type:      remote"
+        - "URL:       https://dhi.io/mcp"
+        - "Transport: streamable-http"
+
+  # `sbx mcp ls` after the server was added.
+  - id: sbx-mcp-ls-added
+    when:
+      command: [sbx, mcp, ls]
+      state: { sandbox.mcpAdded: true }
+    then:
+      output:
+        - "NAME        TYPE     URL"
+        - "remotedhi   remote   https://dhi.io/mcp"
+        - ""
+        - "1 MCP server configured."
+
+  # `sbx mcp ls` before anything was added.
+  - id: sbx-mcp-ls-empty
+    when:
+      command: [sbx, mcp, ls]
+    then:
+      output:
+        - "No MCP servers configured. Add one with: sbx mcp add <name> --url <url>"
+
+  # The payoff: hand the sandboxed agent the SAME containerise prompt from
+  # Section 2. This time it queries the DHI MCP catalog before writing `FROM`
+  # and rebuilds the exact hardened image you produced by hand in Lab 2.
+  # More specific than sbx-run-codex (requires -p), so it must precede it.
+  - id: sbx-agent-dhi-build
+    when:
+      command: [sbx, run, codex]
+      args: { -p: { any: true } }
+    then:
+      state: { dhi.built: true }
+      files:
+        - create: Dockerfile
+          content: |
+            ###########################################################
+            # Stage: base - DHI dev variant, has shell and npm
+            ###########################################################
+            FROM dhi.io/node:24-debian13-dev AS base
+
+            WORKDIR /usr/local/app
+            COPY package.json package-lock.json ./
+
+            ###########################################################
+            # Stage: production-dependencies
+            ###########################################################
+            FROM base AS production-dependencies
+            ENV NODE_ENV=production
+            RUN npm ci --production --ignore-scripts && npm cache clean --force
+
+            ###########################################################
+            # Stage: final - DHI runtime variant, distroless
+            ###########################################################
+            FROM dhi.io/node:24-debian13 AS final
+            ENV NODE_ENV=production
+            WORKDIR /usr/local/app
+
+            COPY --from=production-dependencies /usr/local/app/node_modules ./node_modules
+            COPY ./src ./src
+
+            EXPOSE 3000
+            CMD ["node", "src/index.js"]
+      output:
+        - "● Reading the project... Node.js service, same source as Section 2."
+        - ""
+        - "● I have the DHI MCP server. Before I choose a base, I'll ask the catalog."
+        - { text: "  → remotedhi__dhi_list_repositories { query: \"node\" }", delay: short }
+        - { text: "    ✓ dhi.io/node - hardened Node.js on debian13 (distroless runtime + -dev build variant)", delay: short }
+        - { text: "  → remotedhi__dhi_get_tag_definition { repo: \"node\", tag: \"24-debian13\" }", delay: short }
+        - { text: "    ✓ runtime: no shell, no npm, non-root · -dev variant carries the toolchain", delay: short }
+        - { text: "  → remotedhi__dhi_get_image_cves { image: \"dhi.io/node:24-debian13\" }", delay: scan }
+        - { text: "    ✓ 0 critical · 0 high · 0 medium · 0 low", delay: short }
+        - { text: "  → remotedhi__dhi_get_image_attestations { image: \"dhi.io/node:24-debian13\" }", delay: short }
+        - { text: "    ✓ SBOM + SLSA provenance + VEX, signed by Docker, Inc.", delay: short }
+        - ""
+        - "● The catalog answered before I wrote a line. I'll build on the -dev variant and copy"
+        - "  only node_modules into the distroless runtime - a multi-stage build."
+        - "● Writing Dockerfile (multi-stage, hardened bases)..."
+        - { text: "  [+] Building 0.3s FROM dhi.io/node:24-debian13-dev", delay: pull }
+        - { text: "  [+] Building 7.6s (7/12) RUN npm ci --production --ignore-scripts", delay: build }
+        - { text: "  [+] Building 9.0s FROM dhi.io/node:24-debian13 (distroless)", delay: build }
+        - { text: "  [+] Building 30.8s (12/12) exporting to image", delay: build }
+        - "  => exporting sbom attestation"
+        - "  => exporting provenance attestation mode=max"
+        - "  => naming to catalog-service:dhi"
+        - ""
+        - "● Done - built catalog-service:dhi entirely inside the sandbox."
+        - ""
+        - { text: "  ┌── what the sandboxed agent built ──────────────────", delay: short }
+        - "  │"
+        - "  │   image      catalog-service:dhi   (248MB, 78 packages)"
+        - "  │   base       dhi.io/node:24-debian13  (hardened, distroless)"
+        - "  │   CVEs       0C · 0H · 1M · 4L"
+        - "  │   runs as    non-root · no shell · no npm"
+        - "  │   evidence   SBOM [x]   provenance [x]   signature [x]"
+        - "  │"
+        - "  │   The same artifact you built by hand in Lab 2 - chosen by"
+        - "  │   the agent, from signed catalog data, before it wrote FROM."
+        - { text: "  └─────────────────────────────────────────────────────", delay: short }
+        - ""
+        - "Measure it with the same commands you used in Lab 2 - it lands on the same numbers."
+
+  # Run an agent (codex) inside the sandbox with the DHI MCP statically attached.
+  - id: sbx-run-codex
+    when:
+      command: [sbx, run, codex]
+    then:
+      output:
+        - { text: "Starting codex in the sandbox (static MCP: remotedhi)...", delay: short }
+        - "codex ready. Type /mcp to list tools, or enter a prompt."
+
+  # Declarative path: `.sbxenv.yaml` wires the agent, the DHI MCP server, and the
+  # governance profile in one file. `sbx env run` reconciles all of it, then attaches.
+  - id: sbx-env-run
+    when:
+      command: [sbx, env, run]
+    then:
+      state: { sandbox.mcpAdded: true }
+      output:
+        - { text: "Reading .sbxenv.yaml (schemaVersion 1)...", delay: short }
+        - "  sandbox 'catalog-sandbox' - agent codex, workspace catalog-service (clone)"
+        - { text: "  microVM booted: own daemon, own network, host mounted read-only.", delay: short }
+        - { text: "  registering MCP server 'remotedhi' (remote) -> https://dhi.io/mcp", delay: short }
+        - "  applying governance profile 'dhi-readonly' (invokeTool scoped to read-only DHI tools)"
+        - "codex ready. Type /mcp to list tools, or enter a prompt."
+
+  # Tear the declared sandbox down, including its scoped credentials.
+  - id: sbx-env-rm
+    when:
+      command: [sbx, env, rm]
+    then:
+      state: { sandbox.mcpAdded: false }
+      output:
+        - "Removing sandbox 'catalog-sandbox' and its scoped credentials..."
+        - "  global bindings preserved (pass --prune-bindings to remove them)."
+        - "sandbox removed."
+
+  # `/mcp` inside the codex session lists the tools the gateway exposes.
+  - id: mcp-slash
+    when:
+      command: ["/mcp"]
+    then:
+      output:
+        - "🔌  MCP Tools"
+        - ""
+        - "    • mcp-gateway"
+        - "      • Auth: Unsupported"
+        - "      • Tools: code-mode, mcp-config-set, mcp-exec,"
+        - "        remotedhi__dhi_get_image_cves, remotedhi__dhi_get_image_details,"
+        - "        remotedhi__dhi_get_image_packages, remotedhi__dhi_get_image_attestations,"
+        - "        remotedhi__dhi_get_repository, remotedhi__dhi_get_tag_definition,"
+        - "        remotedhi__dhi_list_repositories, remotedhi__dhi_list_mirrors,"
+        - "        remotedhi__dhi_create_mirror, remotedhi__dhi_remove_mirror"
+
+  # ---------------------------------------------------------------------------
+  # Generic docker run (kept last so specific runs above win)
+  # ---------------------------------------------------------------------------
+  - id: docker-run-generic
+    when:
+      command: [docker, run]
+    then:
+      output: ["catalog-service listening on :3000"]
