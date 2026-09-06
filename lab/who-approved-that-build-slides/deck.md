@@ -15,7 +15,7 @@ Note: The question in the title is a real one - who approved that build? By the 
 
 <!--
 layout: section
-eyebrow: "Meet your host"
+eyebrow: "Meet the speaker"
 -->
 
 # Ajeet Singh Raina
@@ -41,15 +41,7 @@ Note: Quick hello - I'm Ajeet Singh Raina, Developer Advocate at Docker. Twenty-
 
 Built for developers **and** the platform / SRE / ops teams who answer for what ships.
 
-Note: Here's the road. We open with the evidence layer - SBOM, VEX, SLSA. Then Docker Hardened Images as a governed baseline. Then the CI pipeline that turns policy into a gate. Then we push the fix left - sandboxing the agent's build environment, and hardening the MCP tools it calls. And a note on audience: the first half feels like a developer talk, but the gate, the baseline and the audit trail are owned by platform, SRE and ops - I'll call out who owns what as we go. But before we turn any of that road green, let me show you why it matters.
-
----
-
-<!-- chrome: false -->
-
-<img src="assets/horror-title.png" alt="Docker presents: AI Coding Agent Horror Stories" width="1600" height="900" style="position:absolute;inset:0;width:100%;height:100%;object-fit:contain;background:#0b120a" />
-
-Note: AI coding agent horror stories. Not hypotheticals - the shape of these is happening in real repos right now. Here are four, quickly. Every one is something the rest of this talk prevents.
+Note: Here's the road. We open with the evidence layer - SBOM, VEX, SLSA. Then Docker Hardened Images as a governed baseline. Then the CI pipeline that turns policy into a gate. Then we push the fix left - sandboxing the agent's build environment, and hardening the MCP tools it calls. And a note on audience: the first half feels like a developer talk, but the gate, the baseline and the audit trail are owned by platform, SRE and ops - I'll call out who owns what as we go. But first, the thing that makes all of this urgent - something that actually happened.
 
 ---
 
@@ -71,7 +63,7 @@ Date:   Tue 02:47:11
 
 The author isn't a person. **`svc-build-agent`.** It changed *how the app is built* - and 812 lines of dependencies.
 
-Note: Story one. 2:47 in the morning, a commit lands on main. The author is a service account - an agent. It bumped the base image, rewrote the Dockerfile, and pulled in 812 lines of new lockfile. This is the highest-leverage change you can make to an artifact: what it's built on, and what's inside it. Nobody was awake.
+Note: 2:47 in the morning, a commit lands on main. The author is a service account - an agent. It bumped the base image, rewrote the Dockerfile, and pulled in 812 lines of new lockfile. This is the highest-leverage change you can make to an artifact: what it's built on, and what's inside it. Nobody was awake.
 
 ---
 
@@ -91,52 +83,6 @@ $ gh pr view 4127 --json reviews -q '.reviews'
 CI said yes. **The reviewers array is empty.**
 
 Note: Who reviewed it? CI did - build, scan, publish, all green, merged. Human reviewers? Empty array. And nothing was broken; every check we had passed. The problem isn't a failing check. It's that the checks we had were never designed to answer what a reviewer would ask: what's in this, and where did it come from.
-
----
-
-<!--
-layout: image
-image: assets/horror-comic.png
-alt: "Four-panel comic: a developer asks an AI agent to clean up a project folder. The agent runs rm -rf as root and wipes the home directory, SSH keys and AWS credentials. Caption: trust no defaults."
-source: "docker.com/blog/ai-coding-agent-horror-stories-security-risks"
--->
-
-Note: Story two, and it's a cartoon because it's easier to laugh at. A developer asks an agent to tidy a project folder. The agent is delighted to help - runs rm -rf, as root, and takes out the home directory, the SSH keys, the AWS credentials. "Oh, did I forget to mention I had root this whole time?" Funny until it's your laptop. This one's from my own blog - link's on the slide.
-
----
-
-# The package that didn't exist
-
-```console
-$ grep -n "req-utils" package-lock.json
-  42:    "req-utils": "^1.4.0"      # the agent was sure this existed
-
-$ npm view req-utils
-  req-utils@1.4.0 | published 3 days ago | 1 maintainer | 4 downloads
-  (someone registered the name the agent kept hallucinating)
-```
-
-Story three: **slopsquatting.** The agent invented a dependency; an attacker registered it and waited.
-
-Note: Story three. Agents hallucinate package names, confidently. Attackers watch for the popular hallucinations, register those exact names, and ship malware inside them. The build pulls it in and runs its install script. You didn't typo anything - the agent imagined a dependency into existence, and someone was there to answer.
-
----
-
-# It "fixed" the failing build
-
-```console
-$ git show --stat HEAD
-  + .env
-  + AWS_SECRET_ACCESS_KEY=AKIA************       # to make CI pass
-  + DATABASE_URL=postgres://prod:************
-
-$ gitleaks detect
-  2 secrets committed · already pushed to a public fork
-```
-
-Story four: the agent unblocked itself by **committing the credentials.**
-
-Note: Story four. The build failed for want of a secret, so the agent did the helpful thing - committed the dot-env, keys and all, and pushed. It isn't malicious; it optimised for "make the check green," exactly as asked. Four stories, one root cause: an agent acting with authority nobody scoped, and no gate in its way. So let's build the gate.
 
 ---
 
