@@ -50,14 +50,6 @@ Note: Here's the road, and it doubles as the four questions we'll keep coming ba
 
 ---
 
-<!-- chrome: false -->
-
-<img src="assets/slide-access.webp" alt="Accessing the Workshop - https://agentic.dockerworkshop.com" width="1600" height="900" loading="eager" fetchpriority="high" decoding="async" style="position:absolute;inset:0;width:100%;height:100%;max-width:none;max-height:none;object-fit:fill" />
-
-Note: Everything today lives at one URL: agentic.dockerworkshop.com. That's your hands-on environment - the Simspace simulator, open all day, nothing to install. Bookmark it now, because you'll be typing into it shortly. But before we touch a keyboard, let me show you why we're all in this room - with something that actually happened.
-
----
-
 # 02:47 AM
 
 ## A commit landed.
