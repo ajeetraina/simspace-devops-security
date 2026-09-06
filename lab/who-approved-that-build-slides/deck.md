@@ -28,18 +28,23 @@ Note: Quick hello - I'm Ajeet Singh Raina, Developer Advocate at Docker. Twenty-
 
 ---
 
-<!-- layout: section -->
+<!-- chrome: false -->
 
-# What we'll walk through
-
-1. **02:47 AM** - an agent shipped a build nobody approved
-2. **Evidence** - SBOM · VEX · SLSA: what's in it, where it's from
-3. **Docker Hardened Images (DHI)** - a governed base, by default
-4. **CI pipeline** - sign + policy gate that fails closed
-5. **Sandboxing** - box the agent's own build environment
-6. **DHI MCP** - the tools the agent calls, hardened too
-
-Built for developers **and** the platform / SRE / ops teams who answer for what ships.
+<svg viewBox="0 0 1600 900" width="100%" height="100%" role="img" aria-label="Agenda" style="position:absolute;inset:0;width:100%;height:100%;object-fit:contain;background:#ffffff" font-family="Arial, Helvetica, sans-serif">
+  <rect x="0" y="0" width="1600" height="900" fill="#ffffff"/>
+  <text x="130" y="152" font-size="82" font-weight="800" fill="#0B1533">Agenda</text>
+  <rect x="134" y="180" width="156" height="9" rx="4" fill="#1E9BF0"/>
+  <text x="134" y="246" font-size="27" fill="#5B6B8C">From an unapproved build to a governed one.</text>
+  <text x="134" y="828" font-size="24" fill="#5B6B8C">Built for developers <tspan font-weight="800" fill="#0B1533">and</tspan> platform / SRE / ops.</text>
+  <g>
+    <g transform="translate(470,300)"><rect width="1010" height="82" rx="41" fill="#1E9BF0"/><circle cx="46" cy="41" r="33" fill="#ffffff"/><text x="46" y="41" text-anchor="middle" dominant-baseline="central" font-size="25" font-weight="800" fill="#1E9BF0">01</text><text x="102" y="41" dominant-baseline="central" font-size="30" font-weight="600" fill="#ffffff">The 02:47 AM incident</text></g>
+    <g transform="translate(470,392)"><rect width="1010" height="82" rx="41" fill="#1A82DA"/><circle cx="46" cy="41" r="33" fill="#ffffff"/><text x="46" y="41" text-anchor="middle" dominant-baseline="central" font-size="25" font-weight="800" fill="#1A82DA">02</text><text x="102" y="41" dominant-baseline="central" font-size="30" font-weight="600" fill="#ffffff">Evidence: SBOM · VEX · SLSA</text></g>
+    <g transform="translate(470,484)"><rect width="1010" height="82" rx="41" fill="#1668C0"/><circle cx="46" cy="41" r="33" fill="#ffffff"/><text x="46" y="41" text-anchor="middle" dominant-baseline="central" font-size="25" font-weight="800" fill="#1668C0">03</text><text x="102" y="41" dominant-baseline="central" font-size="30" font-weight="600" fill="#ffffff">Docker Hardened Images (DHI)</text></g>
+    <g transform="translate(470,576)"><rect width="1010" height="82" rx="41" fill="#114EA2"/><circle cx="46" cy="41" r="33" fill="#ffffff"/><text x="46" y="41" text-anchor="middle" dominant-baseline="central" font-size="25" font-weight="800" fill="#114EA2">04</text><text x="102" y="41" dominant-baseline="central" font-size="30" font-weight="600" fill="#ffffff">CI pipeline: sign + policy gate</text></g>
+    <g transform="translate(470,668)"><rect width="1010" height="82" rx="41" fill="#0D3B7E"/><circle cx="46" cy="41" r="33" fill="#ffffff"/><text x="46" y="41" text-anchor="middle" dominant-baseline="central" font-size="25" font-weight="800" fill="#0D3B7E">05</text><text x="102" y="41" dominant-baseline="central" font-size="30" font-weight="600" fill="#ffffff">Sandbox the agent's build</text></g>
+    <g transform="translate(470,760)"><rect width="1010" height="82" rx="41" fill="#0B1533"/><circle cx="46" cy="41" r="33" fill="#ffffff"/><text x="46" y="41" text-anchor="middle" dominant-baseline="central" font-size="25" font-weight="800" fill="#0B1533">06</text><text x="102" y="41" dominant-baseline="central" font-size="30" font-weight="600" fill="#ffffff">DHI MCP: hardened tools</text></g>
+  </g>
+</svg>
 
 Note: Here's the road. We open with the evidence layer - SBOM, VEX, SLSA. Then Docker Hardened Images as a governed baseline. Then the CI pipeline that turns policy into a gate. Then we push the fix left - sandboxing the agent's build environment, and hardening the MCP tools it calls. And a note on audience: the first half feels like a developer talk, but the gate, the baseline and the audit trail are owned by platform, SRE and ops - I'll call out who owns what as we go. But first, the thing that makes all of this urgent - something that actually happened.
 
@@ -99,6 +104,18 @@ A human used to stand at three decisions. Now an agent does - at machine speed, 
 | CI runs config **a human wrote** | The agent wrote the Dockerfile |
 
 Note: The supply chain didn't change. The review step did. Every row where trust used to pass through a person now passes through an agent. And this scales with capability - the better the agent, the more it does unsupervised. The job isn't to stop agents. It's to govern them without killing the speed that made them worth adopting.
+
+---
+
+<!-- layout: section -->
+
+# You can't inherit trust. Manufacture it.
+
+Code review, CI, ownership - all ran at **human speed**. Agents don't.
+
+**Don't trust the agent. Trust the system around it** - enough to close your laptop while the work keeps running.
+
+Note: This is the hinge of the talk. For decades we inherited trust from people and process - a reviewer, a CI job, a named owner - and every bit of it ran at human speed. Agents run faster than any of it, so you can't inherit that trust anymore. You manufacture it. And notice the goal was never to trust the agent - it's to trust the system around it enough that you can close your laptop and the work keeps going. Everything after this slide is how you manufacture that trust.
 
 ---
 
@@ -272,11 +289,11 @@ Note: This is the slide for the ops folks in the room. The same gate serves two 
 
 <!-- layout: section -->
 
-# Move 4 - push the fix left
+# Move 4 - govern the runtime, not just the artifact
 
-Stop cleaning up after the agent. Govern where it *works* - and what it can *reach*.
+Everything so far governed the **artifact**. Now govern where the agent **runs** and what it can **reach** - execution, tool calls, credentials.
 
-Note: Everything so far catches the bad artifact at the gate. Good - but that's still cleaning up after the agent ships. Move four pushes the fix left, into two places: the environment the agent builds in, and the tools it can call.
+Note: Reframe. Everything so far governs the artifact - the thing the agent built. This move governs the runtime: where the agent executes, and the tools and credentials it can reach. It's the same shift the industry is converging on - put a control point beneath the agent rather than hoping for a smarter agent. We do it in two places: the sandbox the agent builds in, and the gateway in front of the tools it calls.
 
 ---
 
