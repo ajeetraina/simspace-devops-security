@@ -45,12 +45,9 @@ Note: Here's the road. We open with the evidence layer - SBOM, VEX, SLSA. Then D
 
 ---
 
-<!--
-layout: image
-image: assets/horror-title.png
-alt: "Docker presents: AI Coding Agent Horror Stories"
-chrome: false
--->
+<!-- chrome: false -->
+
+<img src="assets/horror-title.png" alt="Docker presents: AI Coding Agent Horror Stories" width="1600" height="900" style="position:absolute;inset:0;width:100%;height:100%;object-fit:contain;background:#0b120a" />
 
 Note: AI coding agent horror stories. Not hypotheticals - the shape of these is happening in real repos right now. Here are four, quickly. Every one is something the rest of this talk prevents.
 
