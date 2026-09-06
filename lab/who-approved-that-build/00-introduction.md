@@ -6,9 +6,10 @@
 
 That is the question this lab answers - not *can* an agent do this (it can), but **how do
 you govern it** so an agent-driven build clears the same bar a human's would. You'll do it
-in four moves: **prove** what's in the artifact and where it came from, give the agent a
+in five moves: **prove** what's in the artifact and where it came from, give the agent a
 **governed baseline** to start from, and turn CI into a **signing + policy gate** that fails
-closed - then push the whole fix left, into the agent's own build environment.
+closed - then push the whole fix left, into the agent's own build environment, and finally
+**operate** the running service with a governed, read-only observability agent.
 
 ## Start at the finish line
 

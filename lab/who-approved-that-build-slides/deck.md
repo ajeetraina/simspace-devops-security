@@ -547,8 +547,8 @@ Note: Everything up to here got a provable artifact through the gate. But a buil
     <text x="870" y="350" font-size="22" fill="#ffffff">golden templates</text>
     <rect x="1210" y="230" width="290" height="150" rx="16" fill="#0E2A1E" stroke="#34D399" stroke-width="2"/>
     <text x="1240" y="278" font-size="24" font-weight="800" fill="#34D399">OBSERVE</text>
-    <text x="1240" y="320" font-size="22" fill="#ffffff">audit + metrics,</text>
-    <text x="1240" y="350" font-size="22" fill="#ffffff">policy in effect</text>
+    <text x="1240" y="320" font-size="22" fill="#ffffff">logs · metrics · traces</text>
+    <text x="1240" y="350" font-size="22" fill="#ffffff">via Grafana MCP</text>
   </g>
   <g stroke="#3A4A6E" stroke-width="4" fill="#3A4A6E">
     <line x1="432" y1="305" x2="466" y2="305"/><polygon points="466,297 482,305 466,313"/>
@@ -570,29 +570,59 @@ Note: This is Operational AI in one frame - the same discipline, now at run time
 
 ---
 
-# Day-2 governance: the incident becomes a query
+<!-- chrome: false -->
 
-```console
-$ # the NEXT 2:47 AM commit lands. This time you can ask:
-$ docker scout attest get --predicate-type slsa --verify \
-    catalog-service@sha256:9f2c…
-    ✓ signature verified (keyless, Fulcio root)
-  builder: docker.com/dhi/builder
-  source:  git+github.com/acme/catalog@<commit-sha>
+<svg viewBox="0 0 1600 900" width="100%" height="100%" role="img" aria-label="Agents at ops time - the counterpart to DHI MCP" style="position:absolute;inset:0;width:100%;height:100%;object-fit:contain;background:#0B1533" font-family="Arial, Helvetica, sans-serif">
+  <rect width="1600" height="900" fill="#0B1533"/>
+  <text x="100" y="104" font-size="50" font-weight="800" fill="#ffffff">Agents at ops time - <tspan fill="#1E9BF0">the counterpart to DHI MCP</tspan></text>
+  <text x="100" y="150" font-size="25" fill="#9AA6C2">DHI MCP is a developer tool - it governs the build. Observability MCP governs the fire drill.</text>
+  <rect x="100" y="196" width="640" height="336" rx="18" fill="#0E2A1E" stroke="#34D399" stroke-width="2"/>
+  <text x="132" y="244" font-size="22" font-weight="800" fill="#34D399" letter-spacing="2">DEV TIME · PREVENT</text>
+  <text x="132" y="300" font-size="30" font-weight="700" fill="#ffffff">Agent + DHI MCP</text>
+  <text x="132" y="350" font-size="23" fill="#C8D3F5">"what's the hardened base for Node,</text>
+  <text x="132" y="382" font-size="23" fill="#C8D3F5">and what CVEs does it carry?"</text>
+  <text x="132" y="448" font-size="22" fill="#9AA6C2">Queries the trusted catalog before it</text>
+  <text x="132" y="480" font-size="22" fill="#9AA6C2">writes a single FROM line.</text>
+  <rect x="860" y="196" width="640" height="336" rx="18" fill="#12325E" stroke="#1E9BF0" stroke-width="2"/>
+  <text x="892" y="244" font-size="22" font-weight="800" fill="#1E9BF0" letter-spacing="2">OPS TIME · DIAGNOSE</text>
+  <text x="892" y="300" font-size="30" font-weight="700" fill="#ffffff">Agent + Grafana MCP</text>
+  <text x="892" y="344" font-size="21" fill="#7FB2E6">logs (Loki) · metrics (Prometheus) · traces (Tempo)</text>
+  <text x="892" y="402" font-size="23" fill="#C8D3F5">"why did catalog-service p99 spike</text>
+  <text x="892" y="434" font-size="23" fill="#C8D3F5">after the 02:47 deploy? what's in the logs?"</text>
+  <text x="892" y="500" font-size="22" fill="#9AA6C2">Reads the running system to find the cause.</text>
+  <rect x="100" y="566" width="1400" height="238" rx="18" fill="#0E1B3A" stroke="#1E9BF0" stroke-width="2"/>
+  <text x="132" y="612" font-size="22" font-weight="800" fill="#1E9BF0" letter-spacing="2">SAME GOVERNANCE, BOTH ENDS</text>
+  <g font-size="24" fill="#ffffff">
+    <text x="132" y="662">· sandboxed · one MCP gateway · Cedar scoped to <tspan font-weight="700">READ-ONLY</tspan> query tools · every call audited</text>
+    <text x="132" y="706">· the agent can <tspan font-weight="700">diagnose</tspan> - it cannot mutate a dashboard, silence an alert, or deploy</text>
+    <text x="132" y="754">· to <tspan font-weight="700" fill="#F0A84A">act</tspan> on the fix it goes back through the <tspan font-weight="700">CI gate</tspan> - the same bar as any change</text>
+  </g>
+</svg>
 
-$ sbx audit log --since 02:00 --actor svc-build-agent
-  02:47  invokeTool  dhi_get_image_cves          allow
-  02:47  network     registry.npmjs.org          allow
-  02:47  network     http-intake.datadoghq.com   DENY
-```
-
-Policy is authored once in **Docker Hub AI Governance**, syncs at `docker login`, and **fails closed**. Every decision is written to a JSONL audit log.
-
-Note: And here's the payoff - the callback to where we opened. When the next 2:47 AM commit lands, you don't run a forensics project. You ask. docker scout attest verifies the signature and hands you the builder and the exact source commit - provenance, not a guess. And the sandbox audit log shows every action the agent took: which tools it invoked, which hosts it reached, and - critically - what the policy blocked, like that datadog exfil attempt, denied and recorded. The controls run in production because policy is authored once in Docker Hub AI Governance, synced at docker login, fails closed, and can't be overridden locally. Who approved that build? Now it's a query against attestations and an audit log - not a shrug.
+Note: DHI MCP was a developer tool - it governs the build, before FROM. Its ops-time counterpart is observability MCP. When catalog-service goes slow at 3am, you don't want a human grepping logs - you want an agent that can read the logs, metrics and traces and tell you the cause. Here that's Grafana - Loki for logs, Prometheus for metrics, Tempo for traces - wired in as a kit. But it's the exact same boundary as the build agent: sandboxed, through the one gateway, Cedar-scoped to read-only query tools, every call audited. It can diagnose - it cannot silence an alert or deploy a change. And when it proposes a fix, that fix goes back through the same CI gate from Move 3. Diagnose freely; act only through the gate.
 
 ---
 
-<!-- chrome: false -->
+# Day-2 governance: audit the connection, not the payload
+
+```console
+$ # 3:00 AM: catalog-service is slow. The ops agent already looked - now you audit it:
+$ sbx audit log --since 02:00
+  02:47  invokeTool  grafana__query_prometheus    allow
+  02:51  invokeTool  grafana__query_loki_logs     allow
+  02:52  invokeTool  grafana__create_incident     DENY  (policy: read-only)
+  02:53  network     paste.example.com            DENY  (not in allowlist)
+
+$ # and provenance for the fix it proposed - the same query as the 02:47 build:
+$ docker scout attest get --predicate-type slsa --verify catalog-service@sha256:9f2c…
+  ✓ signed · builder docker.com/dhi/builder · source git+github.com/acme/catalog@<sha>
+```
+
+**The audit shows the _connection_, not the _payload_** - that `query_loki_logs` was *called and allowed*, never the log lines it returned. It's a governance/forensics trail (who reached what, allowed or denied), **not** DLP. Policy is authored once in **Docker Hub AI Governance**, synced at `docker login`, and **fails closed**.
+
+Note: The payoff, and the callback to where we opened. When the next 2:47 AM happens, you don't run a forensics project - you ask. The sbx audit log shows every action the ops agent took: the Grafana queries it ran, allowed; the create_incident it tried, denied by the read-only policy; the paste-site it reached for, denied by the allowlist. And docker scout attest verifies the fix's provenance - builder and source commit, signed. But be honest about what the audit is: it records the connection, not the payload - that query_loki_logs was called and allowed, not which log lines came back. It answers "what did the agent reach, and was it allowed?" - a governance trail, not content inspection or DLP. For request and response bodies you need app-level observability, a different layer. Same as always: policy authored once in Docker Hub, synced at login, fails closed, can't be overridden locally. Who approved that build - and who touched it at 3am? Now both are a query.
+
+---
 
 <!-- chrome: false -->
 

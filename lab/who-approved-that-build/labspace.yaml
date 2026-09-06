@@ -5,7 +5,9 @@ description: >
   next ninety minutes you govern that build: prove what is in it and where it
   came from (SBOM/VEX/SLSA), give the agent a hardened baseline to start from,
   and turn CI into a signing + policy gate that holds agents to the same bar as
-  humans.
+  humans. Then operate it: an agent troubleshoots a live latency regression through
+  a governed, read-only Grafana observability kit - and the fix goes back through
+  the gate.
 
 # Landing-page card. Only shown when this repo has two or more labs (here: the
 # slides deck is the sibling). `order: 2` puts the hands-on lab after the deck.
@@ -13,8 +15,8 @@ description: >
 catalog:
   icon: shield_lock
   order: 2
-  tags: ["ai governance", "supply chain", "sbom", "dhi", "signing"]
-  estimatedMinutes: 90
+  tags: ["ai governance", "supply chain", "sbom", "dhi", "signing", "operations", "grafana"]
+  estimatedMinutes: 100
 
 # Command behaviour lives in simulator.yaml (relative to this file).
 simulator: simulator.yaml
@@ -194,8 +196,10 @@ sections:
     contentPath: 05-ci-policy.md
   - title: "Move 4 - Govern the Agent Itself"
     contentPath: 06-agent-sandbox.md
+  - title: "Move 5 - Operate It (Grafana)"
+    contentPath: 07-operations.md
   - title: Conclusion
-    contentPath: 07-conclusion.md
+    contentPath: 08-conclusion.md
 
 # $$name$$ in markdown is replaced with these values. `org` is overridden by the
 # :variableDefinition prompt in Setup.

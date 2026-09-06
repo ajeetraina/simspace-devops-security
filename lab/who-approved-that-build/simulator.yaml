@@ -26,6 +26,11 @@ state:
     running: false
   sandbox:
     mcpAdded: false
+  # Lab 5 - operations. grafanaUp: the kit's Grafana stack is up on the host.
+  # diagnosed: the ops agent found the p99 root cause from Grafana (read-only).
+  ops:
+    grafanaUp: false
+    diagnosed: false
 
 settings:
   pace:
@@ -159,6 +164,125 @@ scenarios:
         - "remote: Compressing objects: 100% (94/94), done."
         - { text: "Receiving objects: 100% (142/142), 48.71 KiB | 4.87 MiB/s, done.", delay: clone }
         - "Resolving deltas: 100% (38/38), done."
+
+  # ---------------------------------------------------------------------------
+  # Section 8 - Lab 5: operate the governed service (Grafana observability kit)
+  # Placed high so the ops-specific matchers win over the generic ones below:
+  # compose-up-grafana must precede compose-up-app; `claude mcp list` must
+  # precede the bare `claude` usage scenario. Real kit:
+  # github.com/ajeetraina/sbx-kits-grafana (official mcp-grafana, read-only).
+  # ---------------------------------------------------------------------------
+  # Bring up the kit's bundled Grafana + Prometheus on the host. The -f value
+  # distinguishes this from the app (Lab 2) and MCP (Lab 6) compose bring-ups.
+  - id: compose-up-grafana
+    when:
+      command: [docker, compose]
+      args:
+        -f: { oneOf: [compose/docker-compose.yml] }
+        0: { oneOf: [up] }
+    then:
+      state: { ops.grafanaUp: true }
+      output:
+        - { text: " ✔ Network sbx-grafana_default   Created", delay: short }
+        - { text: " ✔ Container prometheus           Started", delay: pull }
+        - { text: " ✔ Container grafana              Started", delay: pull }
+        - "Grafana on http://localhost:3000 (anonymous admin) · Prometheus datasource provisioned."
+        - "The sandbox reaches it at host.docker.internal:3000 - no account, no token."
+
+  # The ops agent: same sbx boundary as Lab 4, wired with the Grafana kit instead
+  # of the DHI MCP. Read-only. Requires -p, so it precedes the bare session below.
+  - id: ops-agent-diagnose
+    when:
+      command: [sbx, run]
+      args: { --kit: { any: true }, -p: { any: true } }
+    then:
+      state: { ops.diagnosed: true }
+      files:
+        - create: db/migrations/002_products_sku_index.sql
+          content: |
+            -- Proposed by the ops agent after a Grafana-driven diagnosis.
+            -- The 02:47 dependency bump dropped the index behind product lookups;
+            -- under load that became a full table scan. Restore it.
+            CREATE INDEX CONCURRENTLY IF NOT EXISTS idx_products_sku
+              ON products (sku);
+      output:
+        - "● Loading the Grafana kit (mcp-grafana, read-only) into the sandbox..."
+        - { text: "  ✓ mcp-grafana v1.0.0 · GRAFANA_URL=http://host.docker.internal:3000", delay: short }
+        - ""
+        - "● Incident: catalog-service p99 40ms → 2.3s since 02:47. I'll ask Grafana - I won't change anything."
+        - { text: "  → grafana search_dashboards { query: \"catalog-service\" }", delay: short }
+        - { text: "    ✓ \"catalog-service / overview\"", delay: short }
+        - { text: "  → grafana query_prometheus { histogram_quantile(0.99, http_request_duration_seconds) }", delay: scan }
+        - { text: "    ✓ p99 = 2.3s · step change at 02:47, flat before", delay: short }
+        - { text: "  → grafana query_loki_logs { {service=\"catalog-service\"} |= \"slow\" }", delay: scan }
+        - { text: "    ✓ repeated: \"slow query 2100ms: SELECT * FROM products WHERE sku = $1\"", delay: short }
+        - { text: "  → grafana query_prometheus { rate(pg_stat_user_tables_seq_scan{table=\"products\"}[5m]) }", delay: scan }
+        - { text: "    ✓ sequential scans on products up ~400x since 02:47", delay: short }
+        - ""
+        - "● Root cause: the 02:47 dependency bump dropped the index behind product lookups."
+        - "  Under load every sku lookup is now a full table scan. Metrics, logs and traces agree."
+        - "● Proposed fix: restore the index. Written to db/migrations/002_products_sku_index.sql."
+        - ""
+        - { text: "  ┌── what the ops agent did ──────────────────────────", delay: short }
+        - "  │"
+        - "  │   read      metrics · logs · traces (Grafana, read-only)"
+        - "  │   found     missing index on products.sku → full scan"
+        - "  │   proposed  db/migrations/002_products_sku_index.sql"
+        - "  │   changed   NOTHING in production - it cannot"
+        - "  │"
+        - "  │   To ship this fix it takes the same road as any change:"
+        - "  │   commit, push, and let the Move 3 gate decide."
+        - { text: "  └─────────────────────────────────────────────────────", delay: short }
+        - ""
+        - "It found the cause without touching prod. Review db/migrations/, then push it through the gate."
+
+  # Same kit, no prompt: just open the session.
+  - id: ops-agent-run
+    when:
+      command: [sbx, run]
+      args: { --kit: { any: true } }
+    then:
+      output:
+        - { text: "Loading kit sbx-grafana-kits (mcp-grafana, read-only)...", delay: short }
+        - "claude ready in the sandbox. The Grafana MCP is registered. Type /mcp or ask a question."
+
+  # Verify the kit registered the server with the agent (kit README step 5).
+  - id: claude-mcp-list
+    when:
+      command: [claude, mcp, list]
+    then:
+      output:
+        - "grafana: /home/agent/.local/bin/mcp-grafana  -  ✓ connected"
+
+  # End-to-end proof the sandbox can reach Grafana (kit README step 4d).
+  - id: grafana-report
+    when:
+      command: [python3]
+      args: { 0: { oneOf: ["~/runbooks/grafana_report.py", "/home/agent/runbooks/grafana_report.py"] } }
+    then:
+      output:
+        - "Grafana health: ok (version 11.x)"
+        - "Datasources:    Prometheus (default)"
+        - "Dashboards:     catalog-service / overview"
+        - "  → reached http://host.docker.internal:3000 through the sbx proxy."
+
+  # The honest audit: connection-level, not payload.
+  - id: sbx-audit-log
+    when:
+      command: [sbx, audit, log]
+    then:
+      output:
+        - "TIME   ACTOR       KIND        TARGET                        DECISION"
+        - "03:01  ops-agent   invokeTool  grafana__search_dashboards    allow"
+        - "03:01  ops-agent   invokeTool  grafana__query_prometheus     allow"
+        - "03:02  ops-agent   invokeTool  grafana__query_loki_logs      allow"
+        - "03:02  ops-agent   invokeTool  grafana__create_incident      DENY  (policy: read-only)"
+        - "03:02  ops-agent   network     host.docker.internal:3000     allow"
+        - "03:03  ops-agent   network     paste.example.com             DENY  (not in allowlist)"
+        - ""
+        - "note: the audit records the CONNECTION, not the PAYLOAD. It proves"
+        - "      grafana__query_loki_logs was called and allowed - not the log"
+        - "      lines it returned. A governance + forensics trail, not DLP."
 
   # ---------------------------------------------------------------------------
   # Section 2 - the agent containerises the app (one-shot prompt)

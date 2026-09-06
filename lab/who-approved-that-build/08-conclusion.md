@@ -41,6 +41,7 @@ difference is that every stage on that road is now one you can prove.
 | Lab 2 | Hardened base | All three questions, inherited from the base |
 | Lab 3 | + build attestations, + a gate | That it stays true |
 | Lab 4 | + a sandbox and the DHI MCP server | The agent starts from trusted inputs |
+| Lab 5 | + a read-only Grafana ops kit | Why it misbehaves at run time - with the fix routed back through the gate |
 
 Nothing about the application changed. The source is identical. What changed is how much
 of it you can account for.
@@ -70,6 +71,7 @@ that passes on the first attempt.
 3. **Start from a trusted base** - hardened images *(BASE)*
 4. **Enforce at the border** - a pipeline gate that fails closed *(the dev-to-prod boundary)*
 5. **Box the agent at both ends** - the microVM it builds in, and the `read_only` runtime it ships to. Least privilege at authoring time *and* at runtime.
+6. **Operate it the same way** - give the ops agent a read-only observability kit (Grafana) to diagnose live incidents, and route every fix it proposes back through the gate. Diagnose freely; act only through the border.
 
 ---
 
