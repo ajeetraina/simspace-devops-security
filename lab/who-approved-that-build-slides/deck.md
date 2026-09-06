@@ -107,13 +107,37 @@ Note: The supply chain didn't change. The review step did. Every row where trust
 
 ---
 
-<!-- layout: section -->
+<!-- chrome: false -->
 
-# You can't inherit trust. Manufacture it.
-
-Code review, CI, ownership - all ran at **human speed**. Agents don't.
-
-**Don't trust the agent. Trust the system around it** - enough to close your laptop while the work keeps running.
+<svg viewBox="0 0 1600 900" width="100%" height="100%" role="img" aria-label="You can't inherit trust, you manufacture it" style="position:absolute;inset:0;width:100%;height:100%;object-fit:contain;background:#0B1533" font-family="Arial, Helvetica, sans-serif">
+  <rect width="1600" height="900" fill="#0B1533"/>
+  <text x="100" y="120" font-size="56" font-weight="800" fill="#ffffff">You can't inherit trust. <tspan fill="#1E9BF0">Manufacture it.</tspan></text>
+  <rect x="100" y="210" width="600" height="290" rx="18" fill="#12203F" stroke="#26365C" stroke-width="2"/>
+  <text x="132" y="262" font-size="22" font-weight="800" fill="#9AA6C2" letter-spacing="3">INHERITED TRUST</text>
+  <text x="132" y="322" font-size="32" font-weight="700" fill="#ffffff">Code review · CI · ownership</text>
+  <text x="132" y="364" font-size="24" fill="#9AA6C2">A reviewer. A pipeline. A named owner.</text>
+  <rect x="132" y="410" width="288" height="60" rx="30" fill="#0B1533" stroke="#5A4A2A" stroke-width="2"/>
+  <circle cx="166" cy="440" r="8" fill="#F0A84A"/>
+  <text x="188" y="440" font-size="25" font-weight="700" fill="#F0A84A" dominant-baseline="central">runs at HUMAN speed</text>
+  <rect x="900" y="210" width="600" height="290" rx="18" fill="#12203F" stroke="#26365C" stroke-width="2"/>
+  <text x="932" y="262" font-size="22" font-weight="800" fill="#9AA6C2" letter-spacing="3">AGENTS</text>
+  <text x="932" y="322" font-size="32" font-weight="700" fill="#ffffff">Pull deps · write Dockerfiles</text>
+  <text x="932" y="362" font-size="32" font-weight="700" fill="#ffffff">edit infra · trigger builds</text>
+  <rect x="932" y="410" width="300" height="60" rx="30" fill="#0B1533" stroke="#5A2A2A" stroke-width="2"/>
+  <circle cx="966" cy="440" r="8" fill="#F0533F"/>
+  <text x="988" y="440" font-size="25" font-weight="700" fill="#F0533F" dominant-baseline="central">run at MACHINE speed</text>
+  <circle cx="800" cy="355" r="46" fill="#1E9BF0"/>
+  <text x="800" y="355" text-anchor="middle" dominant-baseline="central" font-size="30" font-weight="800" fill="#0B1533">vs</text>
+  <rect x="100" y="558" width="1400" height="152" rx="18" fill="#0E1B3A" stroke="#1E9BF0" stroke-width="2"/>
+  <text x="132" y="602" font-size="22" font-weight="800" fill="#1E9BF0" letter-spacing="2">MANUFACTURE IT</text>
+  <g font-size="25" font-weight="700" fill="#ffffff">
+    <rect x="132" y="622" width="316" height="62" rx="12" fill="#12325E"/><text x="290" y="653" text-anchor="middle" dominant-baseline="central">Evidence</text>
+    <rect x="472" y="622" width="316" height="62" rx="12" fill="#12325E"/><text x="630" y="653" text-anchor="middle" dominant-baseline="central">Hardened base</text>
+    <rect x="812" y="622" width="316" height="62" rx="12" fill="#12325E"/><text x="970" y="653" text-anchor="middle" dominant-baseline="central">Sign + gate</text>
+    <rect x="1152" y="622" width="316" height="62" rx="12" fill="#12325E"/><text x="1310" y="653" text-anchor="middle" dominant-baseline="central">Runtime boundary</text>
+  </g>
+  <text x="100" y="788" font-size="30" font-weight="700" fill="#ffffff">Don't trust the agent. <tspan fill="#34D399" font-weight="800">Trust the system</tspan> - enough to close your laptop while the work runs.</text>
+</svg>
 
 Note: This is the hinge of the talk. For decades we inherited trust from people and process - a reviewer, a CI job, a named owner - and every bit of it ran at human speed. Agents run faster than any of it, so you can't inherit that trust anymore. You manufacture it. And notice the goal was never to trust the agent - it's to trust the system around it enough that you can close your laptop and the work keeps going. Everything after this slide is how you manufacture that trust.
 
@@ -287,11 +311,37 @@ Note: This is the slide for the ops folks in the room. The same gate serves two 
 
 ---
 
-<!-- layout: section -->
+<!-- chrome: false -->
 
-# Move 4 - govern the runtime, not just the artifact
-
-Everything so far governed the **artifact**. Now govern where the agent **runs** and what it can **reach** - execution, tool calls, credentials.
+<svg viewBox="0 0 1600 900" width="100%" height="100%" role="img" aria-label="Govern the runtime: one boundary around the agent" style="position:absolute;inset:0;width:100%;height:100%;object-fit:contain;background:#0B1533" font-family="Arial, Helvetica, sans-serif">
+  <rect width="1600" height="900" fill="#0B1533"/>
+  <text x="100" y="110" font-size="52" font-weight="800" fill="#ffffff">Move 4 - govern the <tspan fill="#1E9BF0">runtime</tspan>, not just the artifact</text>
+  <text x="100" y="162" font-size="26" fill="#9AA6C2">One boundary around the agent: execution, tool calls, credentials.</text>
+  <rect x="70" y="380" width="230" height="180" rx="14" fill="#12203F" stroke="#5A2A2A" stroke-width="2"/>
+  <text x="102" y="420" font-size="20" font-weight="800" fill="#F0533F" letter-spacing="2">UNTRUSTED IN</text>
+  <text x="102" y="460" font-size="23" fill="#ffffff">tickets · web</text>
+  <text x="102" y="492" font-size="23" fill="#ffffff">code · docs</text>
+  <text x="102" y="524" font-size="23" fill="#ffffff">tool output</text>
+  <rect x="360" y="230" width="880" height="470" rx="28" fill="#0E1B3A" stroke="#1E9BF0" stroke-width="3" stroke-dasharray="11 8"/>
+  <text x="400" y="284" font-size="24" font-weight="800" fill="#1E9BF0" letter-spacing="3">ONE RUNTIME BOUNDARY</text>
+  <rect x="400" y="312" width="800" height="52" rx="12" fill="#12325E"/>
+  <text x="424" y="338" font-size="23" font-weight="700" fill="#ffffff" dominant-baseline="central">Sandbox (microVM): isolated execution · host mounted read-only</text>
+  <rect x="560" y="400" width="480" height="150" rx="16" fill="#173a6b"/>
+  <text x="800" y="446" text-anchor="middle" font-size="30" font-weight="800" fill="#ffffff">THE AGENT</text>
+  <text x="800" y="490" text-anchor="middle" font-size="21" fill="#C8D3F5">reads untrusted input,</text>
+  <text x="800" y="518" text-anchor="middle" font-size="21" fill="#C8D3F5">acts with real credentials</text>
+  <rect x="400" y="586" width="800" height="80" rx="12" fill="#12325E"/>
+  <text x="424" y="616" font-size="23" font-weight="700" fill="#ffffff" dominant-baseline="central">MCP Gateway: signature-verified tools · scoped secrets</text>
+  <text x="424" y="646" font-size="21" fill="#9AA6C2" dominant-baseline="central">cap_drop ALL · read_only rootfs · refuse anything unsigned</text>
+  <rect x="1300" y="380" width="230" height="180" rx="14" fill="#0E2A1E" stroke="#34D399" stroke-width="2"/>
+  <text x="1332" y="420" font-size="20" font-weight="800" fill="#34D399" letter-spacing="2">GOVERNED OUT</text>
+  <text x="1332" y="462" font-size="23" fill="#ffffff">build · push</text>
+  <text x="1332" y="494" font-size="23" fill="#ffffff">deploy</text>
+  <text x="1332" y="526" font-size="20" fill="#9AA6C2">only what</text>
+  <text x="1332" y="550" font-size="20" fill="#9AA6C2">policy allows</text>
+  <g stroke="#5B8CFF" stroke-width="4" fill="#5B8CFF"><line x1="300" y1="470" x2="352" y2="470"/><polygon points="352,462 368,470 352,478"/></g>
+  <g stroke="#34D399" stroke-width="4" fill="#34D399"><line x1="1240" y1="470" x2="1292" y2="470"/><polygon points="1292,462 1308,470 1292,478"/></g>
+</svg>
 
 Note: Reframe. Everything so far governs the artifact - the thing the agent built. This move governs the runtime: where the agent executes, and the tools and credentials it can reach. It's the same shift the industry is converging on - put a control point beneath the agent rather than hoping for a smarter agent. We do it in two places: the sandbox the agent builds in, and the gateway in front of the tools it calls.
 
@@ -347,21 +397,53 @@ Note: This is the simulator from the hands-on lab - the exact commands you just 
 
 ---
 
-<!-- layout: stats -->
+<!-- chrome: false -->
 
-# One frame
-
-:::stat{value="Prove"}
-SBOM · VEX · SLSA - evidence on every agent change
-:::
-
-:::stat{value="Default"}
-Hardened base - good by default, at machine scale
-:::
-
-:::stat{value="Enforce"}
-Sign + policy in CI - fails closed, one bar for all
-:::
+<svg viewBox="0 0 1600 900" width="100%" height="100%" role="img" aria-label="The finish line: from an unapproved build to a governed one" style="position:absolute;inset:0;width:100%;height:100%;object-fit:contain;background:#0B1533" font-family="Arial, Helvetica, sans-serif">
+  <rect width="1600" height="900" fill="#0B1533"/>
+  <text x="100" y="120" font-size="56" font-weight="800" fill="#ffffff">One frame</text>
+  <text x="100" y="172" font-size="26" fill="#9AA6C2">From the build nobody approved to one you can prove.</text>
+  <rect x="70" y="330" width="250" height="250" rx="16" fill="#2A1215" stroke="#F0533F" stroke-width="2"/>
+  <text x="100" y="376" font-size="22" font-weight="800" fill="#F0533F" letter-spacing="2">02:47 BUILD</text>
+  <text x="100" y="424" font-size="24" fill="#ffffff">FROM node:20</text>
+  <text x="100" y="460" font-size="24" fill="#ffffff">431 packages</text>
+  <text x="100" y="496" font-size="24" fill="#ffffff">runs as root</text>
+  <text x="100" y="532" font-size="24" fill="#ffffff">unsigned</text>
+  <text x="100" y="566" font-size="20" font-weight="700" fill="#F0533F">nothing you can prove</text>
+  <g>
+    <rect x="368" y="330" width="196" height="250" rx="14" fill="#12203F" stroke="#26365C" stroke-width="2"/>
+    <text x="466" y="378" text-anchor="middle" font-size="24" font-weight="800" fill="#1E9BF0">PROVE</text>
+    <text x="466" y="448" text-anchor="middle" font-size="21" fill="#ffffff">SBOM</text>
+    <text x="466" y="482" text-anchor="middle" font-size="21" fill="#ffffff">VEX</text>
+    <text x="466" y="516" text-anchor="middle" font-size="21" fill="#ffffff">SLSA</text>
+    <rect x="596" y="330" width="196" height="250" rx="14" fill="#12203F" stroke="#26365C" stroke-width="2"/>
+    <text x="694" y="378" text-anchor="middle" font-size="24" font-weight="800" fill="#1E9BF0">DEFAULT</text>
+    <text x="694" y="456" text-anchor="middle" font-size="21" fill="#ffffff">Hardened</text>
+    <text x="694" y="490" text-anchor="middle" font-size="21" fill="#ffffff">base (DHI)</text>
+    <rect x="824" y="330" width="196" height="250" rx="14" fill="#12203F" stroke="#26365C" stroke-width="2"/>
+    <text x="922" y="378" text-anchor="middle" font-size="24" font-weight="800" fill="#1E9BF0">ENFORCE</text>
+    <text x="922" y="456" text-anchor="middle" font-size="21" fill="#ffffff">Sign +</text>
+    <text x="922" y="490" text-anchor="middle" font-size="21" fill="#ffffff">policy gate</text>
+    <rect x="1052" y="330" width="196" height="250" rx="14" fill="#12203F" stroke="#26365C" stroke-width="2"/>
+    <text x="1150" y="378" text-anchor="middle" font-size="24" font-weight="800" fill="#1E9BF0">CONTAIN</text>
+    <text x="1150" y="456" text-anchor="middle" font-size="21" fill="#ffffff">Runtime</text>
+    <text x="1150" y="490" text-anchor="middle" font-size="21" fill="#ffffff">boundary</text>
+  </g>
+  <rect x="1296" y="330" width="234" height="250" rx="16" fill="#0E2A1E" stroke="#34D399" stroke-width="2"/>
+  <text x="1413" y="376" text-anchor="middle" font-size="22" font-weight="800" fill="#34D399" letter-spacing="1">SHIPPED</text>
+  <text x="1413" y="440" text-anchor="middle" font-size="22" fill="#ffffff">signed</text>
+  <text x="1413" y="474" text-anchor="middle" font-size="22" fill="#ffffff">attested</text>
+  <text x="1413" y="508" text-anchor="middle" font-size="22" fill="#ffffff">policy-gated</text>
+  <text x="1413" y="556" text-anchor="middle" font-size="19" font-weight="700" fill="#34D399">close your laptop</text>
+  <g stroke="#3A4A6E" stroke-width="4" fill="#3A4A6E">
+    <line x1="324" y1="455" x2="360" y2="455"/><polygon points="360,447 376,455 360,463"/>
+    <line x1="792" y1="455" x2="816" y2="455"/><polygon points="816,447 832,455 816,463"/>
+    <line x1="1020" y1="455" x2="1044" y2="455"/><polygon points="1044,447 1060,455 1044,463"/>
+  </g>
+  <g stroke="#34D399" stroke-width="4" fill="#34D399"><line x1="1252" y1="455" x2="1288" y2="455"/><polygon points="1288,447 1304,455 1288,463"/></g>
+  <text x="100" y="700" font-size="30" font-weight="700" fill="#ffffff">Prove · Default · Enforce · Contain - <tspan fill="#1E9BF0">all in the pipeline the change already runs through.</tspan></text>
+  <text x="100" y="748" font-size="24" fill="#9AA6C2">One bar for humans and agents. Fails closed.</text>
+</svg>
 
 Note: Three moves, one model. Prove, default, enforce. None of them slow the agent down - they run in the pipeline the change already goes through. That's the goal: keep the agents fast, keep yourself in control. Those aren't in tension.
 
