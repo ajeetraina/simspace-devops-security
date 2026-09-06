@@ -9,7 +9,7 @@ byline: "Ajeet Singh Raina - Developer Advocate, Docker"
 
 ## Docker AI Governance for the Agentic DevOps Pipeline
 
-Note: The question in the title is a real one - who approved that build? By the end you'll have a way to answer it for your own pipeline. We spent a decade making delivery trustworthy - versioned pipelines, peer review, auditable deploys. Then we handed a set of keys to AI agents. Let's get into it.
+Note: The question in the title is a real one - who approved that build? By the end you'll have a way to answer it for your own pipeline. We spent a decade making delivery trustworthy - versioned pipelines, peer review, auditable deploys. Then we handed a set of keys to AI agents. Today we walk the whole road from development to production and make every segment of it provable - and we finish by packaging that boundary as a kit and operating it in prod. Let's get into it.
 
 ---
 
@@ -24,7 +24,7 @@ Developer Advocate at **Docker** · former Docker Captain
 
 Co-author of **_Operational AI with Docker_** (Packt) · runs the 17,000-member Docker Bengaluru meetup
 
-Note: Quick hello - I'm Ajeet Singh Raina, Developer Advocate at Docker. Twenty-plus years across system integration testing, consulting and developer relations; former Docker Captain, and I run the 17,000-member Docker Bengaluru meetup. I co-authored Operational AI with Docker with Harsh Manvar - on deploying, scaling and operating agentic AI services with Docker and Kubernetes, which is exactly the world this talk lives in. Treat this as hands-on and interrupt me with questions.
+Note: Quick hello - I'm Ajeet Singh Raina, Developer Advocate at Docker. Twenty-plus years across system integration testing, consulting and developer relations; former Docker Captain, and I run the 17,000-member Docker Bengaluru meetup. I co-authored Operational AI with Docker with Harsh Manvar - on deploying, scaling and operating agentic AI services with Docker and Kubernetes, which is exactly the world this talk lives in, right down to the operations section at the end. Treat this as hands-on and interrupt me with questions.
 
 ---
 
@@ -34,19 +34,27 @@ Note: Quick hello - I'm Ajeet Singh Raina, Developer Advocate at Docker. Twenty-
   <rect x="0" y="0" width="1600" height="900" fill="#ffffff"/>
   <text x="130" y="152" font-size="82" font-weight="800" fill="#0B1533">Agenda</text>
   <rect x="134" y="180" width="156" height="9" rx="4" fill="#1E9BF0"/>
-  <text x="134" y="246" font-size="27" fill="#5B6B8C">From an unapproved build to a governed one.</text>
+  <text x="134" y="246" font-size="27" fill="#5B6B8C">From an unapproved build to a governed one - then ship it and run it.</text>
   <text x="134" y="828" font-size="24" fill="#5B6B8C">Built for developers <tspan font-weight="800" fill="#0B1533">and</tspan> platform / SRE / ops.</text>
   <g>
     <g transform="translate(470,300)"><rect width="1010" height="82" rx="41" fill="#1E9BF0"/><circle cx="46" cy="41" r="33" fill="#ffffff"/><text x="46" y="41" text-anchor="middle" dominant-baseline="central" font-size="25" font-weight="800" fill="#1E9BF0">01</text><text x="102" y="41" dominant-baseline="central" font-size="30" font-weight="600" fill="#ffffff">The 02:47 AM incident</text></g>
-    <g transform="translate(470,392)"><rect width="1010" height="82" rx="41" fill="#1A82DA"/><circle cx="46" cy="41" r="33" fill="#ffffff"/><text x="46" y="41" text-anchor="middle" dominant-baseline="central" font-size="25" font-weight="800" fill="#1A82DA">02</text><text x="102" y="41" dominant-baseline="central" font-size="30" font-weight="600" fill="#ffffff">Evidence: SBOM · VEX · SLSA</text></g>
-    <g transform="translate(470,484)"><rect width="1010" height="82" rx="41" fill="#1668C0"/><circle cx="46" cy="41" r="33" fill="#ffffff"/><text x="46" y="41" text-anchor="middle" dominant-baseline="central" font-size="25" font-weight="800" fill="#1668C0">03</text><text x="102" y="41" dominant-baseline="central" font-size="30" font-weight="600" fill="#ffffff">Docker Hardened Images (DHI)</text></g>
-    <g transform="translate(470,576)"><rect width="1010" height="82" rx="41" fill="#114EA2"/><circle cx="46" cy="41" r="33" fill="#ffffff"/><text x="46" y="41" text-anchor="middle" dominant-baseline="central" font-size="25" font-weight="800" fill="#114EA2">04</text><text x="102" y="41" dominant-baseline="central" font-size="30" font-weight="600" fill="#ffffff">CI pipeline: sign + policy gate</text></g>
-    <g transform="translate(470,668)"><rect width="1010" height="82" rx="41" fill="#0D3B7E"/><circle cx="46" cy="41" r="33" fill="#ffffff"/><text x="46" y="41" text-anchor="middle" dominant-baseline="central" font-size="25" font-weight="800" fill="#0D3B7E">05</text><text x="102" y="41" dominant-baseline="central" font-size="30" font-weight="600" fill="#ffffff">Sandbox the agent's build</text></g>
-    <g transform="translate(470,760)"><rect width="1010" height="82" rx="41" fill="#0B1533"/><circle cx="46" cy="41" r="33" fill="#ffffff"/><text x="46" y="41" text-anchor="middle" dominant-baseline="central" font-size="25" font-weight="800" fill="#0B1533">06</text><text x="102" y="41" dominant-baseline="central" font-size="30" font-weight="600" fill="#ffffff">DHI MCP: hardened tools</text></g>
+    <g transform="translate(470,392)"><rect width="1010" height="82" rx="41" fill="#1A82DA"/><circle cx="46" cy="41" r="33" fill="#ffffff"/><text x="46" y="41" text-anchor="middle" dominant-baseline="central" font-size="25" font-weight="800" fill="#1A82DA">02</text><text x="102" y="41" dominant-baseline="central" font-size="30" font-weight="600" fill="#ffffff">Evidence · SBOM · VEX · SLSA</text></g>
+    <g transform="translate(470,484)"><rect width="1010" height="82" rx="41" fill="#1668C0"/><circle cx="46" cy="41" r="33" fill="#ffffff"/><text x="46" y="41" text-anchor="middle" dominant-baseline="central" font-size="25" font-weight="800" fill="#1668C0">03</text><text x="102" y="41" dominant-baseline="central" font-size="30" font-weight="600" fill="#ffffff">Baseline · Docker Hardened Images</text></g>
+    <g transform="translate(470,576)"><rect width="1010" height="82" rx="41" fill="#114EA2"/><circle cx="46" cy="41" r="33" fill="#ffffff"/><text x="46" y="41" text-anchor="middle" dominant-baseline="central" font-size="25" font-weight="800" fill="#114EA2">04</text><text x="102" y="41" dominant-baseline="central" font-size="30" font-weight="600" fill="#ffffff">Gate · CI sign + policy gate</text></g>
+    <g transform="translate(470,668)"><rect width="1010" height="82" rx="41" fill="#0D3B7E"/><circle cx="46" cy="41" r="33" fill="#ffffff"/><text x="46" y="41" text-anchor="middle" dominant-baseline="central" font-size="25" font-weight="800" fill="#0D3B7E">05</text><text x="102" y="41" dominant-baseline="central" font-size="30" font-weight="600" fill="#ffffff">Boundary · sandbox + MCP gateway</text></g>
+    <g transform="translate(470,760)"><rect width="1010" height="82" rx="41" fill="#0B1533"/><circle cx="46" cy="41" r="33" fill="#ffffff"/><text x="46" y="41" text-anchor="middle" dominant-baseline="central" font-size="25" font-weight="800" fill="#0B1533">06</text><text x="102" y="41" dominant-baseline="central" font-size="30" font-weight="600" fill="#ffffff">Make it yours · sbx kit + operate</text></g>
   </g>
 </svg>
 
-Note: Here's the road. We open with the evidence layer - SBOM, VEX, SLSA. Then Docker Hardened Images as a governed baseline. Then the CI pipeline that turns policy into a gate. Then we push the fix left - sandboxing the agent's build environment, and hardening the MCP tools it calls. And a note on audience: the first half feels like a developer talk, but the gate, the baseline and the audit trail are owned by platform, SRE and ops - I'll call out who owns what as we go. But first, the thing that makes all of this urgent - something that actually happened.
+Note: Here's the road, and it doubles as the four questions we'll keep coming back to. We open with the incident. Then Evidence - SBOM, VEX, SLSA. Then Baseline - Docker Hardened Images. Then the Gate - the CI pipeline that turns policy into a fail-closed boundary. Then the Boundary - sandboxing the agent and governing its tools at a gateway. And finally, the part that's new today: make it yours - package that boundary as an sbx kit, and operate the whole thing in production. A note on audience: the first half feels like a developer talk, but the gate, the baseline, the audit trail and the operations story are owned by platform, SRE and ops - I'll call out who owns what as we go. But first, the thing that makes all of this urgent - something that actually happened.
+
+---
+
+<!-- chrome: false -->
+
+<img src="assets/slide-access.webp" alt="Accessing the Workshop - https://agentic.dockerworkshop.com" width="1600" height="900" loading="eager" fetchpriority="high" decoding="async" style="position:absolute;inset:0;width:100%;height:100%;max-width:none;max-height:none;object-fit:fill" />
+
+Note: Everything today lives at one URL: agentic.dockerworkshop.com. That's your hands-on environment - the Simspace simulator, open all day, nothing to install. Bookmark it now, because you'll be typing into it shortly. But before we touch a keyboard, let me show you why we're all in this room - with something that actually happened.
 
 ---
 
@@ -103,7 +111,23 @@ A human used to stand at three decisions. Now an agent does - at machine speed, 
 | Dependencies **reviewed** in a PR | Packages resolved, no review |
 | CI runs config **a human wrote** | The agent wrote the Dockerfile |
 
-Note: The supply chain didn't change. The review step did. Every row where trust used to pass through a person now passes through an agent. And this scales with capability - the better the agent, the more it does unsupervised. The job isn't to stop agents. It's to govern them without killing the speed that made them worth adopting.
+Note: The supply chain didn't change. The review step did. Every row where trust used to pass through a person now passes through an agent. And this scales with capability - the better the agent, the more it does unsupervised. The job isn't to stop agents. It's to govern them without killing the speed that made them worth adopting. And if that feels like an edge case, it isn't - here are two that actually happened.
+
+---
+
+<!-- chrome: false -->
+
+<img src="assets/slide-horror-1.webp" alt="AI coding agent horror story: asked to clean up a project folder, an agent with root access runs rm -rf * and deletes .ssh, .aws, .env, logs and the production database" width="1600" height="900" loading="lazy" decoding="async" style="position:absolute;inset:0;width:100%;height:100%;max-width:none;max-height:none;object-fit:fill" />
+
+Note: Story one, from Docker's own write-up. Someone asked an agent to "clean up my project folder." The agent had root the whole time, ran rm -rf *, and took .ssh keys, .aws credentials, and the production database with it. The blast radius was the entire machine - because nothing scoped what the agent could reach. Source: docker.com/blog/ai-coding-agent-horror-stories-security-risks.
+
+---
+
+<!-- chrome: false -->
+
+<img src="assets/slide-horror-2.webp" alt="Claude Cowork horror story: asked to organize a desktop with 'temporary files only' permission, the agent runs rm -rf family_photos, bypasses the macOS Trash, and 15 years of photos are only saved by iCloud 30-day retention" width="1600" height="900" loading="lazy" decoding="async" style="position:absolute;inset:0;width:100%;height:100%;max-width:none;max-height:none;object-fit:fill" />
+
+Note: Story two. "Organize my wife's desktop" - permission was supposedly temporary Office files only. The agent ran rm -rf family_photos/, bypassed the macOS Trash, and 15 years of photos were gone. They got lucky - iCloud's 30-day retention still had a copy. Same story, different path, same damage - and luck is not a control. Source: docker.com/blog/coding-agent-horror-stories-the-rm-rf-incident.
 
 ---
 
@@ -139,153 +163,191 @@ Note: The supply chain didn't change. The review step did. Every row where trust
   <text x="100" y="788" font-size="30" font-weight="700" fill="#ffffff">Don't trust the agent. <tspan fill="#34D399" font-weight="800">Trust the system</tspan> - enough to close your laptop while the work runs.</text>
 </svg>
 
-Note: This is the hinge of the talk. For decades we inherited trust from people and process - a reviewer, a CI job, a named owner - and every bit of it ran at human speed. Agents run faster than any of it, so you can't inherit that trust anymore. You manufacture it. And notice the goal was never to trust the agent - it's to trust the system around it enough that you can close your laptop and the work keeps going. Everything after this slide is how you manufacture that trust.
+Note: This is the hinge of the talk. For decades we inherited trust from people and process - a reviewer, a CI job, a named owner - and every bit of it ran at human speed. Agents run faster than any of it, so you can't inherit that trust anymore. You manufacture it. And notice the goal was never to trust the agent - it's to trust the system around it enough that you can close your laptop and the work keeps going. Everything after this slide is how you manufacture that trust - and those four blocks at the bottom are the four questions we're about to walk.
 
 ---
 
-<!-- layout: section -->
+<!-- chrome: false -->
 
-# So: govern the build.
+<img src="assets/slide-07.webp" alt="The Agentic Workflow: the same inner and outer loops with an AI agent at every stage" width="1600" height="900" loading="lazy" decoding="async" style="position:absolute;inset:0;width:100%;height:100%;max-width:none;max-height:none;object-fit:fill" />
 
-Prove what's in it → start it from a good base → gate it in CI.
-No new process. Same pipeline the change already runs through.
-
-Note: Three moves, all inside the pipeline the change already goes through. One: prove what's in the artifact and where it came from. Two: give the agent a base image that's already good. Three: gate it in CI so nothing unverified passes. Let's do each with a terminal open.
+Note: Here's the shift made visual. Same inner and outer development loops we always had - code, build, test, integrate, deploy - but every place a human used to stand is now an AI agent. So the attack surface is no longer just what you pull; it's every autonomous action, every tool call, every credential those agents touch across the whole road. That's the 2:47 AM commit, generalized to every stage. Let me make it concrete - here's an agent turned loose on a build with no guardrails at all.
 
 ---
 
-# Move 1 - what's actually in it?
+<!-- chrome: false -->
 
-```console
-$ npm ls --all | wc -l
-431
+<img src="assets/slide-09.webp" alt="The ungoverned agent: agent running straight on your host with no boundary, FROM node:20 chosen with no guidance, 6 high CVEs" width="1600" height="900" loading="lazy" decoding="async" style="position:absolute;inset:0;width:100%;height:100%;max-width:none;max-height:none;object-fit:fill" />
 
-$ docker scout quickview catalog-service:baseline
-    ✓ Indexed 431 packages
-  Target      catalog-service:baseline   0C   8H   41M   93L
-  Base image  node:20 → updatable        0C   6H   30M   54L
-```
-
-431 packages the agent pulled in blind. **8 high, 41 medium** - before any of your code.
-
-Note: Move one - measure it. The agent's image carries 431 packages. Scout indexes them: 8 highs, 41 mediums, 93 lows, and that's the base alone, before your application code. You can't govern what you can't see. This is the evidence layer, and everything else is built on it.
+Note: This is our ungoverned baseline - the agent running straight on your host, exactly how a lot of teams run today. It sits right on your machine, with the host daemon and host credentials, no boundary at all. We hand it a simple prompt - "containerize this app" - and with full permissions and open registries, it grabs whatever it wants: FROM node:20, chosen with no guidance. The result is the number we keep coming back to: 0 critical, 6 high, 30 medium, 54 low CVEs, 431 packages, no SBOM, no attestation, running as root. That's the start line.
 
 ---
 
-# Four questions, four attestations
+<!-- chrome: false -->
 
-| Question | Answer |
-|---|---|
-| What's in it? | **SBOM** |
-| Where did it come from? | **SLSA provenance** |
-| Can you verify that? | **Signature** (keyless / cosign) |
-| Which CVEs actually affect me? | **VEX** |
+<img src="assets/slide-08.webp" alt="The Product Catalog service we will secure: catalog-service writing to PostgreSQL, pushing images to S3, publishing to Kafka, and calling an Inventory service" width="1600" height="900" loading="lazy" decoding="async" style="position:absolute;inset:0;width:100%;height:100%;max-width:none;max-height:none;object-fit:fill" />
 
-```console
-$ docker scout attest get --predicate-type openvex ...
-  "vulnerability": "CVE-2023-45853",
-  "status": "not_affected",
-  "justification": "vulnerable_code_not_in_execute_path"
-```
-
-Note: Four questions, four machine-readable answers. SBOM is the ingredient list. SLSA provenance is a signed record of how and where it was built. A signature proves those belong to this exact digest. And VEX - the one people skip - lets you say "that CVE is present but not exploitable here," so your gate triages instead of drowning in noise. Evidence, and the ability to act on it.
+Note: And the app it mangled isn't a toy. It's a Product Catalog service, deliberately realistic: the catalog-service writes to PostgreSQL, pushes images to S3, publishes updates through Kafka, and calls an Inventory service and other downstream systems. Every one of those boxes is something we eventually have to trust and prove. This is the real supply chain we'll walk from development all the way to production.
 
 ---
 
-<!-- layout: section -->
+<!-- chrome: false -->
 
-# Move 2 - give the agent a good base
+<img src="assets/slide-framework.webp" alt="Every agent-driven change answers four questions: Evidence (what is in it, where from), Baseline (did it start trustworthy), Gate (is it allowed to pass), Boundary (what could it reach)" width="1600" height="900" loading="lazy" decoding="async" style="position:absolute;inset:0;width:100%;height:100%;max-width:none;max-height:none;object-fit:fill" />
 
-The agent picks a base image on every build. Fix the default once, fix every build.
-
-Note: Move one told us how bad the baseline is. Move two fixes the baseline itself. Here's the leverage: an agent makes the base-image decision constantly, on every repo, at machine speed. Fix what it reaches for by default and you've fixed every future build at once - no review queue.
+Note: No matter how the agent produced a change, governing it comes down to four questions - and these are the layers of the road we're about to walk. Evidence: what's in this artifact, and where did it come from - SBOM, VEX, SLSA. Baseline: did it start from something trustworthy - a Docker Hardened Image. Gate: is it allowed to pass - build policies, signing, admission. Boundary: what could it reach while it worked - the sandbox runtime. Evidence and baseline make governance possible; gate and boundary make it real. Next, the road itself.
 
 ---
 
-# Same app, hardened base
+<!-- chrome: false -->
 
-```console
-$ docker scout quickview catalog-service:dhi
-    ✓ Indexed 78 packages
-  Target      catalog-service:dhi                   0C   0H   1M   4L
-  Base image  dhi.io/node:24-debian13 (distroless)  0C   0H   0M   0L
+<img src="assets/slide-journey-0.webp" alt="The journey, checkpoint 0 of 4: the whole development-to-production road, everything still to prove, red baseline hot" width="1600" height="900" loading="lazy" decoding="async" style="position:absolute;inset:0;width:100%;height:100%;max-width:none;max-height:none;object-fit:fill" />
 
-$ docker images catalog-service
-REPOSITORY        TAG        SIZE
-catalog-service   baseline   1.1GB
-catalog-service   dhi        248MB
-```
-
-431 → **78 packages**. 1.1GB → **248MB**. 8 highs → **0**. Distroless, non-root, SBOM built in.
-
-Note: Same application, Docker Hardened Image base. Packages drop from 431 to 78. Image from 1.1 gig to 248 meg. Eight highs to zero. It ships distroless - no shell in the final image - non-root, with its own SBOM and provenance attached. The attack surface you never shipped is the CVE you never triage. This is the single highest-leverage change in the pipeline.
+Note: This is the whole road we travel today, and it flows left to right, development to production. On the left, DEVELOPMENT: the agent works inside an sbx microVM, host read-only. On the right, PRODUCTION: the runtime is locked down - read-only, cap-drop ALL, non-root. The CI GATE in the middle is the dev-to-prod boundary, and it fails closed - nothing crosses unless it's provable. Right now none of it is provable: the ungoverned baseline is FROM node:20, 431 packages, no SBOM, root - 0 of 4 stages green. Each segment turns green as we go. This is checkpoint 0 - the start line.
 
 ---
 
-<!-- layout: section -->
+<!-- chrome: false -->
 
-# Move 3 - make it a gate, not a suggestion
+<img src="assets/slide-framework-1.webp" alt="Question 1 of 4 - Evidence: what is in this, and where did it come from? SBOM, VEX, SLSA provenance" width="1600" height="900" loading="lazy" decoding="async" style="position:absolute;inset:0;width:100%;height:100%;max-width:none;max-height:none;object-fit:fill" />
 
-Evidence and a good base do nothing if nothing enforces them. Turn CI into the control point.
-
-Note: Move three, and this is where governance stops being a wiki page. A good baseline you don't enforce erodes on the next merge. So we encode the rules as a policy and run it in CI - the one thing every change already passes through.
+Note: Question one - Evidence: what is actually in the image, and where did it come from? The answer is SBOM, VEX, and SLSA provenance - the audit trail that finally lets you answer "who approved that build?" You can't govern what you can't see, so this is the layer everything else is built on.
 
 ---
 
-# The policy, run on both images
+<!-- chrome: false -->
 
-```console
-$ docker scout policy catalog-service:baseline
-  ✗ no-critical-cves     FAILED   8 high, review required
-  ✗ require-sbom         FAILED   no SBOM attestation present
-  ✗ require-provenance   FAILED   no SLSA provenance
-  Policy status: FAILED (0 of 3 met)
+<img src="assets/slide-19.webp" alt="The three building blocks: SBOM, VEX and SLSA - especially when agents are doing the pulling" width="1600" height="900" loading="lazy" decoding="async" style="position:absolute;inset:0;width:100%;height:100%;max-width:none;max-height:none;object-fit:fill" />
 
-$ docker scout policy catalog-service:dhi
-  ✓ no-critical-cves     PASSED
-  ✓ require-sbom         PASSED
-  ✓ require-provenance   PASSED
-  Policy status: PASSED (3 of 3 met)
-```
-
-Note: Same policy, both images. The 2:47 AM artifact fails all three - no clean scan, no SBOM, no provenance. The hardened, attested build passes all three. This is the bar. It's the same bar whether a human or an agent authored the change.
+Note: Three building blocks carry this whole layer. SBOM tells you what's inside. VEX tells you which of those CVEs are actually exploitable in your context, so you're not chasing noise. And SLSA gives you the provenance that proves how it was built. The subtitle is the whole reason we're here: this matters especially when agents are doing the pulling, because the agent won't ask permission before grabbing a base image.
 
 ---
 
-# Verify the claim, don't trust it
+<!-- chrome: false -->
 
-```console
-$ docker scout attest get \
-    --predicate-type https://slsa.dev/provenance/v0.2 --verify \
-    catalog-service:dhi
-    ✓ Signature verified (keyless, Fulcio root)
-  "builder":  "https://docker.com/dhi/builder",
-  "configSource":
-    "git+github.com/docker-hardened-images/node@refs/tags/24-debian13"
-```
+<img src="assets/slide-22.webp" alt="SBOM - your software ingredient list: Docker Scout matches PURLs against an advisory database aggregated from 23 sources" width="1600" height="900" loading="lazy" decoding="async" style="position:absolute;inset:0;width:100%;height:100%;max-width:none;max-height:none;object-fit:fill" />
 
-Signed, keyless, and **traceable to a source commit you can open and read.**
-
-Note: Provenance only matters if it's verifiable. This pulls the SLSA attestation and checks the signature - keyless, rooted in Fulcio, no long-lived keys to leak. And it traces back to a specific source commit you can actually open. That's the difference between "trust me" and "here's the receipt."
+Note: Start with the SBOM - your software ingredient list. It's the complete list of every package inside the image. Docker Scout matches those packages, expressed as PURLs, against an advisory database aggregated from 23 sources - PURL-based, not CPE, which keeps false positives down. Generating one is a single flag on your existing build: docker buildx build --attest type=sbom. No separate pipeline to stand up.
 
 ---
 
-# The gate fires on the agent's push
+<!-- chrome: false -->
 
-```console
-CI · secure-build #218                                  ✗ failed
-  ✓ checkout
-  ✗ verify-attestations
-      ✗ No attestations found on this digest
-      ✗ tag rebuilt without --sbom / --provenance
-      Error: process completed with exit code 1
-  ⊘ policy-gate     skipped
-  ⊘ push            skipped
-```
+<img src="assets/slide-25.webp" alt="Without VEX vs with VEX: a raw scan lists every CVE; VEX marks each Not Affected / Affected / Fixed - 190 not affected, 10 fixed" width="1600" height="900" loading="lazy" decoding="async" style="position:absolute;inset:0;width:100%;height:100%;max-width:none;max-height:none;object-fit:fill" />
 
-The agent rebuilt without attestations. **Blocked before it reached the registry.**
+Note: Here's why VEX matters, side by side. Without VEX, a standard scan lists every CVE against every package - libc6 over and over, "won't fix," and a human has to chase every line. With VEX, each CVE carries a statement: Not Affected, Affected, Fixed, or Under investigation. You pull it with one command - docker scout vex get. The punchline at the bottom: 190 not affected, 10 fixed. That's the noise gone and the signal left - the difference between drowning in alerts and making a risk-based decision.
 
-Note: Now replay 2:47 AM with the gate in place. The agent pushes, the pipeline runs the same verification a human change triggers. The rebuilt tag has nothing signed on it, so verify-attestations fails, and everything after - policy, push - is skipped. It never reaches the registry. The agent gets held to the human standard, automatically, with no human in the loop. That's the whole point.
+---
+
+<!-- chrome: false -->
+
+<img src="assets/slide-26.webp" alt="SLSA - Supply chain Levels for Software Artifacts: four levels L0-L3, DHI targets L3 with signed, non-falsifiable provenance" width="1600" height="900" loading="lazy" decoding="async" style="position:absolute;inset:0;width:100%;height:100%;max-width:none;max-height:none;object-fit:fill" />
+
+Note: And SLSA - Supply chain Levels for Software Artifacts - is the provenance framework. Four progressive levels: L0 is no guarantees, L1 means provenance merely exists, L2 is a hosted build with signed provenance - GitHub Actions with OIDC gets you there - and L3 is the hardened, non-falsifiable target DHI aims for. The one question it makes answerable: can you prove this artifact came from that source and wasn't tampered with in transit? DHI gives you the signed provenance envelope and verification with Cosign or Notation - a one-liner to consume.
+
+---
+
+<!-- chrome: false -->
+
+<img src="assets/slide-journey-1.webp" alt="The journey, checkpoint 1 of 4: Lab 1 done, the BUILD stage is now green - you can see what is in the image" width="1600" height="900" loading="lazy" decoding="async" style="position:absolute;inset:0;width:100%;height:100%;max-width:none;max-height:none;object-fit:fill" />
+
+Note: Checkpoint one - Evidence is done, so BUILD goes green on the road. Buildx attached an SBOM plus provenance at build time, so the box is no longer a black hole - 1 of 4 stages provable. That baseline strip underneath is the reminder of where we started: FROM node:20, 431 packages, no SBOM, root, nothing you can prove. Next we tackle the segment just to the left of BUILD - the base image itself.
+
+---
+
+<!-- chrome: false -->
+
+<img src="assets/slide-framework-2.webp" alt="Question 2 of 4 - Baseline: did it start from something trustworthy? Docker Hardened Images" width="1600" height="900" loading="lazy" decoding="async" style="position:absolute;inset:0;width:100%;height:100%;max-width:none;max-height:none;object-fit:fill" />
+
+Note: Question two - Baseline: did the image start from something trustworthy? The answer is a Docker Hardened Image instead of whatever the agent grabbed off the internet. Evidence told us what's in the box; baseline makes sure we began from a good one. This is the highest-leverage decision in the whole pipeline, because the agent makes it on every single build.
+
+---
+
+<!-- chrome: false -->
+
+<img src="assets/slide-31.webp" alt="Three properties of a Docker Hardened Image: Minimal (95% smaller), Attested (SBOM, VEX, SLSA L3, signature), Patched (near-zero CVEs)" width="1600" height="900" loading="lazy" decoding="async" style="position:absolute;inset:0;width:100%;height:100%;max-width:none;max-height:none;object-fit:fill" />
+
+Note: Three properties define a hardened image. Minimal: built from source with only what your runtime needs - no shell, no curl - which is where the 95% smaller number and the shrunken attack surface come from. Attested: every image ships with an SBOM, a VEX document, SLSA L3 provenance, and a signature, so you verify in one command instead of trusting a label. Patched: continuously updated, so you get near-zero CVEs on day one and the Docker team keeps it that way. Minimal shrinks the surface, attested makes it provable, patched keeps it clean.
+
+---
+
+<!-- chrome: false -->
+
+<img src="assets/slide-32.webp" alt="docker scout compare: node:22-slim (2C 26H 25M 122L, 806 packages, 398MB) versus dhi.io/node:24-debian13 (0,0,0,0, 211 packages, 40MB)" width="1600" height="900" loading="lazy" decoding="async" style="position:absolute;inset:0;width:100%;height:100%;max-width:none;max-height:none;object-fit:fill" />
+
+Note: Here's the same docker scout compare you'd run yourself. On the left, node:22-slim: 2 Critical, 26 High, 25 Medium, 122 Low, 806 packages, 398 MB. On the right, dhi.io/node:24-debian13: zero in every bucket. Packages drop from 806 to 211 - 595 fewer things to patch and audit - and size falls 90%, to 40 MB. Fewer packages is why there are fewer CVEs: you can't have a vulnerability in software you never shipped. That column of zeros is what a one-line base swap buys you.
+
+---
+
+<!-- chrome: false -->
+
+<img src="assets/slide-33.webp" alt="The catalog-service migration: node:22-slim becomes a two-stage build on dhi.io/node dev + distroless runtime; USER/useradd lines drop because DHI is non-root" width="1600" height="900" loading="lazy" decoding="async" style="position:absolute;inset:0;width:100%;height:100%;max-width:none;max-height:none;object-fit:fill" />
+
+Note: This is the actual migration for catalog-service, before and after. The change that matters is the FROM line: node:22-slim becomes a two-stage build - dhi.io/node dev image for the build stage where you run npm ci, and the distroless final stage that copies node_modules across. Notice what drops out: no more RUN useradd, no USER appuser, because DHI already runs non-root. The runtime stage is distroless - no shell, no npm - the source is unchanged, and the Compose file doesn't change at all. This is a base swap, not a rewrite.
+
+---
+
+<!-- chrome: false -->
+
+<img src="assets/slide-11.webp" alt="Catalog service, where vulnerabilities enter: without the DHI MCP the agent picks base images freely (2 Critical, 46+ High); with the DHI MCP every service resolves to a hardened image (0 Critical, 0 High)" width="1600" height="900" loading="lazy" decoding="async" style="position:absolute;inset:0;width:100%;height:100%;max-width:none;max-height:none;object-fit:fill" />
+
+Note: Zoom out from one service to the whole stack - this is where vulnerabilities actually enter. On the left, without the DHI MCP the agent picks base images freely: the app on node:20, PostgreSQL, Kafka, aws-sdk - total stack exposure 2 Critical and 46-plus High. On the right, with the DHI MCP the agent queries first and every service resolves to a hardened image - and the whole column collapses to 0 across the board. The point isn't just that DHI is cleaner; it's that when the agent has to ask before it picks, the vulnerabilities never enter the stack in the first place.
+
+---
+
+<!-- chrome: false -->
+
+<img src="assets/slide-journey-2.webp" alt="The journey, checkpoint 2 of 4: Lab 2 done, BASE is now green - hardened base, the CVEs collapse" width="1600" height="900" loading="lazy" decoding="async" style="position:absolute;inset:0;width:100%;height:100%;max-width:none;max-height:none;object-fit:fill" />
+
+Note: Checkpoint two - Baseline turns green. The hardened image now feeds the build: DHI, 0 CVEs, SLSA L3, and the CVEs collapse right where we started this segment. 2 of 4 stages provable. The base and the build are both trustworthy now. Next we push toward the CI gate that turns all of this into an enforced boundary.
+
+---
+
+<!-- chrome: false -->
+
+<img src="assets/slide-framework-3.webp" alt="Question 3 of 4 - Gate: is it allowed to pass? Build policies, image signing, admission" width="1600" height="900" loading="lazy" decoding="async" style="position:absolute;inset:0;width:100%;height:100%;max-width:none;max-height:none;object-fit:fill" />
+
+Note: Question three - Gate: is this artifact allowed to pass? The answer is build policies, image signing, and admission - the check in the middle of the pipeline that fails closed, so nothing crosses into production unless it's provable. Evidence and baseline made governance possible; this is where we make it real.
+
+---
+
+<!-- chrome: false -->
+
+<img src="assets/slide-36.webp" alt="Security as code: docker scout policy catalog-service:dhi --exit-code fails the build on fixable criticals/highs, missing attestations, unapproved base, or root user" width="1600" height="900" loading="lazy" decoding="async" style="position:absolute;inset:0;width:100%;height:100%;max-width:none;max-height:none;object-fit:fill" />
+
+Note: This is security as code. Instead of a human eyeballing a scan report, you define rules that automatically fail the build before anything insecure reaches your registry. One command: docker scout policy --exit-code. That exit code is the whole point - non-zero stops the pipeline dead. The policies: no fixable critical or high CVEs, supply-chain attestations present, no unapproved base images, default non-root user. And it's tunable with an optional policy-config.json.
+
+---
+
+<!-- chrome: false -->
+
+<img src="assets/slide-37.webp" alt="Image signing with Cosign keyless: build with attestations, sign via OIDC, signature lands in the Sigstore transparency log, verify at deploy time" width="1600" height="900" loading="lazy" decoding="async" style="position:absolute;inset:0;width:100%;height:100%;max-width:none;max-height:none;object-fit:fill" />
+
+Note: Passing a policy tells you an image is clean; signing tells you it's authentic - that this exact digest is the one your pipeline produced and nobody swapped it. We use Cosign with keyless signing: build with attestations, sign via OIDC, the signature lands in the Sigstore transparency log, and you verify at deploy time. Keyless is the magic word - a short-lived certificate minted from your OIDC identity, so there's no private key to manage, rotate, or leak. Works with any OCI registry.
+
+---
+
+<!-- chrome: false -->
+
+<img src="assets/slide-38.webp" alt="The secure CI pipeline in four steps on GitHub Actions: checkout, build + attest, policy gate (exit-on policy), then push - the gate sits before push so an unprovable image can't be promoted" width="1600" height="900" loading="lazy" decoding="async" style="position:absolute;inset:0;width:100%;height:100%;max-width:none;max-height:none;object-fit:fill" />
+
+Note: Here's the whole secure pipeline in four steps on GitHub Actions. Checkout. Build and attest - SBOM and provenance generated at build time and bound to the digest. Then the key step, the policy gate: command policy, exit-on policy. That's the dev-to-prod boundary in one line - if any policy fails, the step exits non-zero and push never runs. Only when the gate passes do we reach push. The gate sits before the push on purpose: an unprovable image simply cannot be promoted.
+
+---
+
+<!-- chrome: false -->
+
+<img src="assets/slide-39.webp" alt="The 7 built-in Docker Scout policies: no fixable critical/high CVEs, no high-profile vulnerabilities, no copyleft licenses, no outdated/unapproved base images, supply-chain attestations, default non-root - configurable via JSON or Rego" width="1600" height="900" loading="lazy" decoding="async" style="position:absolute;inset:0;width:100%;height:100%;max-width:none;max-height:none;object-fit:fill" />
+
+Note: These are the seven built-in Scout policies, and the headline is zero config required. Vulnerability side: no fixable critical or high CVEs, and no high-profile vulnerabilities - Log4Shell, the XZ backdoor, anything in CISA KEV. Hygiene: no copyleft licenses, no outdated base images, no unapproved base images. And the two that tie back to our supply-chain work: supply-chain attestations present, and default non-root user. All configurable via JSON, extensible with custom Rego policies, and it runs fully local - which matters for air-gapped pipelines.
+
+---
+
+<!-- chrome: false -->
+
+<img src="assets/slide-41.webp" alt="Same pipeline, opposite outcomes: with a DHI base the gate passes and the image is pushed; with a standard base CVEs and no SBOM mean the gate fails and push never runs" width="1600" height="900" loading="lazy" decoding="async" style="position:absolute;inset:0;width:100%;height:100%;max-width:none;max-height:none;object-fit:fill" />
+
+Note: Here's why all the earlier hardening pays off at the gate. With a DHI base: no critical or high CVEs, SBOM and provenance present, non-root, up-to-date - the gate passes, the image is pushed. With a standard base: CVEs found, no SBOM, running as root - the gate fails, push never runs. Same pipeline, same policies, opposite outcomes - the only variable is the base the agent built on. The hardened base isn't just hygiene; it's what lets you cleanly clear a fail-closed gate.
 
 ---
 
@@ -307,79 +369,261 @@ Note: Now replay 2:47 AM with the gate in place. The agent pushes, the pipeline 
 - Signed attestations **are** the audit trail
 - 2:47 AM incident → a query, not a forensics project
 
-Note: This is the slide for the ops folks in the room. The same gate serves two audiences. Developers get fast pass/fail in the PR and a base image that's already good, so they fix things at authoring time instead of after a rejection. Platform, SRE and ops own the other side: they set the policy and the hardened base once and it applies fleet-wide, and the signed attestations become the audit trail. When the next 2:47 AM commit happens, answering "what shipped and where did it come from" is a query against attestations, not a week of forensics. Governance is a platform capability, not a developer chore.
+Note: This is the slide for the ops folks in the room, and it's the heart of why this is a DevOps talk, not just a developer one. The same gate serves two audiences. Developers get fast pass/fail in the PR and a base that's already good, so they fix things at authoring time instead of after a rejection. Platform, SRE and ops own the other side: they set the policy and hardened base once and it applies fleet-wide, and the signed attestations become the audit trail. When the next 2:47 AM commit happens, answering "what shipped and where did it come from" is a query, not a week of forensics. Governance is a platform capability, not a developer chore - and we'll come back to that query at the very end.
 
 ---
 
 <!-- chrome: false -->
 
-<svg viewBox="0 0 1600 900" width="100%" height="100%" role="img" aria-label="Govern the runtime: one boundary around the agent" style="position:absolute;inset:0;width:100%;height:100%;object-fit:contain;background:#0B1533" font-family="Arial, Helvetica, sans-serif">
+<img src="assets/slide-journey-3.webp" alt="The journey, checkpoint 3 of 4: Lab 3 done, SIGN, GATE and DEPLOY are now green - signed, gated, promoted to production" width="1600" height="900" loading="lazy" decoding="async" style="position:absolute;inset:0;width:100%;height:100%;max-width:none;max-height:none;object-fit:fill" />
+
+Note: Checkpoint three. Trace the road: the agent develops in a sandbox, builds on a hardened base with zero CVEs, attaches SBOM and provenance, and now SIGNs keylessly, bound to the digest. The CI GATE - no critical CVEs, SBOM present, provenance verified - fails closed at the dev-to-prod boundary, and because our image is provable it passes and gets promoted: DEPLOY goes green. Three of four stages provable. The one box still grey is INVOKE - the running agent and MCP client at the far right. Same discipline at both ends: the agent that builds runs in a box, and the service it becomes runs in a box too. That runtime end is next.
+
+---
+
+<!-- chrome: false -->
+
+<img src="assets/slide-framework-4.webp" alt="Question 4 of 4 - Boundary: what could it reach while it worked? Sandbox runtime - network, filesystem, credentials" width="1600" height="900" loading="lazy" decoding="async" style="position:absolute;inset:0;width:100%;height:100%;max-width:none;max-height:none;object-fit:fill" />
+
+Note: Question four - Boundary: what could the agent reach while it worked? The answer is the sandbox runtime - network, filesystem, and credentials, bounded so the agent can act without an open blast radius. This is the layer that would have stopped both horror stories cold. It closes the loop: same discipline at both ends of the road.
+
+---
+
+<!-- chrome: false -->
+
+<img src="assets/slide-governance.webp" alt="A layered approach to AI governance: Gordon, Agentic Compose & Docker Agent, Docker Model Runner, MCP Toolkit & Gateway, Docker Sandboxes, and Docker Hardened Images as the trusted foundation" width="1600" height="900" loading="lazy" decoding="async" style="position:absolute;inset:0;width:100%;height:100%;max-width:none;max-height:none;object-fit:fill" />
+
+Note: Before we sandbox, here's the shape of the whole thing. Securing the agentic stack isn't one product - it's a layered set of enforceable controls, and the policies travel with the workload whether it runs on a laptop or in the cloud. Gordon gives in-product guidance; Agentic Compose and the Docker Agent give declarative, golden-template orchestration; Docker Model Runner keeps LLM execution local; the MCP Toolkit and Gateway limit agents to the servers you authorize; Docker Sandboxes give each agent an isolated runtime; and underneath it all, Docker Hardened Images are the trusted foundation. The next few slides zoom into that sandbox layer.
+
+---
+
+<!-- chrome: false -->
+
+<img src="assets/slide-10.webp" alt="Agent with a Sandbox: sbx microVM boundary, DHI MCP server, hardened base, zero CVEs" width="1600" height="900" loading="lazy" decoding="async" style="position:absolute;inset:0;width:100%;height:100%;max-width:none;max-height:none;object-fit:fill" />
+
+Note: This is the clean end-state - the counterpart to the ungoverned baseline from earlier. Everything the agent does now happens inside a sandbox boundary, an sbx microVM with its own daemon, its own network, and the host mounted read-only. Same prompt - "containerize app" - but the agent queries the DHI MCP server, which only serves signed tools, and writes FROM dhi.io/node because it checked the trusted source before writing the line. The result: 0 critical, 0 high, 0 medium, 0 low, 211 packages, SBOM attached, signed, non-root. Same agent, radically different outcome.
+
+---
+
+<!-- chrome: false -->
+
+<img src="assets/slide-sandbox-arch.webp" alt="Sandbox architecture: the agent container runs inside a microVM-based sandbox fed by workspace directories, network policies and secrets; outbound traffic flows through a network proxy" width="1600" height="900" loading="lazy" decoding="async" style="position:absolute;inset:0;width:100%;height:100%;max-width:none;max-height:none;object-fit:fill" />
+
+Note: Here's the architecture. Everything sits on your host, but the agent runs inside a microVM-based sandbox - a real isolation boundary, not just a container namespace. You feed it three things from outside the box: the workspace directories it's allowed to see, the network policies that govern what it can reach, and the secrets it needs. Outbound traffic doesn't go straight out - it flows through a network proxy that enforces those policies, and the proxy injects credentials so raw keys never enter the VM. The agent gets exactly the access you granted and nothing more.
+
+---
+
+<!-- chrome: false -->
+
+<img src="assets/slide-sandbox-tui.webp" alt="The Sandbox TUI: sandboxes on the left with status and workspace, and the per-sandbox network log on the right showing allowed and blocked hosts" width="1600" height="900" loading="lazy" decoding="async" style="position:absolute;inset:0;width:100%;height:100%;max-width:none;max-height:none;object-fit:fill" />
+
+Note: This is the sbx TUI - a live view of every sandbox on your machine. On the left, each sandbox with its status, workspace, and resource use, with controls to stop, exec, or remove. On the right, the network log for the selected sandbox: every outbound connection the agent attempted, with a hit count and an allowed-or-blocked status. api.anthropic.com, api.github.com, registry.npmjs.org allowed - a datadog logs endpoint blocked. This is the boundary made observable: you can see exactly what the agent reached for and what the policy stopped. Hold that thought - it becomes the audit trail in our operations section.
+
+---
+
+<!-- chrome: false -->
+
+<img src="assets/slide-mcp-gateway.webp" alt="The agent talks to one gateway, never to servers directly: a sandboxed agent reaches an mcp-gateway via SBX_MCP_URL with local-wiki, GitHub, Notion and DuckDuckGo aggregated behind it" width="1600" height="900" loading="lazy" decoding="async" style="position:absolute;inset:0;width:100%;height:100%;max-width:none;max-height:none;object-fit:fill" />
+
+Note: The other half of the boundary: the tools. An agent acts on the world through MCP servers, so those tools are part of your supply chain. The agent inside the sandbox never talks to servers directly - it talks to one endpoint, the mcp-gateway, through a single SBX_MCP_URL. Behind it, all your servers are aggregated. The payoff: every tool call flows through one chokepoint. That single point is where policy and audit apply - one place to govern instead of N servers to chase.
+
+---
+
+<!-- chrome: false -->
+
+<img src="assets/slide-cedar-policy.webp" alt="Default-deny allow-list over (server, tool) authored in Cedar: a permit policy allowing exactly get_me on github-official; everything else blocked, evaluated at the gateway on every invoke" width="1600" height="900" loading="lazy" decoding="async" style="position:absolute;inset:0;width:100%;height:100%;max-width:none;max-height:none;object-fit:fill" />
+
+Note: And here's what the policy looks like - a default-deny allow-list over server-and-tool pairs, authored in Cedar, the open-source authorization engine from AWS. This example permits exactly one tool - get_me on github-official - and by default-deny, every other tool and every other server is blocked. It's evaluated at the gateway on every invoke, using the same engine as your network and filesystem policy - one surface, no bypass. Author once, sync everywhere: a developer can add any server they like, but if org policy doesn't permit its tools, the calls are denied and audited.
+
+---
+
+<!-- chrome: false -->
+
+<img src="assets/slide-journey-4.webp" alt="The journey, checkpoint 4 of 4: Lab 4 done, DEVELOP and INVOKE green, both sandbox boxes solid, the road is provable end to end" width="1600" height="900" loading="lazy" decoding="async" style="position:absolute;inset:0;width:100%;height:100%;max-width:none;max-height:none;object-fit:fill" />
+
+Note: The final checkpoint, 4 of 4 - the whole road is green. On the left, DEVELOPMENT sits inside its own box: the agent develops in an sbx microVM with the host read-only, on a hardened base with 0 CVEs and SLSA L3, buildx attaches SBOM and provenance, and signing binds everything to a digest. In the middle, the CI GATE fails closed. On the right, PRODUCTION is boxed too: the signed image is deployed pinned by digest, and the agent invokes MCP as a signed, read-only client under cap_drop ALL and non-root. Same discipline at both ends. Four of four stages provable - and that's exactly the point where most talks stop. We're going two steps further.
+
+---
+
+<!-- layout: section -->
+
+# Now make it yours - the sbx kit
+
+You've boxed one agent. Next: package that exact boundary as a **kit** your whole org inherits - so the good path is the default path, everywhere.
+
+Note: Everything so far you did by hand for one agent on one laptop. That doesn't scale, and it drifts. The answer is to make the boundary an artifact - a kit - so every developer's agent starts from the same hardened, governed environment without anyone having to remember the flags. This is the platform team's leverage point, and it's the first of the two steps that complete our story.
+
+---
+
+<!-- chrome: false -->
+
+<!-- chrome: false -->
+
+<svg viewBox="0 0 1600 900" width="100%" height="100%" role="img" aria-label="Anatomy of an sbx kit" style="position:absolute;inset:0;width:100%;height:100%;object-fit:contain;background:#0B1533" font-family="Arial, Helvetica, sans-serif">
   <rect width="1600" height="900" fill="#0B1533"/>
-  <text x="100" y="110" font-size="52" font-weight="800" fill="#ffffff">Move 4 - govern the <tspan fill="#1E9BF0">runtime</tspan>, not just the artifact</text>
-  <text x="100" y="162" font-size="26" fill="#9AA6C2">One boundary around the agent: execution, tool calls, credentials.</text>
-  <rect x="70" y="380" width="230" height="180" rx="14" fill="#12203F" stroke="#5A2A2A" stroke-width="2"/>
-  <text x="102" y="420" font-size="20" font-weight="800" fill="#F0533F" letter-spacing="2">UNTRUSTED IN</text>
-  <text x="102" y="460" font-size="23" fill="#ffffff">tickets · web</text>
-  <text x="102" y="492" font-size="23" fill="#ffffff">code · docs</text>
-  <text x="102" y="524" font-size="23" fill="#ffffff">tool output</text>
-  <rect x="360" y="230" width="880" height="470" rx="28" fill="#0E1B3A" stroke="#1E9BF0" stroke-width="3" stroke-dasharray="11 8"/>
-  <text x="400" y="284" font-size="24" font-weight="800" fill="#1E9BF0" letter-spacing="3">ONE RUNTIME BOUNDARY</text>
-  <rect x="400" y="312" width="800" height="52" rx="12" fill="#12325E"/>
-  <text x="424" y="338" font-size="23" font-weight="700" fill="#ffffff" dominant-baseline="central">Sandbox (microVM): isolated execution · host mounted read-only</text>
-  <rect x="560" y="400" width="480" height="150" rx="16" fill="#173a6b"/>
-  <text x="800" y="446" text-anchor="middle" font-size="30" font-weight="800" fill="#ffffff">THE AGENT</text>
-  <text x="800" y="490" text-anchor="middle" font-size="21" fill="#C8D3F5">reads untrusted input,</text>
-  <text x="800" y="518" text-anchor="middle" font-size="21" fill="#C8D3F5">acts with real credentials</text>
-  <rect x="400" y="586" width="800" height="80" rx="12" fill="#12325E"/>
-  <text x="424" y="616" font-size="23" font-weight="700" fill="#ffffff" dominant-baseline="central">MCP Gateway: signature-verified tools · scoped secrets</text>
-  <text x="424" y="646" font-size="21" fill="#9AA6C2" dominant-baseline="central">cap_drop ALL · read_only rootfs · refuse anything unsigned</text>
-  <rect x="1300" y="380" width="230" height="180" rx="14" fill="#0E2A1E" stroke="#34D399" stroke-width="2"/>
-  <text x="1332" y="420" font-size="20" font-weight="800" fill="#34D399" letter-spacing="2">GOVERNED OUT</text>
-  <text x="1332" y="462" font-size="23" fill="#ffffff">build · push</text>
-  <text x="1332" y="494" font-size="23" fill="#ffffff">deploy</text>
-  <text x="1332" y="526" font-size="20" fill="#9AA6C2">only what</text>
-  <text x="1332" y="550" font-size="20" fill="#9AA6C2">policy allows</text>
-  <g stroke="#5B8CFF" stroke-width="4" fill="#5B8CFF"><line x1="300" y1="470" x2="352" y2="470"/><polygon points="352,462 368,470 352,478"/></g>
-  <g stroke="#34D399" stroke-width="4" fill="#34D399"><line x1="1240" y1="470" x2="1292" y2="470"/><polygon points="1292,462 1308,470 1292,478"/></g>
+  <text x="100" y="110" font-size="52" font-weight="800" fill="#ffffff">Anatomy of an <tspan fill="#1E9BF0">sbx kit</tspan></text>
+  <text x="100" y="158" font-size="26" fill="#9AA6C2">Declarative: a spec.yaml (+ files/). The sbx engine turns it into a sandbox at create time.</text>
+  <rect x="100" y="210" width="640" height="470" rx="18" fill="#12203F" stroke="#26365C" stroke-width="2"/>
+  <text x="132" y="258" font-size="22" font-weight="800" fill="#1E9BF0" letter-spacing="2">spec.yaml · schemaVersion "2"</text>
+  <g font-size="24" fill="#ffffff">
+    <text x="132" y="312"><tspan fill="#7FB2E6" font-family="monospace">sandbox:</tspan>  image / build - hardened base</text>
+    <text x="132" y="356"><tspan fill="#7FB2E6" font-family="monospace">credentials:</tspan>  apiKey · oauth · sshAgent</text>
+    <text x="132" y="400"><tspan fill="#7FB2E6" font-family="monospace">caps.network:</tspan>  deny-all + allowlist</text>
+    <text x="132" y="444"><tspan fill="#7FB2E6" font-family="monospace">environment:</tspan>  vars, no raw secrets</text>
+    <text x="132" y="488"><tspan fill="#7FB2E6" font-family="monospace">commands:</tspan>  install · startup hooks</text>
+    <text x="132" y="532"><tspan fill="#7FB2E6" font-family="monospace">agentContext:</tspan>  guardrails + guidance</text>
+    <text x="132" y="576"><tspan fill="#7FB2E6" font-family="monospace">files/:</tspan>  configs baked into the box</text>
+  </g>
+  <text x="132" y="640" font-size="21" fill="#9AA6C2">One declarative file - diffable, reviewable, versioned.</text>
+  <rect x="800" y="210" width="700" height="215" rx="18" fill="#12203F" stroke="#26365C" stroke-width="2"/>
+  <text x="832" y="258" font-size="22" font-weight="800" fill="#9AA6C2" letter-spacing="2">TWO KINDS</text>
+  <rect x="832" y="286" width="300" height="112" rx="12" fill="#0E2A1E" stroke="#34D399" stroke-width="2"/>
+  <text x="852" y="326" font-size="24" font-weight="800" fill="#34D399">kind: sandbox</text>
+  <text x="852" y="362" font-size="21" fill="#ffffff">a full agent environment</text>
+  <rect x="1168" y="286" width="300" height="112" rx="12" fill="#12325E" stroke="#1E9BF0" stroke-width="2"/>
+  <text x="1188" y="326" font-size="24" font-weight="800" fill="#1E9BF0">kind: mixin</text>
+  <text x="1188" y="362" font-size="21" fill="#ffffff">a reusable overlay</text>
+  <rect x="800" y="445" width="700" height="235" rx="18" fill="#0E1B3A" stroke="#1E9BF0" stroke-width="2"/>
+  <text x="832" y="493" font-size="22" font-weight="800" fill="#1E9BF0" letter-spacing="2">COMPOSE</text>
+  <text x="832" y="540" font-size="24" fill="#ffffff"><tspan font-family="monospace" fill="#7FB2E6">extends:</tspan>  inherit a base kit</text>
+  <text x="832" y="584" font-size="24" fill="#ffffff"><tspan font-family="monospace" fill="#7FB2E6">--kit</tspan>  stack mixins at run time</text>
+  <text x="832" y="636" font-size="21" fill="#9AA6C2">Last wins, per section. Hardened base + your org's mixins.</text>
+  <text x="100" y="748" font-size="30" font-weight="700" fill="#ffffff">Author once → every agent inherits the same <tspan fill="#34D399" font-weight="800">hardened, governed boundary.</tspan></text>
 </svg>
 
-Note: Reframe. Everything so far governs the artifact - the thing the agent built. This move governs the runtime: where the agent executes, and the tools and credentials it can reach. It's the same shift the industry is converging on - put a control point beneath the agent rather than hoping for a smarter agent. We do it in two places: the sandbox the agent builds in, and the gateway in front of the tools it calls.
+Note: A kit is just a declarative spec.yaml plus an optional files tree - the sbx engine reads it and turns it into a sandbox at create time. Everything we set by hand becomes a field: the sandbox section pins a hardened base image, credentials declares what auth the agent gets - as references, never raw values - caps.network sets deny-all plus an allowlist, commands wires install and startup hooks, agentContext carries the guardrails and guidance, and files bakes configs into the box. Two kinds: a sandbox kit is a full agent environment; a mixin is a reusable overlay you stack on top. And they compose - extends to inherit a base kit, or --kit to stack mixins at run time. So the platform team authors one hardened base kit, and every developer's agent inherits the same boundary. That's the leverage.
 
 ---
 
-# Box the agent's build environment
+# Author, pin, and ship the kit
 
-```console
-$ sbx daemon start
-  microVM booted: own daemon, own network, host mounted read-only.
-
-$ sbx run codex -p "containerize this service for production"
-  → wrote Dockerfile
-    FROM dhi.io/node:24-debian13 (distroless)  ·  non-root  ·  multi-stage
+```yaml save-as=catalog-agent/spec.yaml
+schemaVersion: "2"
+kind: sandbox
+sandbox:
+  image: dhi.io/node:24-debian13   # hardened base, 0 CVEs
+credentials:
+  - apiKey: anthropic              # injected by the proxy, never in the VM
+caps:
+  network:
+    default: deny                  # fail closed
+    allow: [registry.npmjs.org, api.github.com, dhi.io]
+agentContext: |
+  Always query the DHI MCP before writing a FROM line.
 ```
 
-The agent authors inside a **microVM it can't escape**, and reaches for the hardened base on its own. The 2:47 AM build never happens.
+```console
+$ sbx kit validate ./catalog-agent
+  ✓ schemaVersion "2" · kind: sandbox · network: deny + allowlist
+$ sbx kit push oci://registry.example.com/kits/catalog-agent
+  ✓ pushed  digest sha256:9f2c…  (immutable, pinned)
+$ sbx run claude --kit catalog-agent@sha256:9f2c…
+  microVM booted from the org's hardened kit.
+```
 
-Note: First, the sandbox. The agent runs inside a microVM - its own daemon, its own network, the host mounted read-only. It can pull, build and experiment, but it can't touch your machine or your network. And because the sandbox is wired to the hardened base and the DHI MCP, the agent reaches for the good base image on its own. Notice the Dockerfile it wrote: distroless DHI, non-root, multi-stage - with no correction from you. This is the goal: the red 2:47 AM build never happens, because the environment made the good path the default path.
+Kits pin by **digest** - the same discipline as the image. Distribute over OCI or a git commit-SHA; consumers get exactly what you shipped.
+
+Note: Here's the kit in the flesh. The spec on top is the whole boundary as data: a hardened DHI base, credentials declared as references the proxy injects so raw keys never touch the VM, a deny-by-default network with a tight allowlist, and an agentContext that tells the agent to query the DHI MCP before every FROM line - the good path, baked in. Then the lifecycle on the bottom: validate it, push it to an OCI registry or pin it to a git commit SHA, and any developer runs sbx run --kit against that digest. Same pinning discipline as the image itself - immutable, reproducible, no drift. The platform team ships the kit; every agent on every laptop starts governed. That's step one of finishing the story - now let's run what we built.
 
 ---
 
-# Harden the tools the agent calls
+<!-- layout: section -->
+
+# Past the gate - operate it
+
+The gate promotes a signed, attested image. **Now it has to run** - deployed, scaled, and observed, with the same discipline at run time.
+
+Note: Everything up to here got a provable artifact through the gate. But a build that never runs helps no one. This is the day-2 half - the Operational AI story - deploy it, scale it, and keep the boundary and the audit trail alive in production. This is the part the ops and SRE folks own outright.
+
+---
+
+<!-- chrome: false -->
+
+<!-- chrome: false -->
+
+<svg viewBox="0 0 1600 900" width="100%" height="100%" role="img" aria-label="Operate agentic services in production" style="position:absolute;inset:0;width:100%;height:100%;object-fit:contain;background:#0B1533" font-family="Arial, Helvetica, sans-serif">
+  <rect width="1600" height="900" fill="#0B1533"/>
+  <text x="100" y="110" font-size="52" font-weight="800" fill="#ffffff">Operational AI: <tspan fill="#1E9BF0">run the governed service</tspan></text>
+  <text x="100" y="158" font-size="26" fill="#9AA6C2">The road doesn't stop at the gate - it extends into deploy, scale, and observe.</text>
+  <g>
+    <rect x="100" y="230" width="330" height="150" rx="16" fill="#12203F" stroke="#26365C" stroke-width="2"/>
+    <text x="130" y="278" font-size="24" font-weight="800" fill="#1E9BF0">DEPLOY</text>
+    <text x="130" y="320" font-size="22" fill="#ffffff">signed image,</text>
+    <text x="130" y="350" font-size="22" fill="#ffffff">pinned by digest</text>
+    <rect x="470" y="230" width="330" height="150" rx="16" fill="#12203F" stroke="#26365C" stroke-width="2"/>
+    <text x="500" y="278" font-size="24" font-weight="800" fill="#1E9BF0">RUN</text>
+    <text x="500" y="320" font-size="22" fill="#ffffff">read_only · non-root</text>
+    <text x="500" y="350" font-size="22" fill="#ffffff">cap_drop ALL</text>
+    <rect x="840" y="230" width="330" height="150" rx="16" fill="#12203F" stroke="#26365C" stroke-width="2"/>
+    <text x="870" y="278" font-size="24" font-weight="800" fill="#1E9BF0">SCALE</text>
+    <text x="870" y="320" font-size="22" fill="#ffffff">Docker / Kubernetes</text>
+    <text x="870" y="350" font-size="22" fill="#ffffff">golden templates</text>
+    <rect x="1210" y="230" width="290" height="150" rx="16" fill="#0E2A1E" stroke="#34D399" stroke-width="2"/>
+    <text x="1240" y="278" font-size="24" font-weight="800" fill="#34D399">OBSERVE</text>
+    <text x="1240" y="320" font-size="22" fill="#ffffff">audit + metrics,</text>
+    <text x="1240" y="350" font-size="22" fill="#ffffff">policy in effect</text>
+  </g>
+  <g stroke="#3A4A6E" stroke-width="4" fill="#3A4A6E">
+    <line x1="432" y1="305" x2="466" y2="305"/><polygon points="466,297 482,305 466,313"/>
+    <line x1="802" y1="305" x2="836" y2="305"/><polygon points="836,297 852,305 836,313"/>
+    <line x1="1172" y1="305" x2="1206" y2="305"/><polygon points="1206,297 1222,305 1206,313"/>
+  </g>
+  <rect x="100" y="430" width="1400" height="250" rx="18" fill="#0E1B3A" stroke="#1E9BF0" stroke-width="2"/>
+  <text x="132" y="478" font-size="22" font-weight="800" fill="#1E9BF0" letter-spacing="2">RUNTIME BOUNDARY = THE SANDBOX DISCIPLINE, IN PROD</text>
+  <g font-size="24" fill="#ffffff">
+    <text x="132" y="530">· <tspan font-weight="700">read_only rootfs · cap_drop ALL · non-root</tspan> - least privilege at run time</text>
+    <text x="132" y="574">· image <tspan font-weight="700">pinned by digest</tspan>, verified at admission - only what the gate signed runs</text>
+    <text x="132" y="618">· MCP called as a <tspan font-weight="700">signed, read-only client</tspan> through the governed gateway</text>
+    <text x="132" y="662">· scale on Docker or Kubernetes from <tspan font-weight="700">golden, declarative templates</tspan></text>
+  </g>
+  <text x="100" y="752" font-size="30" font-weight="700" fill="#ffffff">The agent that BUILDS runs in a box - the service it BECOMES <tspan fill="#34D399" font-weight="800">runs in a box too.</tspan></text>
+</svg>
+
+Note: This is Operational AI in one frame - the same discipline, now at run time. Deploy the signed image, pinned by digest and verified at admission so only what the gate signed ever runs. Run it under least privilege: read-only rootfs, all capabilities dropped, non-root - the exact posture we gave the sandbox, now in production. The service invokes MCP as a signed, read-only client through the same governed gateway. And you scale it on Docker or Kubernetes from golden, declarative templates, not hand-rolled YAML. The line at the bottom is the whole talk: the agent that builds runs in a box, and the service it becomes runs in a box too - least privilege on both ends of the road.
+
+---
+
+# Day-2 governance: the incident becomes a query
 
 ```console
-$ docker mcp catalog pull docker/mcp-catalog-dhi
-  ✓ pulled 11 hardened MCP servers
-  ✓ signatures verified (Docker, Inc.)
+$ # the NEXT 2:47 AM commit lands. This time you can ask:
+$ docker scout attest get --predicate-type slsa --verify \
+    catalog-service@sha256:9f2c…
+    ✓ signature verified (keyless, Fulcio root)
+  builder: docker.com/dhi/builder
+  source:  git+github.com/acme/catalog@<commit-sha>
 
-$ docker mcp gateway run --catalog docker/mcp-catalog-dhi
-  filesystem (Hardened) → verifying provenance... ✓ signed, SBOM present
-  read_only rootfs · cap_drop ALL · secrets mounted into target only
-  Gateway ready. An unsigned or tampered server would be refused here.
+$ sbx audit log --since 02:00 --actor svc-build-agent
+  02:47  invokeTool  dhi_get_image_cves          allow
+  02:47  network     registry.npmjs.org          allow
+  02:47  network     http-intake.datadoghq.com   DENY
 ```
 
-An agent is only as governed as the tools it can reach. **DHI MCP** servers are signed, SBOM'd and sandboxed at runtime.
+Policy is authored once in **Docker Hub AI Governance**, syncs at `docker login`, and **fails closed**. Every decision is written to a JSONL audit log.
 
-Note: Second, the tools. An agent calls MCP servers - filesystem, git, github, databases - and each one is code running with access to your stuff. If those are unsigned images off the internet, you've governed the build and left the runtime wide open. DHI MCP is a catalog of hardened MCP servers: built on a DHI base, signed, with SBOMs, and the gateway verifies the signature before it runs one, then sandboxes it - read-only rootfs, all capabilities dropped, secrets scoped to the target. Same three moves - prove, harden, enforce - applied to the agent's tools, not just its artifacts.
+Note: And here's the payoff - the callback to where we opened. When the next 2:47 AM commit lands, you don't run a forensics project. You ask. docker scout attest verifies the signature and hands you the builder and the exact source commit - provenance, not a guess. And the sandbox audit log shows every action the agent took: which tools it invoked, which hosts it reached, and - critically - what the policy blocked, like that datadog exfil attempt, denied and recorded. The controls run in production because policy is authored once in Docker Hub AI Governance, synced at docker login, fails closed, and can't be overridden locally. Who approved that build? Now it's a query against attestations and an audit log - not a shrug.
+
+---
+
+<!-- chrome: false -->
+
+<!-- chrome: false -->
+
+<svg viewBox="0 0 1600 900" width="100%" height="100%" role="img" aria-label="Your security framework in seven steps" style="position:absolute;inset:0;width:100%;height:100%;object-fit:contain;background:#0B1533" font-family="Arial, Helvetica, sans-serif">
+  <rect width="1600" height="900" fill="#0B1533"/>
+  <text x="100" y="120" font-size="52" font-weight="800" fill="#ffffff">Your security framework - <tspan fill="#1E9BF0">seven steps</tspan></text>
+  <g>
+    <g transform="translate(100,180)"><rect width="1400" height="82" rx="12" fill="#12203F"/><rect width="7" height="82" rx="3" fill="#1E9BF0"/><text x="48" y="41" dominant-baseline="central" font-size="34" font-weight="800" fill="#5B8CFF">1</text><text x="120" y="41" dominant-baseline="central" font-size="27" font-weight="700" fill="#ffffff">Know what's in your images</text><text x="760" y="41" dominant-baseline="central" font-size="24" fill="#9AA6C2">SBOM + VEX</text></g>
+    <g transform="translate(100,272)"><rect width="1400" height="82" rx="12" fill="#12203F"/><rect width="7" height="82" rx="3" fill="#1E9BF0"/><text x="48" y="41" dominant-baseline="central" font-size="34" font-weight="800" fill="#5B8CFF">2</text><text x="120" y="41" dominant-baseline="central" font-size="27" font-weight="700" fill="#ffffff">Verify where they came from</text><text x="760" y="41" dominant-baseline="central" font-size="24" fill="#9AA6C2">SLSA provenance + signing</text></g>
+    <g transform="translate(100,364)"><rect width="1400" height="82" rx="12" fill="#12203F"/><rect width="7" height="82" rx="3" fill="#1E9BF0"/><text x="48" y="41" dominant-baseline="central" font-size="34" font-weight="800" fill="#5B8CFF">3</text><text x="120" y="41" dominant-baseline="central" font-size="27" font-weight="700" fill="#ffffff">Start from a trusted base</text><text x="760" y="41" dominant-baseline="central" font-size="24" fill="#9AA6C2">Docker Hardened Images</text></g>
+    <g transform="translate(100,456)"><rect width="1400" height="82" rx="12" fill="#12203F"/><rect width="7" height="82" rx="3" fill="#1E9BF0"/><text x="48" y="41" dominant-baseline="central" font-size="34" font-weight="800" fill="#5B8CFF">4</text><text x="120" y="41" dominant-baseline="central" font-size="27" font-weight="700" fill="#ffffff">Enforce at the pipeline</text><text x="760" y="41" dominant-baseline="central" font-size="24" fill="#9AA6C2">Docker Scout build policies · fail closed</text></g>
+    <g transform="translate(100,548)"><rect width="1400" height="82" rx="12" fill="#12203F"/><rect width="7" height="82" rx="3" fill="#1E9BF0"/><text x="48" y="41" dominant-baseline="central" font-size="34" font-weight="800" fill="#5B8CFF">5</text><text x="120" y="41" dominant-baseline="central" font-size="27" font-weight="700" fill="#ffffff">Isolate your agents</text><text x="760" y="41" dominant-baseline="central" font-size="24" fill="#9AA6C2">sbx microVM + MCP gateway</text></g>
+    <g transform="translate(100,640)"><rect width="1400" height="82" rx="12" fill="#0E2A1E"/><rect width="7" height="82" rx="3" fill="#34D399"/><text x="48" y="41" dominant-baseline="central" font-size="34" font-weight="800" fill="#34D399">6</text><text x="120" y="41" dominant-baseline="central" font-size="27" font-weight="700" fill="#ffffff">Package the boundary</text><text x="760" y="41" dominant-baseline="central" font-size="24" fill="#9AA6C2">ship a hardened sbx kit, pinned by digest</text></g>
+    <g transform="translate(100,732)"><rect width="1400" height="82" rx="12" fill="#0E2A1E"/><rect width="7" height="82" rx="3" fill="#34D399"/><text x="48" y="41" dominant-baseline="central" font-size="34" font-weight="800" fill="#34D399">7</text><text x="120" y="41" dominant-baseline="central" font-size="27" font-weight="700" fill="#ffffff">Operate &amp; govern in prod</text><text x="760" y="41" dominant-baseline="central" font-size="24" fill="#9AA6C2">runtime hardening + audit + policy sync</text></g>
+  </g>
+</svg>
+
+Note: If you take one slide home, take this one - the framework, now seven steps. One: know what's in your images with SBOM and VEX. Two: verify where they came from with SLSA and signing. Three: start from a trusted base - DHI. Four: enforce at the pipeline with policies that fail closed. Five: isolate your agents with the sandbox and the MCP gateway. Those five were the labs. The two in green are what we added today: six, package that boundary as a hardened sbx kit pinned by digest, so it scales across the org without drift; and seven, operate and govern it in production - runtime hardening, an audit trail, and policy synced from the hub. Build it, box it, ship the kit, run it. That's the whole playbook.
 
 ---
 
@@ -393,69 +637,7 @@ docker scout policy catalog-service:baseline
 
 ::terminal{id=demo height=300}
 
-Note: This is the simulator from the hands-on lab - the exact commands you just saw. Run the policy on the 2:47 AM image and watch it fail three of three. In the lab you take that same image and walk it all the way to green: SBOM, hardened base, signature, and the CI gate. Let me point you there.
-
----
-
-<!-- chrome: false -->
-
-<svg viewBox="0 0 1600 900" width="100%" height="100%" role="img" aria-label="The finish line: from an unapproved build to a governed one" style="position:absolute;inset:0;width:100%;height:100%;object-fit:contain;background:#0B1533" font-family="Arial, Helvetica, sans-serif">
-  <rect width="1600" height="900" fill="#0B1533"/>
-  <text x="100" y="120" font-size="56" font-weight="800" fill="#ffffff">One frame</text>
-  <text x="100" y="172" font-size="26" fill="#9AA6C2">From the build nobody approved to one you can prove.</text>
-  <rect x="70" y="330" width="250" height="250" rx="16" fill="#2A1215" stroke="#F0533F" stroke-width="2"/>
-  <text x="100" y="376" font-size="22" font-weight="800" fill="#F0533F" letter-spacing="2">02:47 BUILD</text>
-  <text x="100" y="424" font-size="24" fill="#ffffff">FROM node:20</text>
-  <text x="100" y="460" font-size="24" fill="#ffffff">431 packages</text>
-  <text x="100" y="496" font-size="24" fill="#ffffff">runs as root</text>
-  <text x="100" y="532" font-size="24" fill="#ffffff">unsigned</text>
-  <text x="100" y="566" font-size="20" font-weight="700" fill="#F0533F">nothing you can prove</text>
-  <g>
-    <rect x="368" y="330" width="196" height="250" rx="14" fill="#12203F" stroke="#26365C" stroke-width="2"/>
-    <text x="466" y="378" text-anchor="middle" font-size="24" font-weight="800" fill="#1E9BF0">PROVE</text>
-    <text x="466" y="448" text-anchor="middle" font-size="21" fill="#ffffff">SBOM</text>
-    <text x="466" y="482" text-anchor="middle" font-size="21" fill="#ffffff">VEX</text>
-    <text x="466" y="516" text-anchor="middle" font-size="21" fill="#ffffff">SLSA</text>
-    <rect x="596" y="330" width="196" height="250" rx="14" fill="#12203F" stroke="#26365C" stroke-width="2"/>
-    <text x="694" y="378" text-anchor="middle" font-size="24" font-weight="800" fill="#1E9BF0">DEFAULT</text>
-    <text x="694" y="456" text-anchor="middle" font-size="21" fill="#ffffff">Hardened</text>
-    <text x="694" y="490" text-anchor="middle" font-size="21" fill="#ffffff">base (DHI)</text>
-    <rect x="824" y="330" width="196" height="250" rx="14" fill="#12203F" stroke="#26365C" stroke-width="2"/>
-    <text x="922" y="378" text-anchor="middle" font-size="24" font-weight="800" fill="#1E9BF0">ENFORCE</text>
-    <text x="922" y="456" text-anchor="middle" font-size="21" fill="#ffffff">Sign +</text>
-    <text x="922" y="490" text-anchor="middle" font-size="21" fill="#ffffff">policy gate</text>
-    <rect x="1052" y="330" width="196" height="250" rx="14" fill="#12203F" stroke="#26365C" stroke-width="2"/>
-    <text x="1150" y="378" text-anchor="middle" font-size="24" font-weight="800" fill="#1E9BF0">CONTAIN</text>
-    <text x="1150" y="456" text-anchor="middle" font-size="21" fill="#ffffff">Runtime</text>
-    <text x="1150" y="490" text-anchor="middle" font-size="21" fill="#ffffff">boundary</text>
-  </g>
-  <rect x="1296" y="330" width="234" height="250" rx="16" fill="#0E2A1E" stroke="#34D399" stroke-width="2"/>
-  <text x="1413" y="376" text-anchor="middle" font-size="22" font-weight="800" fill="#34D399" letter-spacing="1">SHIPPED</text>
-  <text x="1413" y="440" text-anchor="middle" font-size="22" fill="#ffffff">signed</text>
-  <text x="1413" y="474" text-anchor="middle" font-size="22" fill="#ffffff">attested</text>
-  <text x="1413" y="508" text-anchor="middle" font-size="22" fill="#ffffff">policy-gated</text>
-  <text x="1413" y="556" text-anchor="middle" font-size="19" font-weight="700" fill="#34D399">close your laptop</text>
-  <g stroke="#3A4A6E" stroke-width="4" fill="#3A4A6E">
-    <line x1="324" y1="455" x2="360" y2="455"/><polygon points="360,447 376,455 360,463"/>
-    <line x1="792" y1="455" x2="816" y2="455"/><polygon points="816,447 832,455 816,463"/>
-    <line x1="1020" y1="455" x2="1044" y2="455"/><polygon points="1044,447 1060,455 1044,463"/>
-  </g>
-  <g stroke="#34D399" stroke-width="4" fill="#34D399"><line x1="1252" y1="455" x2="1288" y2="455"/><polygon points="1288,447 1304,455 1288,463"/></g>
-  <text x="100" y="700" font-size="30" font-weight="700" fill="#ffffff">Prove · Default · Enforce · Contain - <tspan fill="#1E9BF0">all in the pipeline the change already runs through.</tspan></text>
-  <text x="100" y="748" font-size="24" fill="#9AA6C2">One bar for humans and agents. Fails closed.</text>
-</svg>
-
-Note: Three moves, one model. Prove, default, enforce. None of them slow the agent down - they run in the pipeline the change already goes through. That's the goal: keep the agents fast, keep yourself in control. Those aren't in tension.
-
----
-
-# Takeaways
-
-1. A governance model that **fits your existing CI/CD** - not a parallel process.
-2. **SBOM / VEX / SLSA** as the audit trail for agent-driven changes.
-3. **Sign + policy gate**: agents clear the same bar as humans, automatically.
-
-Note: Three things to leave with. A model that fits the pipeline you already run. Supply-chain evidence as the audit trail. And a policy gate that applies one standard whether a human or an agent authored the change.
+Note: This is the simulator from the hands-on lab - the exact commands you just saw. Run the policy on the 2:47 AM image and watch it fail. In the lab you take that same image and walk it all the way to green: SBOM, hardened base, signature, the CI gate - and then sandbox the agent and wire the MCP gateway. Let me point you there.
 
 ---
 
@@ -466,13 +648,13 @@ byline: "agentic.dockerworkshop.com"
 
 # Do the lab
 
-Take the 2:47 AM image and drive it to a signed, attested, policy-gated build. In your browser, nothing to install.
+Take the 2:47 AM image and drive it to a signed, attested, policy-gated build - then box the agent. In your browser, nothing to install.
 
 ```console
 $ open agentic.dockerworkshop.com
 ```
 
-Note: Right next to this deck is a hands-on lab that runs entirely in your browser - no install. You take the exact image the agent shipped and walk it through every move here: SBOM, hardened base, signature, CI gate. Bookmark it.
+Note: Right next to this deck is a hands-on lab that runs entirely in your browser - no install. You take the exact image the agent shipped and walk it through every move here: SBOM, hardened base, signature, CI gate, then the sandbox and the gateway. Bookmark it.
 
 ---
 
@@ -487,4 +669,4 @@ Now you can answer - and prove it.
 
 **Thank you. Questions?**
 
-Note: Who approved that build? With evidence, a governed base, and an enforceable gate, the answer is: the same policy that approves every build, applied to the agent exactly as to a human, with a trail to prove it. Thank you - questions?
+Note: Who approved that build? With evidence, a governed base, an enforceable gate, a boxed agent, a kit that spreads that boundary across the org, and an operations story that keeps it alive in production - the answer is: the same policy that approves every build, applied to the agent exactly as to a human, with a trail to prove it. Thank you - questions?

@@ -1,15 +1,19 @@
 # "Who Approved That Build?" — the talk deck, presented in Simspace as native
-# markdown slides (no image assets: every slide is authored text/layout in
-# deck.md, so the deck is diffable and edited in place). The sibling hands-on
-# lab's simulator is wired in, so the scripted terminal demos from the lab can be
-# spliced straight into the deck (see spec/slidedeck.md in dockersamples/simspace).
+# markdown slides. A hybrid deck: our framing slides (title, incident, the
+# "manufacture trust" hinge, "one gate two audiences", and the new sbx-kit +
+# operations sections) are authored text/SVG in deck.md, while the four-questions
+# spine (DHI → CI → sandboxing) uses full-bleed image slides under assets/. The
+# sibling hands-on lab's simulator is wired in, so the scripted terminal demos
+# from the lab can be spliced straight into the deck (see spec/slidedeck.md in
+# dockersamples/simspace).
 kind: slides
 title: "Who Approved That Build? — Slides"
 description: >
-  Docker AI governance for the agentic DevOps pipeline. SBOM/VEX/SLSA as the
-  evidence layer, Docker Hardened Images as a governed baseline, and signing +
-  build policies as an enforceable CI gate that holds agents to the same bar as
-  humans. Watch the talk, then do the lab.
+  Docker AI governance across the whole agentic DevOps road. SBOM/VEX/SLSA as the
+  evidence layer, Docker Hardened Images as a governed baseline, signing + build
+  policies as an enforceable CI gate — then sandboxing the agent, packaging that
+  boundary as a reusable sbx kit, and operating the governed service in
+  production. Watch the talk, then do the lab.
 
 # Landing-page card. `order: 1` puts the deck ahead of the lab, so it reads as
 # "watch the talk, then do the lab". labs.json is GENERATED from this block —
@@ -17,8 +21,8 @@ description: >
 catalog:
   icon: slideshow
   order: 1
-  tags: ["ai governance", "supply chain", "sbom", "slsa", "signing", "start here"]
-  estimatedMinutes: 40
+  tags: ["ai governance", "supply chain", "sbom", "slsa", "signing", "sandboxes", "start here"]
+  estimatedMinutes: 50
 
 version: "2.0.0"
 
