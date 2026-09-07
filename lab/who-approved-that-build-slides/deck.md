@@ -122,32 +122,43 @@ Note: Story two. "Organize my wife's desktop" - permission was supposedly tempor
 
 <svg viewBox="0 0 1600 900" width="100%" height="100%" role="img" aria-label="You can't inherit trust, you manufacture it" style="position:absolute;inset:0;width:100%;height:100%;object-fit:contain;background:#0B1533" font-family="Arial, Helvetica, sans-serif">
   <rect width="1600" height="900" fill="#0B1533"/>
-  <text x="100" y="120" font-size="56" font-weight="800" fill="#ffffff">You can't inherit trust. <tspan fill="#1E9BF0">Manufacture it.</tspan></text>
-  <rect x="100" y="210" width="600" height="290" rx="18" fill="#12203F" stroke="#26365C" stroke-width="2"/>
-  <text x="132" y="262" font-size="22" font-weight="800" fill="#9AA6C2" letter-spacing="3">INHERITED TRUST</text>
-  <text x="132" y="322" font-size="32" font-weight="700" fill="#ffffff">Code review · CI · ownership</text>
-  <text x="132" y="364" font-size="24" fill="#9AA6C2">A reviewer. A pipeline. A named owner.</text>
-  <rect x="132" y="410" width="288" height="60" rx="30" fill="#0B1533" stroke="#5A4A2A" stroke-width="2"/>
-  <circle cx="166" cy="440" r="8" fill="#F0A84A"/>
-  <text x="188" y="440" font-size="25" font-weight="700" fill="#F0A84A" dominant-baseline="central">runs at HUMAN speed</text>
-  <rect x="900" y="210" width="600" height="290" rx="18" fill="#12203F" stroke="#26365C" stroke-width="2"/>
-  <text x="932" y="262" font-size="22" font-weight="800" fill="#9AA6C2" letter-spacing="3">AGENTS</text>
-  <text x="932" y="322" font-size="32" font-weight="700" fill="#ffffff">Pull deps · write Dockerfiles</text>
-  <text x="932" y="362" font-size="32" font-weight="700" fill="#ffffff">edit infra · trigger builds</text>
-  <rect x="932" y="410" width="300" height="60" rx="30" fill="#0B1533" stroke="#5A2A2A" stroke-width="2"/>
-  <circle cx="966" cy="440" r="8" fill="#F0533F"/>
-  <text x="988" y="440" font-size="25" font-weight="700" fill="#F0533F" dominant-baseline="central">run at MACHINE speed</text>
-  <circle cx="800" cy="355" r="46" fill="#1E9BF0"/>
-  <text x="800" y="355" text-anchor="middle" dominant-baseline="central" font-size="30" font-weight="800" fill="#0B1533">vs</text>
-  <rect x="100" y="558" width="1400" height="152" rx="18" fill="#0E1B3A" stroke="#1E9BF0" stroke-width="2"/>
-  <text x="132" y="602" font-size="22" font-weight="800" fill="#1E9BF0" letter-spacing="2">MANUFACTURE IT</text>
-  <g font-size="25" font-weight="700" fill="#ffffff">
-    <rect x="132" y="622" width="316" height="62" rx="12" fill="#12325E"/><text x="290" y="653" text-anchor="middle" dominant-baseline="central">Evidence</text>
-    <rect x="472" y="622" width="316" height="62" rx="12" fill="#12325E"/><text x="630" y="653" text-anchor="middle" dominant-baseline="central">Hardened base</text>
-    <rect x="812" y="622" width="316" height="62" rx="12" fill="#12325E"/><text x="970" y="653" text-anchor="middle" dominant-baseline="central">Sign + gate</text>
-    <rect x="1152" y="622" width="316" height="62" rx="12" fill="#12325E"/><text x="1310" y="653" text-anchor="middle" dominant-baseline="central">Runtime boundary</text>
+  <text x="100" y="112" font-size="62" font-weight="800" fill="#ffffff">You can't <tspan fill="#F0533F">inherit</tspan> trust.</text>
+  <text x="100" y="186" font-size="62" font-weight="800" fill="#34D399">You manufacture it.</text>
+  <text x="100" y="234" font-size="26" fill="#9AA6C2">Every control we trusted ran at human speed. Agents run at machine speed - so the old trust never transfers.</text>
+
+  <rect x="100" y="264" width="640" height="226" rx="18" fill="#12203F" stroke="#26365C" stroke-width="2"/>
+  <text x="132" y="310" font-size="22" font-weight="800" fill="#F0A84A" letter-spacing="2">INHERITED TRUST · HUMAN SPEED</text>
+  <g font-size="25" fill="#C8D3F5">
+    <text x="140" y="366">A reviewer reads the PR</text>
+    <text x="140" y="416">CI runs the config a human wrote</text>
+    <text x="140" y="466">A named owner signs off</text>
   </g>
-  <text x="100" y="788" font-size="30" font-weight="700" fill="#ffffff">Don't trust the agent. <tspan fill="#34D399" font-weight="800">Trust the system</tspan> - enough to close your laptop while the work runs.</text>
+  <g stroke="#E06A5A" stroke-width="3" opacity="0.9">
+    <line x1="140" y1="358" x2="452" y2="358"/>
+    <line x1="140" y1="408" x2="568" y2="408"/>
+    <line x1="140" y1="458" x2="452" y2="458"/>
+  </g>
+
+  <rect x="860" y="264" width="640" height="226" rx="18" fill="#2A1420" stroke="#5A2A2A" stroke-width="2"/>
+  <text x="892" y="310" font-size="22" font-weight="800" fill="#F0533F" letter-spacing="2">THE AGENT · MACHINE SPEED, EVERY REPO</text>
+  <g font-size="25" fill="#ffffff">
+    <text x="892" y="366">Picks the base image</text>
+    <text x="892" y="416">Pulls 812 lines of dependencies</text>
+    <text x="892" y="466">Rewrites the Dockerfile, triggers the build</text>
+  </g>
+
+  <text x="800" y="532" text-anchor="middle" font-size="29" font-weight="700" fill="#ffffff">The supply chain didn't change - the <tspan fill="#F0533F">review step</tspan> did. It got skipped.</text>
+
+  <rect x="100" y="562" width="1400" height="232" rx="18" fill="#0E1B3A" stroke="#1E9BF0" stroke-width="2"/>
+  <text x="132" y="606" font-size="22" font-weight="800" fill="#1E9BF0" letter-spacing="2">SO YOU MANUFACTURE IT · ONE CONTROL PER QUESTION</text>
+  <g>
+    <g transform="translate(132,628)"><rect width="316" height="142" rx="14" fill="#12325E"/><circle cx="50" cy="52" r="26" fill="#1E9BF0"/><text x="50" y="52" text-anchor="middle" dominant-baseline="central" font-size="30" font-weight="800" fill="#0B1533">1</text><text x="92" y="46" dominant-baseline="central" font-size="30" font-weight="800" fill="#ffffff">Evidence</text><text x="26" y="106" font-size="21" fill="#9AA6C2">SBOM · VEX · SLSA</text></g>
+    <g transform="translate(472,628)"><rect width="316" height="142" rx="14" fill="#12325E"/><circle cx="50" cy="52" r="26" fill="#1E9BF0"/><text x="50" y="52" text-anchor="middle" dominant-baseline="central" font-size="30" font-weight="800" fill="#0B1533">2</text><text x="92" y="46" dominant-baseline="central" font-size="30" font-weight="800" fill="#ffffff">Baseline</text><text x="26" y="106" font-size="21" fill="#9AA6C2">Docker Hardened Image</text></g>
+    <g transform="translate(812,628)"><rect width="316" height="142" rx="14" fill="#12325E"/><circle cx="50" cy="52" r="26" fill="#1E9BF0"/><text x="50" y="52" text-anchor="middle" dominant-baseline="central" font-size="30" font-weight="800" fill="#0B1533">3</text><text x="92" y="46" dominant-baseline="central" font-size="30" font-weight="800" fill="#ffffff">Gate</text><text x="26" y="106" font-size="21" fill="#9AA6C2">policy · sign · admit</text></g>
+    <g transform="translate(1152,628)"><rect width="316" height="142" rx="14" fill="#0E2A1E" stroke="#34D399" stroke-width="2"/><circle cx="50" cy="52" r="26" fill="#34D399"/><text x="50" y="52" text-anchor="middle" dominant-baseline="central" font-size="30" font-weight="800" fill="#0B1533">4</text><text x="92" y="46" dominant-baseline="central" font-size="30" font-weight="800" fill="#ffffff">Boundary</text><text x="26" y="106" font-size="21" fill="#9AA6C2">sandbox at runtime</text></g>
+  </g>
+
+  <text x="100" y="852" font-size="28" font-weight="700" fill="#ffffff">Don't trust the agent. <tspan fill="#34D399" font-weight="800">Trust the system</tspan> - enough to close your laptop while the work runs.</text>
 </svg>
 
 Note: This is the hinge of the talk. For decades we inherited trust from people and process - a reviewer, a CI job, a named owner - and every bit of it ran at human speed. Agents run faster than any of it, so you can't inherit that trust anymore. You manufacture it. And notice the goal was never to trust the agent - it's to trust the system around it enough that you can close your laptop and the work keeps going. Everything after this slide is how you manufacture that trust - and those four blocks at the bottom are the four questions we're about to walk.
@@ -620,7 +631,9 @@ $ docker scout attest get --predicate-type slsa --verify catalog-service@sha256:
 
 **The audit shows the _connection_, not the _payload_** - that `query_loki_logs` was *called and allowed*, never the log lines it returned. It's a governance/forensics trail (who reached what, allowed or denied), **not** DLP. Policy is authored once in **Docker Hub AI Governance**, synced at `docker login`, and **fails closed**.
 
-Note: The payoff, and the callback to where we opened. When the next 2:47 AM happens, you don't run a forensics project - you ask. The sbx audit log shows every action the ops agent took: the Grafana queries it ran, allowed; the create_incident it tried, denied by the read-only policy; the paste-site it reached for, denied by the allowlist. And docker scout attest verifies the fix's provenance - builder and source commit, signed. But be honest about what the audit is: it records the connection, not the payload - that query_loki_logs was called and allowed, not which log lines came back. It answers "what did the agent reach, and was it allowed?" - a governance trail, not content inspection or DLP. For request and response bodies you need app-level observability, a different layer. Same as always: policy authored once in Docker Hub, synced at login, fails closed, can't be overridden locally. Who approved that build - and who touched it at 3am? Now both are a query.
+And it doesn't stay in Docker: that same decision stream forwards **server-side from Docker Cloud** to your SIEM - Splunk, Datadog, Dynatrace, or any HTTPS endpoint - so the evidence lands where your SOC already lives, with nothing for the agent to disable. `source:docker-audit @decision:AUDIT_DECISION_DENY`
+
+Note: The payoff, and the callback to where we opened. When the next 2:47 AM happens, you don't run a forensics project - you ask. The sbx audit log shows every action the ops agent took: the Grafana queries it ran, allowed; the create_incident it tried, denied by the read-only policy; the paste-site it reached for, denied by the allowlist. And docker scout attest verifies the fix's provenance - builder and source commit, signed. But be honest about what the audit is: it records the connection, not the payload - that query_loki_logs was called and allowed, not which log lines came back. It answers "what did the agent reach, and was it allowed?" - a governance trail, not content inspection or DLP. For request and response bodies you need app-level observability, a different layer. Same as always: policy authored once in Docker Hub, synced at login, fails closed, can't be overridden locally. And one line to land for the SOC: this stream doesn't stay in Docker - it forwards server-side from Docker Cloud to whatever SIEM your security team already lives in, Splunk, Datadog or Dynatrace, so the deny you just saw is searchable next to everything else they watch, and there's nothing on the agent's side to switch off. Who approved that build - and who touched it at 3am? Now both are a query.
 
 ---
 
