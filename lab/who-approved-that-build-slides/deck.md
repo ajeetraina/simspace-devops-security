@@ -45,11 +45,35 @@ Note: Here's the road, and it doubles as the four questions we'll keep coming ba
 
 ---
 
-<!-- layout: section -->
+<!-- chrome: false -->
 
-# Autonomy requires guardrails
-
-Agents now act unsupervised, at machine speed, on every repo. The case for governance - before any Docker feature.
+<svg viewBox="0 0 1600 900" width="100%" height="100%" role="img" aria-label="Section: Autonomy requires guardrails" style="position:absolute;inset:0;width:100%;height:100%;max-width:none;max-height:none;object-fit:contain;background:#0C1C41" font-family="Arial, Helvetica, sans-serif">
+  <rect width="1600" height="900" fill="#0C1C41"/>
+  <g fill="none" stroke-linecap="round">
+    <g stroke="#17305F" stroke-width="150" opacity="0.6">
+      <path d="M-120,170 C 320,40 520,320 880,210 S 1420,60 1760,230"/>
+      <path d="M-140,440 C 280,320 560,580 940,470 S 1470,330 1780,530"/>
+      <path d="M-120,720 C 320,600 600,880 980,770 S 1500,650 1800,840"/>
+    </g>
+    <g stroke="#0A1832" stroke-width="120" opacity="0.55">
+      <path d="M-120,300 C 360,190 640,450 1040,330 S 1520,210 1820,390"/>
+      <path d="M-120,600 C 300,520 680,780 1080,660 S 1540,560 1840,720"/>
+    </g>
+  </g>
+  <g transform="translate(112,392)" fill="#ffffff">
+    <rect x="0" y="22" width="20" height="18" rx="2.5"/>
+    <rect x="24" y="22" width="20" height="18" rx="2.5"/>
+    <rect x="48" y="22" width="20" height="18" rx="2.5"/>
+    <rect x="72" y="22" width="20" height="18" rx="2.5"/>
+    <rect x="24" y="1" width="20" height="18" rx="2.5"/>
+    <rect x="48" y="1" width="20" height="18" rx="2.5"/>
+    <rect x="72" y="1" width="20" height="18" rx="2.5"/>
+    <path d="M-16,44 h122 c9,0 15,5 19,12 c10,-8 27,-6 31,4 c-3,10 -15,14 -25,10 c-8,12 -22,18 -41,18 h-95 c-18,0 -33,-10 -37,-27 c-1,-5 -1,-11 -1,-16 c0,-2 1,-3 3,-3 z"/>
+    <circle cx="118" cy="60" r="3" fill="#0C1C41"/>
+  </g>
+  <text x="262" y="452" font-size="48" font-weight="800" fill="#ffffff" letter-spacing="0.5">docker</text>
+  <text x="110" y="580" font-size="80" font-weight="800" fill="#ffffff">Autonomy requires guardrails</text>
+</svg>
 
 Note: This is where the talk really starts. Before any product, the argument: agents now act on their own at machine speed, they're built on a risk model you can't prompt away, and the failures are already in the wild. Three quick beats - what agents do, why they're dangerous by design, and what goes wrong - then we meet the 2:47 AM commit.
 
@@ -290,9 +314,35 @@ Note: Now replace every human with an agent. Same loops, but an agent sits at ea
 
 ---
 
-<!-- layout: section -->
+<!-- chrome: false -->
 
-# What can go wrong?
+<svg viewBox="0 0 1600 900" width="100%" height="100%" role="img" aria-label="Section: What can go wrong?" style="position:absolute;inset:0;width:100%;height:100%;max-width:none;max-height:none;object-fit:contain;background:#0C1C41" font-family="Arial, Helvetica, sans-serif">
+  <rect width="1600" height="900" fill="#0C1C41"/>
+  <g fill="none" stroke-linecap="round">
+    <g stroke="#17305F" stroke-width="150" opacity="0.6">
+      <path d="M-120,170 C 320,40 520,320 880,210 S 1420,60 1760,230"/>
+      <path d="M-140,440 C 280,320 560,580 940,470 S 1470,330 1780,530"/>
+      <path d="M-120,720 C 320,600 600,880 980,770 S 1500,650 1800,840"/>
+    </g>
+    <g stroke="#0A1832" stroke-width="120" opacity="0.55">
+      <path d="M-120,300 C 360,190 640,450 1040,330 S 1520,210 1820,390"/>
+      <path d="M-120,600 C 300,520 680,780 1080,660 S 1540,560 1840,720"/>
+    </g>
+  </g>
+  <g transform="translate(112,392)" fill="#ffffff">
+    <rect x="0" y="22" width="20" height="18" rx="2.5"/>
+    <rect x="24" y="22" width="20" height="18" rx="2.5"/>
+    <rect x="48" y="22" width="20" height="18" rx="2.5"/>
+    <rect x="72" y="22" width="20" height="18" rx="2.5"/>
+    <rect x="24" y="1" width="20" height="18" rx="2.5"/>
+    <rect x="48" y="1" width="20" height="18" rx="2.5"/>
+    <rect x="72" y="1" width="20" height="18" rx="2.5"/>
+    <path d="M-16,44 h122 c9,0 15,5 19,12 c10,-8 27,-6 31,4 c-3,10 -15,14 -25,10 c-8,12 -22,18 -41,18 h-95 c-18,0 -33,-10 -37,-27 c-1,-5 -1,-11 -1,-16 c0,-2 1,-3 3,-3 z"/>
+    <circle cx="118" cy="60" r="3" fill="#0C1C41"/>
+  </g>
+  <text x="262" y="452" font-size="48" font-weight="800" fill="#ffffff" letter-spacing="0.5">docker</text>
+  <text x="110" y="580" font-size="80" font-weight="800" fill="#ffffff">What can go wrong?</text>
+</svg>
 
 Note: So: agents everywhere, acting for us, built on a trifecta you can't prompt away, at every stage of the pipeline. What actually happens when that runs unsupervised? Not hypotheticals - here's what already shipped.
 
