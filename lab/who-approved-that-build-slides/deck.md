@@ -93,33 +93,33 @@ Note: Start with the upside, honestly. Agents are already doing real work across
 
 <!-- chrome: false -->
 
-<svg viewBox="0 0 1600 900" width="100%" height="100%" role="img" aria-label="Then came Claws - the exploding agent ecosystem" style="position:absolute;inset:0;width:100%;height:100%;object-fit:contain;background:#F2F5FB" font-family="Arial, Helvetica, sans-serif">
-  <rect width="1600" height="900" fill="#F2F5FB"/>
-  <text x="72" y="150" font-size="50" font-weight="800" fill="#0A1B3D">Then came <tspan fill="#1E6FE6">Claws.</tspan></text>
-  <g font-size="22" fill="#47506B">
+<svg viewBox="0 0 1600 900" width="100%" height="100%" role="img" aria-label="Then came Claws - the exploding agent ecosystem" style="position:absolute;inset:0;width:100%;height:100%;object-fit:contain;background:#0B1533" font-family="Arial, Helvetica, sans-serif">
+  <rect width="1600" height="900" fill="#0B1533"/>
+  <text x="72" y="150" font-size="50" font-weight="800" fill="#ffffff">Then came <tspan fill="#1E9BF0">Claws.</tspan></text>
+  <g font-size="22" fill="#9AA6C2">
     <text x="72" y="212">Agents that don't just answer - they act.</text>
     <text x="72" y="246">You chat with a Claw and it acts on its own:</text>
     <text x="72" y="280">sends the email, updates the record, makes</text>
     <text x="72" y="314">the payment - all on your behalf.</text>
   </g>
-  <rect x="72" y="368" width="600" height="184" rx="14" fill="#0B1533"/>
+  <rect x="72" y="368" width="600" height="184" rx="14" fill="#0E1B3A" stroke="#1E9BF0" stroke-width="2"/>
   <text x="100" y="418" font-size="20" font-weight="800" fill="#ffffff">Claws turn read access into write access.</text>
   <g font-size="18" fill="#C8D3F5">
     <text x="100" y="452">Every employee now runs an agent touching</text>
     <text x="100" y="480">customer records, financial systems, and the</text>
     <text x="100" y="508">open internet - with their identity attached.</text>
   </g>
-  <text x="760" y="118" font-size="26" font-weight="800" fill="#0A1B3D">The Claw Ecosystem</text>
-  <text x="760" y="148" font-size="17" fill="#6B7690">Open-source personal-agent projects in the OpenClaw family</text>
-  <g transform="translate(760,180)"><rect width="240" height="150" rx="12" fill="#ffffff" stroke="#DCE3F0" stroke-width="1.5"/><rect x="20" y="22" width="34" height="34" rx="8" fill="#1E6FE6"/><text x="66" y="45" font-size="18" font-weight="800" fill="#0A1B3D">OpenClaw</text><rect x="160" y="26" width="60" height="24" rx="12" fill="#EEF2FA"/><text x="190" y="42" text-anchor="middle" font-size="12" font-weight="700" fill="#4A5878">★ 392k</text><text x="20" y="94" font-size="14" fill="#6B7690">Flagship personal AI,</text><text x="20" y="114" font-size="14" fill="#6B7690">the fediverse way</text></g>
-  <g transform="translate(1016,180)"><rect width="240" height="150" rx="12" fill="#ffffff" stroke="#DCE3F0" stroke-width="1.5"/><rect x="20" y="22" width="34" height="34" rx="8" fill="#F0A84A"/><text x="66" y="45" font-size="18" font-weight="800" fill="#0A1B3D">ZeroClaw</text><rect x="160" y="26" width="60" height="24" rx="12" fill="#EEF2FA"/><text x="190" y="42" text-anchor="middle" font-size="12" font-weight="700" fill="#4A5878">★ 22k</text><text x="20" y="94" font-size="14" fill="#6B7690">Fast, autonomous</text><text x="20" y="114" font-size="14" fill="#6B7690">infra (Rust)</text></g>
-  <g transform="translate(1272,180)"><rect width="240" height="150" rx="12" fill="#ffffff" stroke="#DCE3F0" stroke-width="1.5"/><rect x="20" y="22" width="34" height="34" rx="8" fill="#34D399"/><text x="66" y="45" font-size="18" font-weight="800" fill="#0A1B3D">PicoClaw</text><rect x="160" y="26" width="60" height="24" rx="12" fill="#EEF2FA"/><text x="190" y="42" text-anchor="middle" font-size="12" font-weight="700" fill="#4A5878">★ 38k</text><text x="20" y="94" font-size="14" fill="#6B7690">Tiny, deploy-anywhere</text><text x="20" y="114" font-size="14" fill="#6B7690">agent</text></g>
-  <g transform="translate(760,350)"><rect width="240" height="150" rx="12" fill="#ffffff" stroke="#DCE3F0" stroke-width="1.5"/><rect x="20" y="22" width="34" height="34" rx="8" fill="#8B5CF6"/><text x="66" y="45" font-size="18" font-weight="800" fill="#0A1B3D">NanoClaw</text><rect x="160" y="26" width="60" height="24" rx="12" fill="#EEF2FA"/><text x="190" y="42" text-anchor="middle" font-size="12" font-weight="700" fill="#4A5878">★ 50k</text><text x="20" y="94" font-size="14" fill="#6B7690">Lightweight,</text><text x="20" y="114" font-size="14" fill="#6B7690">container-based</text></g>
-  <g transform="translate(1016,350)"><rect width="240" height="150" rx="12" fill="#ffffff" stroke="#DCE3F0" stroke-width="1.5"/><rect x="20" y="22" width="34" height="34" rx="8" fill="#EF4444"/><text x="66" y="45" font-size="18" font-weight="800" fill="#0A1B3D">NemoClaw</text><rect x="160" y="26" width="60" height="24" rx="12" fill="#EEF2FA"/><text x="190" y="42" text-anchor="middle" font-size="12" font-weight="700" fill="#4A5878">★ 22k</text><text x="20" y="94" font-size="14" fill="#6B7690">Sandboxed agents,</text><text x="20" y="114" font-size="14" fill="#6B7690">managed inference</text></g>
-  <g transform="translate(1272,350)"><rect width="240" height="150" rx="12" fill="#ffffff" stroke="#DCE3F0" stroke-width="1.5"/><rect x="20" y="22" width="34" height="34" rx="8" fill="#0EA5E9"/><text x="66" y="45" font-size="18" font-weight="800" fill="#0A1B3D">ClawHub</text><rect x="160" y="26" width="60" height="24" rx="12" fill="#EEF2FA"/><text x="190" y="42" text-anchor="middle" font-size="12" font-weight="700" fill="#4A5878">★ 8k</text><text x="20" y="94" font-size="14" fill="#6B7690">Skill + plugin</text><text x="20" y="114" font-size="14" fill="#6B7690">registry</text></g>
-  <g transform="translate(760,520)"><rect width="240" height="150" rx="12" fill="#ffffff" stroke="#DCE3F0" stroke-width="1.5"/><rect x="20" y="22" width="34" height="34" rx="8" fill="#EC4899"/><text x="66" y="45" font-size="18" font-weight="800" fill="#0A1B3D">MicroClaw</text><rect x="160" y="26" width="60" height="24" rx="12" fill="#EEF2FA"/><text x="190" y="42" text-anchor="middle" font-size="12" font-weight="700" fill="#4A5878">★ 730</text><text x="20" y="94" font-size="14" fill="#6B7690">Chat-based agent,</text><text x="20" y="114" font-size="14" fill="#6B7690">built in Rust</text></g>
-  <g transform="translate(1016,520)"><rect width="240" height="150" rx="12" fill="#ffffff" stroke="#DCE3F0" stroke-width="1.5"/><rect x="20" y="22" width="34" height="34" rx="8" fill="#14B8A6"/><text x="66" y="45" font-size="18" font-weight="800" fill="#0A1B3D">TinyClaw</text><rect x="160" y="26" width="60" height="24" rx="12" fill="#EEF2FA"/><text x="190" y="42" text-anchor="middle" font-size="12" font-weight="700" fill="#4A5878">★ 288</text><text x="20" y="94" font-size="14" fill="#6B7690">The original tiny</text><text x="20" y="114" font-size="14" fill="#6B7690">Claw companion</text></g>
-  <g transform="translate(1272,520)"><rect width="240" height="150" rx="12" fill="#ffffff" stroke="#DCE3F0" stroke-width="1.5"/><rect x="20" y="22" width="34" height="34" rx="8" fill="#6366F1"/><text x="66" y="45" font-size="18" font-weight="800" fill="#0A1B3D">SeClaw</text><rect x="160" y="26" width="60" height="24" rx="12" fill="#EEF2FA"/><text x="190" y="42" text-anchor="middle" font-size="12" font-weight="700" fill="#4A5878">★ 166</text><text x="20" y="94" font-size="14" fill="#6B7690">Security auditing &amp;</text><text x="20" y="114" font-size="14" fill="#6B7690">agent-safety eval</text></g>
+  <text x="760" y="118" font-size="26" font-weight="800" fill="#ffffff">The Claw Ecosystem</text>
+  <text x="760" y="148" font-size="17" fill="#9AA6C2">Open-source personal-agent projects in the OpenClaw family</text>
+  <g transform="translate(760,180)"><rect width="240" height="150" rx="12" fill="#12203F" stroke="#26365C" stroke-width="1.5"/><rect x="20" y="22" width="34" height="34" rx="8" fill="#1E6FE6"/><text x="66" y="45" font-size="18" font-weight="800" fill="#ffffff">OpenClaw</text><rect x="160" y="26" width="60" height="24" rx="12" fill="#1B2A4A"/><text x="190" y="42" text-anchor="middle" font-size="12" font-weight="700" fill="#9FC0F0">★ 392k</text><text x="20" y="94" font-size="14" fill="#9AA6C2">Flagship personal AI,</text><text x="20" y="114" font-size="14" fill="#9AA6C2">the fediverse way</text></g>
+  <g transform="translate(1016,180)"><rect width="240" height="150" rx="12" fill="#12203F" stroke="#26365C" stroke-width="1.5"/><rect x="20" y="22" width="34" height="34" rx="8" fill="#F0A84A"/><text x="66" y="45" font-size="18" font-weight="800" fill="#ffffff">ZeroClaw</text><rect x="160" y="26" width="60" height="24" rx="12" fill="#1B2A4A"/><text x="190" y="42" text-anchor="middle" font-size="12" font-weight="700" fill="#9FC0F0">★ 22k</text><text x="20" y="94" font-size="14" fill="#9AA6C2">Fast, autonomous</text><text x="20" y="114" font-size="14" fill="#9AA6C2">infra (Rust)</text></g>
+  <g transform="translate(1272,180)"><rect width="240" height="150" rx="12" fill="#12203F" stroke="#26365C" stroke-width="1.5"/><rect x="20" y="22" width="34" height="34" rx="8" fill="#34D399"/><text x="66" y="45" font-size="18" font-weight="800" fill="#ffffff">PicoClaw</text><rect x="160" y="26" width="60" height="24" rx="12" fill="#1B2A4A"/><text x="190" y="42" text-anchor="middle" font-size="12" font-weight="700" fill="#9FC0F0">★ 38k</text><text x="20" y="94" font-size="14" fill="#9AA6C2">Tiny, deploy-anywhere</text><text x="20" y="114" font-size="14" fill="#9AA6C2">agent</text></g>
+  <g transform="translate(760,350)"><rect width="240" height="150" rx="12" fill="#12203F" stroke="#26365C" stroke-width="1.5"/><rect x="20" y="22" width="34" height="34" rx="8" fill="#8B5CF6"/><text x="66" y="45" font-size="18" font-weight="800" fill="#ffffff">NanoClaw</text><rect x="160" y="26" width="60" height="24" rx="12" fill="#1B2A4A"/><text x="190" y="42" text-anchor="middle" font-size="12" font-weight="700" fill="#9FC0F0">★ 50k</text><text x="20" y="94" font-size="14" fill="#9AA6C2">Lightweight,</text><text x="20" y="114" font-size="14" fill="#9AA6C2">container-based</text></g>
+  <g transform="translate(1016,350)"><rect width="240" height="150" rx="12" fill="#12203F" stroke="#26365C" stroke-width="1.5"/><rect x="20" y="22" width="34" height="34" rx="8" fill="#EF4444"/><text x="66" y="45" font-size="18" font-weight="800" fill="#ffffff">NemoClaw</text><rect x="160" y="26" width="60" height="24" rx="12" fill="#1B2A4A"/><text x="190" y="42" text-anchor="middle" font-size="12" font-weight="700" fill="#9FC0F0">★ 22k</text><text x="20" y="94" font-size="14" fill="#9AA6C2">Sandboxed agents,</text><text x="20" y="114" font-size="14" fill="#9AA6C2">managed inference</text></g>
+  <g transform="translate(1272,350)"><rect width="240" height="150" rx="12" fill="#12203F" stroke="#26365C" stroke-width="1.5"/><rect x="20" y="22" width="34" height="34" rx="8" fill="#0EA5E9"/><text x="66" y="45" font-size="18" font-weight="800" fill="#ffffff">ClawHub</text><rect x="160" y="26" width="60" height="24" rx="12" fill="#1B2A4A"/><text x="190" y="42" text-anchor="middle" font-size="12" font-weight="700" fill="#9FC0F0">★ 8k</text><text x="20" y="94" font-size="14" fill="#9AA6C2">Skill + plugin</text><text x="20" y="114" font-size="14" fill="#9AA6C2">registry</text></g>
+  <g transform="translate(760,520)"><rect width="240" height="150" rx="12" fill="#12203F" stroke="#26365C" stroke-width="1.5"/><rect x="20" y="22" width="34" height="34" rx="8" fill="#EC4899"/><text x="66" y="45" font-size="18" font-weight="800" fill="#ffffff">MicroClaw</text><rect x="160" y="26" width="60" height="24" rx="12" fill="#1B2A4A"/><text x="190" y="42" text-anchor="middle" font-size="12" font-weight="700" fill="#9FC0F0">★ 730</text><text x="20" y="94" font-size="14" fill="#9AA6C2">Chat-based agent,</text><text x="20" y="114" font-size="14" fill="#9AA6C2">built in Rust</text></g>
+  <g transform="translate(1016,520)"><rect width="240" height="150" rx="12" fill="#12203F" stroke="#26365C" stroke-width="1.5"/><rect x="20" y="22" width="34" height="34" rx="8" fill="#14B8A6"/><text x="66" y="45" font-size="18" font-weight="800" fill="#ffffff">TinyClaw</text><rect x="160" y="26" width="60" height="24" rx="12" fill="#1B2A4A"/><text x="190" y="42" text-anchor="middle" font-size="12" font-weight="700" fill="#9FC0F0">★ 288</text><text x="20" y="94" font-size="14" fill="#9AA6C2">The original tiny</text><text x="20" y="114" font-size="14" fill="#9AA6C2">Claw companion</text></g>
+  <g transform="translate(1272,520)"><rect width="240" height="150" rx="12" fill="#12203F" stroke="#26365C" stroke-width="1.5"/><rect x="20" y="22" width="34" height="34" rx="8" fill="#6366F1"/><text x="66" y="45" font-size="18" font-weight="800" fill="#ffffff">SeClaw</text><rect x="160" y="26" width="60" height="24" rx="12" fill="#1B2A4A"/><text x="190" y="42" text-anchor="middle" font-size="12" font-weight="700" fill="#9FC0F0">★ 166</text><text x="20" y="94" font-size="14" fill="#9AA6C2">Security auditing &amp;</text><text x="20" y="114" font-size="14" fill="#9AA6C2">agent-safety eval</text></g>
 </svg>
 
 Note: And it is accelerating. A whole ecosystem of personal agents - I'll call them Claws - has exploded, open-source, one for every stack. What is new isn't that they answer; it is that they act. A Claw sends the email, updates the record, makes the payment. That one shift is the whole security story: Claws turn read access into write access, and every employee now runs one with their own identity attached. The names here are a stand-in - the real landscape is just as crowded.
@@ -181,22 +181,22 @@ Note: Here's why you can't prompt your way out of this. Every genuinely useful a
 
 <!-- chrome: false -->
 
-<svg viewBox="0 0 1600 900" width="100%" height="100%" role="img" aria-label="Traditional versus agentic developer workflow" style="position:absolute;inset:0;width:100%;height:100%;object-fit:contain;background:#FFFFFF" font-family="Arial, Helvetica, sans-serif">
-  <rect width="1600" height="900" fill="#FFFFFF"/>
+<svg viewBox="0 0 1600 900" width="100%" height="100%" role="img" aria-label="Traditional versus agentic developer workflow" style="position:absolute;inset:0;width:100%;height:100%;object-fit:contain;background:#0B1533" font-family="Arial, Helvetica, sans-serif">
+  <rect width="1600" height="900" fill="#0B1533"/>
   <defs>
-    <g id="p8p"><circle cx="0" cy="-9" r="10" fill="#26324A"/><path d="M-15,15 C-15,4 -7,0 0,0 C7,0 15,4 15,15 Z" fill="#26324A"/></g>
+    <g id="p8p"><circle cx="0" cy="-9" r="10" fill="#7FB2E6"/><path d="M-15,15 C-15,4 -7,0 0,0 C7,0 15,4 15,15 Z" fill="#7FB2E6"/></g>
     <g id="p8w"><path d="M0,-13 L14,12 L-14,12 Z" fill="none" stroke="#F0A84A" stroke-width="2.5" stroke-linejoin="round"/><rect x="-1.6" y="-5" width="3.2" height="9" rx="1.6" fill="#F0A84A"/><circle cx="0" cy="8" r="1.9" fill="#F0A84A"/></g>
   </defs>
-  <text x="72" y="92" font-size="44" font-weight="800" fill="#0A1B3D">Traditional vs Agentic Developer Workflow</text>
-  <rect x="72" y="150" width="680" height="520" rx="18" fill="#EEF1F8"/>
-  <text x="112" y="218" font-size="22" font-weight="800" fill="#26324A" letter-spacing="1">TRADITIONAL WORKFLOW</text>
+  <text x="72" y="92" font-size="44" font-weight="800" fill="#ffffff">Traditional vs Agentic Developer Workflow</text>
+  <rect x="72" y="150" width="680" height="520" rx="18" fill="#12203F" stroke="#26365C" stroke-width="2"/>
+  <text x="112" y="218" font-size="22" font-weight="800" fill="#9FC0F0" letter-spacing="1">TRADITIONAL WORKFLOW</text>
   <use href="#p8p" transform="translate(132,300)"/>
-  <text x="164" y="306" font-size="19" fill="#1A2438"><tspan font-weight="700">Developer pulls base image</tspan> <tspan fill="#6B7690">- manually, with intent</tspan></text>
+  <text x="164" y="306" font-size="19" fill="#E8EDF7"><tspan font-weight="700">Developer pulls base image</tspan> <tspan fill="#9AA6C2">- manually, with intent</tspan></text>
   <use href="#p8p" transform="translate(132,370)"/>
-  <text x="164" y="376" font-size="19" fill="#1A2438"><tspan font-weight="700">Developer installs dependencies</tspan> <tspan fill="#6B7690">- reviewed in a PR</tspan></text>
+  <text x="164" y="376" font-size="19" fill="#E8EDF7"><tspan font-weight="700">Developer installs dependencies</tspan> <tspan fill="#9AA6C2">- reviewed in a PR</tspan></text>
   <use href="#p8p" transform="translate(132,440)"/>
-  <text x="164" y="446" font-size="19" fill="#1A2438"><tspan font-weight="700">CI pipeline runs</tspan> <tspan fill="#6B7690">- with human-authored config</tspan></text>
-  <rect x="792" y="150" width="680" height="520" rx="18" fill="#0B1533"/>
+  <text x="164" y="446" font-size="19" fill="#E8EDF7"><tspan font-weight="700">CI pipeline runs</tspan> <tspan fill="#9AA6C2">- with human-authored config</tspan></text>
+  <rect x="792" y="150" width="680" height="520" rx="18" fill="#12203F" stroke="#F0A84A" stroke-width="2"/>
   <text x="832" y="218" font-size="22" font-weight="800" fill="#F0A84A" letter-spacing="1">AGENTIC WORKFLOW</text>
   <use href="#p8w" transform="translate(832,290)"/>
   <text x="868" y="296" font-size="19" fill="#E8EDF7"><tspan font-weight="700">Agent pulls base image</tspan> - autonomously</text>
@@ -206,8 +206,8 @@ Note: Here's why you can't prompt your way out of this. Every genuinely useful a
   <text x="868" y="420" font-size="19" fill="#E8EDF7"><tspan font-weight="700">Agent invokes external tools</tspan> - with real credentials</text>
   <use href="#p8w" transform="translate(832,476)"/>
   <text x="868" y="482" font-size="19" fill="#E8EDF7"><tspan font-weight="700">Agent modifies Dockerfile</tspan> - mid-pipeline</text>
-  <rect x="72" y="712" width="6" height="46" fill="#1E6FE6"/>
-  <text x="98" y="746" font-size="24" font-style="italic" fill="#26324A">"The better the agent, the bigger the blast radius."</text>
+  <rect x="72" y="712" width="6" height="46" fill="#1E9BF0"/>
+  <text x="98" y="746" font-size="24" font-style="italic" fill="#C8D3F5">"The better the agent, the bigger the blast radius."</text>
 </svg>
 
 Note: Bring it home to our world - the build pipeline. In the traditional workflow a developer pulls the base image, installs dependencies in a reviewed PR, and CI runs config a human wrote - intent at every step. In the agentic workflow the agent does all of it autonomously: pulls the base image, resolves packages with no review, invokes external tools with real credentials, and rewrites the Dockerfile mid-pipeline. Same supply chain, no human in the loop. The better the agent, the bigger the blast radius.
@@ -216,36 +216,36 @@ Note: Bring it home to our world - the build pipeline. In the traditional workfl
 
 <!-- chrome: false -->
 
-<svg viewBox="0 0 1600 900" width="100%" height="100%" role="img" aria-label="The traditional developer workflow, a human at every stage" style="position:absolute;inset:0;width:100%;height:100%;object-fit:contain;background:#FFFFFF" font-family="Arial, Helvetica, sans-serif">
-  <rect width="1600" height="900" fill="#FFFFFF"/>
+<svg viewBox="0 0 1600 900" width="100%" height="100%" role="img" aria-label="The traditional developer workflow, a human at every stage" style="position:absolute;inset:0;width:100%;height:100%;object-fit:contain;background:#0B1533" font-family="Arial, Helvetica, sans-serif">
+  <rect width="1600" height="900" fill="#0B1533"/>
   <defs>
-    <g id="tperson"><circle cx="0" cy="-11" r="12" fill="#1B3A8F"/><path d="M-18,17 C-18,4 -9,0 0,0 C9,0 18,4 18,17 Z" fill="#1B3A8F"/></g>
+    <g id="tperson"><circle cx="0" cy="-11" r="12" fill="#7FB2E6"/><path d="M-18,17 C-18,4 -9,0 0,0 C9,0 18,4 18,17 Z" fill="#7FB2E6"/></g>
   </defs>
-  <text x="72" y="82" font-size="44" font-weight="800" fill="#1A2A4A">The Traditional Workflow</text>
-  <text x="72" y="124" font-size="22" fill="#55617A">A human writes, reviews, and ships at every stage - the attack surface is only what you choose to pull.</text>
-  <circle cx="430" cy="500" r="120" fill="none" stroke="#1B3A8F" stroke-width="16"/>
-  <text x="430" y="494" text-anchor="middle" font-size="26" font-weight="700" fill="#1A2A4A">Inner</text>
-  <text x="430" y="524" text-anchor="middle" font-size="26" font-weight="700" fill="#1A2A4A">Loop</text>
+  <text x="72" y="82" font-size="44" font-weight="800" fill="#ffffff">The Traditional Workflow</text>
+  <text x="72" y="124" font-size="22" fill="#9AA6C2">A human writes, reviews, and ships at every stage - the attack surface is only what you choose to pull.</text>
+  <circle cx="430" cy="500" r="120" fill="none" stroke="#1E9BF0" stroke-width="16"/>
+  <text x="430" y="494" text-anchor="middle" font-size="26" font-weight="700" fill="#ffffff">Inner</text>
+  <text x="430" y="524" text-anchor="middle" font-size="26" font-weight="700" fill="#ffffff">Loop</text>
   <use href="#tperson" transform="translate(430,362)"/>
-  <text x="430" y="326" text-anchor="middle" font-size="22" font-weight="700" fill="#1A2A4A">Build</text>
+  <text x="430" y="326" text-anchor="middle" font-size="22" font-weight="700" fill="#C8D3F5">Build</text>
   <use href="#tperson" transform="translate(298,500)"/>
-  <text x="248" y="505" text-anchor="end" font-size="22" font-weight="700" fill="#1A2A4A">Code</text>
+  <text x="248" y="505" text-anchor="end" font-size="22" font-weight="700" fill="#C8D3F5">Code</text>
   <use href="#tperson" transform="translate(345,602)"/>
-  <text x="345" y="650" text-anchor="middle" font-size="22" font-weight="700" fill="#1A2A4A">Open Source</text>
+  <text x="345" y="650" text-anchor="middle" font-size="22" font-weight="700" fill="#C8D3F5">Open Source</text>
   <use href="#tperson" transform="translate(515,602)"/>
-  <text x="515" y="650" text-anchor="middle" font-size="22" font-weight="700" fill="#1A2A4A">Test</text>
-  <line x1="600" y1="500" x2="852" y2="500" stroke="#1B3A8F" stroke-width="6"/>
-  <polygon points="852,490 872,500 852,510" fill="#1B3A8F"/>
-  <text x="726" y="478" text-anchor="middle" font-size="22" font-weight="700" fill="#1A2A4A">Push</text>
-  <circle cx="1092" cy="500" r="170" fill="none" stroke="#1B3A8F" stroke-width="16"/>
-  <text x="1092" y="494" text-anchor="middle" font-size="26" font-weight="700" fill="#1A2A4A">Outer</text>
-  <text x="1092" y="524" text-anchor="middle" font-size="26" font-weight="700" fill="#1A2A4A">Loop</text>
+  <text x="515" y="650" text-anchor="middle" font-size="22" font-weight="700" fill="#C8D3F5">Test</text>
+  <line x1="600" y1="500" x2="852" y2="500" stroke="#1E9BF0" stroke-width="6"/>
+  <polygon points="852,490 872,500 852,510" fill="#1E9BF0"/>
+  <text x="726" y="478" text-anchor="middle" font-size="22" font-weight="700" fill="#C8D3F5">Push</text>
+  <circle cx="1092" cy="500" r="170" fill="none" stroke="#1E9BF0" stroke-width="16"/>
+  <text x="1092" y="494" text-anchor="middle" font-size="26" font-weight="700" fill="#ffffff">Outer</text>
+  <text x="1092" y="524" text-anchor="middle" font-size="26" font-weight="700" fill="#ffffff">Loop</text>
   <use href="#tperson" transform="translate(1092,320)"/>
-  <text x="1092" y="286" text-anchor="middle" font-size="22" font-weight="700" fill="#1A2A4A">Integrate</text>
+  <text x="1092" y="286" text-anchor="middle" font-size="22" font-weight="700" fill="#C8D3F5">Integrate</text>
   <use href="#tperson" transform="translate(1264,500)"/>
-  <text x="1300" y="505" text-anchor="start" font-size="22" font-weight="700" fill="#1A2A4A">Test</text>
+  <text x="1300" y="505" text-anchor="start" font-size="22" font-weight="700" fill="#C8D3F5">Test</text>
   <use href="#tperson" transform="translate(1092,680)"/>
-  <text x="1092" y="728" text-anchor="middle" font-size="22" font-weight="700" fill="#1A2A4A">Deploy</text>
+  <text x="1092" y="728" text-anchor="middle" font-size="22" font-weight="700" fill="#C8D3F5">Deploy</text>
 </svg>
 
 Note: One more way to see it. This is the development lifecycle we've always had - an inner loop of code, build, test, and an outer loop of integrate, test, deploy, with a human standing at every node. The attack surface was bounded: it was only what you chose to pull. Every arrow here ran through a person.
@@ -254,36 +254,36 @@ Note: One more way to see it. This is the development lifecycle we've always had
 
 <!-- chrome: false -->
 
-<svg viewBox="0 0 1600 900" width="100%" height="100%" role="img" aria-label="The agentic developer workflow, an agent at every stage" style="position:absolute;inset:0;width:100%;height:100%;object-fit:contain;background:#FFFFFF" font-family="Arial, Helvetica, sans-serif">
-  <rect width="1600" height="900" fill="#FFFFFF"/>
+<svg viewBox="0 0 1600 900" width="100%" height="100%" role="img" aria-label="The agentic developer workflow, an agent at every stage" style="position:absolute;inset:0;width:100%;height:100%;object-fit:contain;background:#0B1533" font-family="Arial, Helvetica, sans-serif">
+  <rect width="1600" height="900" fill="#0B1533"/>
   <defs>
-    <g id="abot"><rect x="-17" y="-15" width="34" height="27" rx="7" fill="#2E7D32"/><rect x="-10" y="-7" width="20" height="12" rx="2.5" fill="#EAF7EE"/><text x="0" y="3" text-anchor="middle" font-size="9" font-weight="800" fill="#2E7D32">AI</text><line x1="0" y1="-15" x2="0" y2="-24" stroke="#2E7D32" stroke-width="2.5"/><circle cx="0" cy="-26" r="3.2" fill="#2E7D32"/></g>
+    <g id="abot"><rect x="-17" y="-15" width="34" height="27" rx="7" fill="#34D399"/><rect x="-10" y="-7" width="20" height="12" rx="2.5" fill="#0B1533"/><text x="0" y="3" text-anchor="middle" font-size="9" font-weight="800" fill="#34D399">AI</text><line x1="0" y1="-15" x2="0" y2="-24" stroke="#34D399" stroke-width="2.5"/><circle cx="0" cy="-26" r="3.2" fill="#34D399"/></g>
   </defs>
-  <text x="72" y="82" font-size="44" font-weight="800" fill="#1A2A4A">The Agentic Workflow</text>
-  <text x="72" y="124" font-size="22" fill="#55617A">Now an agent sits at every stage - the attack surface is no longer just what you pull.</text>
-  <circle cx="430" cy="500" r="120" fill="none" stroke="#1B3A8F" stroke-width="16"/>
-  <text x="430" y="494" text-anchor="middle" font-size="26" font-weight="700" fill="#1A2A4A">Inner</text>
-  <text x="430" y="524" text-anchor="middle" font-size="26" font-weight="700" fill="#1A2A4A">Loop</text>
+  <text x="72" y="82" font-size="44" font-weight="800" fill="#ffffff">The Agentic Workflow</text>
+  <text x="72" y="124" font-size="22" fill="#9AA6C2">Now an agent sits at every stage - the attack surface is no longer just what you pull.</text>
+  <circle cx="430" cy="500" r="120" fill="none" stroke="#1E9BF0" stroke-width="16"/>
+  <text x="430" y="494" text-anchor="middle" font-size="26" font-weight="700" fill="#ffffff">Inner</text>
+  <text x="430" y="524" text-anchor="middle" font-size="26" font-weight="700" fill="#ffffff">Loop</text>
   <use href="#abot" transform="translate(430,360)"/>
-  <text x="430" y="322" text-anchor="middle" font-size="22" font-weight="700" fill="#1A2A4A">Build</text>
+  <text x="430" y="322" text-anchor="middle" font-size="22" font-weight="700" fill="#C8D3F5">Build</text>
   <use href="#abot" transform="translate(298,500)"/>
-  <text x="246" y="505" text-anchor="end" font-size="22" font-weight="700" fill="#1A2A4A">Code</text>
+  <text x="246" y="505" text-anchor="end" font-size="22" font-weight="700" fill="#C8D3F5">Code</text>
   <use href="#abot" transform="translate(345,600)"/>
-  <text x="345" y="650" text-anchor="middle" font-size="22" font-weight="700" fill="#1A2A4A">Open Source</text>
+  <text x="345" y="650" text-anchor="middle" font-size="22" font-weight="700" fill="#C8D3F5">Open Source</text>
   <use href="#abot" transform="translate(515,600)"/>
-  <text x="515" y="650" text-anchor="middle" font-size="22" font-weight="700" fill="#1A2A4A">Test</text>
-  <line x1="600" y1="500" x2="852" y2="500" stroke="#1B3A8F" stroke-width="6"/>
-  <polygon points="852,490 872,500 852,510" fill="#1B3A8F"/>
-  <text x="726" y="478" text-anchor="middle" font-size="22" font-weight="700" fill="#1A2A4A">Push</text>
-  <circle cx="1092" cy="500" r="170" fill="none" stroke="#1B3A8F" stroke-width="16"/>
-  <text x="1092" y="494" text-anchor="middle" font-size="26" font-weight="700" fill="#1A2A4A">Outer</text>
-  <text x="1092" y="524" text-anchor="middle" font-size="26" font-weight="700" fill="#1A2A4A">Loop</text>
+  <text x="515" y="650" text-anchor="middle" font-size="22" font-weight="700" fill="#C8D3F5">Test</text>
+  <line x1="600" y1="500" x2="852" y2="500" stroke="#1E9BF0" stroke-width="6"/>
+  <polygon points="852,490 872,500 852,510" fill="#1E9BF0"/>
+  <text x="726" y="478" text-anchor="middle" font-size="22" font-weight="700" fill="#C8D3F5">Push</text>
+  <circle cx="1092" cy="500" r="170" fill="none" stroke="#1E9BF0" stroke-width="16"/>
+  <text x="1092" y="494" text-anchor="middle" font-size="26" font-weight="700" fill="#ffffff">Outer</text>
+  <text x="1092" y="524" text-anchor="middle" font-size="26" font-weight="700" fill="#ffffff">Loop</text>
   <use href="#abot" transform="translate(1092,318)"/>
-  <text x="1092" y="284" text-anchor="middle" font-size="22" font-weight="700" fill="#1A2A4A">Integrate</text>
+  <text x="1092" y="284" text-anchor="middle" font-size="22" font-weight="700" fill="#C8D3F5">Integrate</text>
   <use href="#abot" transform="translate(1264,500)"/>
-  <text x="1300" y="505" text-anchor="start" font-size="22" font-weight="700" fill="#1A2A4A">Test</text>
+  <text x="1300" y="505" text-anchor="start" font-size="22" font-weight="700" fill="#C8D3F5">Test</text>
   <use href="#abot" transform="translate(1092,680)"/>
-  <text x="1092" y="728" text-anchor="middle" font-size="22" font-weight="700" fill="#1A2A4A">Deploy</text>
+  <text x="1092" y="728" text-anchor="middle" font-size="22" font-weight="700" fill="#C8D3F5">Deploy</text>
 </svg>
 
 Note: Now replace every human with an agent. Same loops, but an agent sits at each stage, acting autonomously with real credentials. The attack surface is no longer just what you pull - it's every autonomous action, every tool call, every credential the agents touch across the whole road. That's the 2:47 AM commit, generalized to every stage - which is exactly where we're headed next.
