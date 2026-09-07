@@ -23,7 +23,7 @@ Note: Quick hello - I'm Ajeet Singh Raina, Developer Advocate at Docker. Twenty-
 
 <!-- chrome: false -->
 
-<svg viewBox="0 0 1600 900" width="100%" height="100%" role="img" aria-label="Agenda" style="position:absolute;inset:0;width:100%;height:100%;object-fit:contain;background:#ffffff" font-family="Arial, Helvetica, sans-serif">
+<svg viewBox="0 0 1600 900" width="100%" height="100%" role="img" aria-label="Agenda" style="position:absolute;inset:0;width:100%;height:100%;max-width:none;max-height:none;object-fit:contain;background:#ffffff" font-family="Arial, Helvetica, sans-serif">
   <defs>
     <linearGradient id="agrow1" x1="0" y1="0" x2="1" y2="0">
       <stop offset="0" stop-color="#2E86E6"/><stop offset="1" stop-color="#5FA8F1"/>
@@ -57,7 +57,7 @@ Note: This is where the talk really starts. Before any product, the argument: ag
 
 <!-- chrome: false -->
 
-<svg viewBox="0 0 1600 900" width="100%" height="100%" role="img" aria-label="AI agents are here and doing real work" style="position:absolute;inset:0;width:100%;height:100%;object-fit:contain;background:#0B1533" font-family="Arial, Helvetica, sans-serif">
+<svg viewBox="0 0 1600 900" width="100%" height="100%" role="img" aria-label="AI agents are here and doing real work" style="position:absolute;inset:0;width:100%;height:100%;max-width:none;max-height:none;object-fit:contain;background:#0B1533" font-family="Arial, Helvetica, sans-serif">
   <rect width="1600" height="900" fill="#0B1533"/>
   <text x="80" y="104" font-size="46" font-weight="800" fill="#ffffff">AI agents are here. <tspan fill="#F0A84A">And they're doing real work.</tspan></text>
   <g>
@@ -93,7 +93,7 @@ Note: Start with the upside, honestly. Agents are already doing real work across
 
 <!-- chrome: false -->
 
-<svg viewBox="0 0 1600 900" width="100%" height="100%" role="img" aria-label="Then came Claws - the exploding agent ecosystem" style="position:absolute;inset:0;width:100%;height:100%;object-fit:contain;background:#0B1533" font-family="Arial, Helvetica, sans-serif">
+<svg viewBox="0 0 1600 900" width="100%" height="100%" role="img" aria-label="Then came Claws - the exploding agent ecosystem" style="position:absolute;inset:0;width:100%;height:100%;max-width:none;max-height:none;object-fit:contain;background:#0B1533" font-family="Arial, Helvetica, sans-serif">
   <rect width="1600" height="900" fill="#0B1533"/>
   <text x="72" y="150" font-size="50" font-weight="800" fill="#ffffff">Then came <tspan fill="#1E9BF0">Claws.</tspan></text>
   <g font-size="22" fill="#9AA6C2">
@@ -128,7 +128,7 @@ Note: And it is accelerating. A whole ecosystem of personal agents - I'll call t
 
 <!-- chrome: false -->
 
-<svg viewBox="0 0 1600 900" width="100%" height="100%" role="img" aria-label="The lethal trifecta every useful agent shares" style="position:absolute;inset:0;width:100%;height:100%;object-fit:contain;background:#0B1533" font-family="Arial, Helvetica, sans-serif">
+<svg viewBox="0 0 1600 900" width="100%" height="100%" role="img" aria-label="The lethal trifecta every useful agent shares" style="position:absolute;inset:0;width:100%;height:100%;max-width:none;max-height:none;object-fit:contain;background:#0B1533" font-family="Arial, Helvetica, sans-serif">
   <rect width="1600" height="900" fill="#0B1533"/>
   <text x="80" y="100" font-size="44" font-weight="800" fill="#ffffff">Every useful agent is built on the <tspan fill="#F0A84A">"lethal trifecta."</tspan></text>
   <g transform="translate(80,150)">
@@ -181,7 +181,7 @@ Note: Here's why you can't prompt your way out of this. Every genuinely useful a
 
 <!-- chrome: false -->
 
-<svg viewBox="0 0 1600 900" width="100%" height="100%" role="img" aria-label="Traditional versus agentic developer workflow" style="position:absolute;inset:0;width:100%;height:100%;object-fit:contain;background:#0B1533" font-family="Arial, Helvetica, sans-serif">
+<svg viewBox="0 0 1600 900" width="100%" height="100%" role="img" aria-label="Traditional versus agentic developer workflow" style="position:absolute;inset:0;width:100%;height:100%;max-width:none;max-height:none;object-fit:contain;background:#0B1533" font-family="Arial, Helvetica, sans-serif">
   <rect width="1600" height="900" fill="#0B1533"/>
   <defs>
     <g id="p8p"><circle cx="0" cy="-9" r="10" fill="#7FB2E6"/><path d="M-15,15 C-15,4 -7,0 0,0 C7,0 15,4 15,15 Z" fill="#7FB2E6"/></g>
@@ -216,7 +216,7 @@ Note: Bring it home to our world - the build pipeline. In the traditional workfl
 
 <!-- chrome: false -->
 
-<svg viewBox="0 0 1600 900" width="100%" height="100%" role="img" aria-label="The traditional developer workflow, a human at every stage" style="position:absolute;inset:0;width:100%;height:100%;object-fit:contain;background:#0B1533" font-family="Arial, Helvetica, sans-serif">
+<svg viewBox="0 0 1600 900" width="100%" height="100%" role="img" aria-label="The traditional developer workflow, a human at every stage" style="position:absolute;inset:0;width:100%;height:100%;max-width:none;max-height:none;object-fit:contain;background:#0B1533" font-family="Arial, Helvetica, sans-serif">
   <rect width="1600" height="900" fill="#0B1533"/>
   <defs>
     <g id="tperson"><circle cx="0" cy="-11" r="12" fill="#7FB2E6"/><path d="M-18,17 C-18,4 -9,0 0,0 C9,0 18,4 18,17 Z" fill="#7FB2E6"/></g>
@@ -254,7 +254,7 @@ Note: One more way to see it. This is the development lifecycle we've always had
 
 <!-- chrome: false -->
 
-<svg viewBox="0 0 1600 900" width="100%" height="100%" role="img" aria-label="The agentic developer workflow, an agent at every stage" style="position:absolute;inset:0;width:100%;height:100%;object-fit:contain;background:#0B1533" font-family="Arial, Helvetica, sans-serif">
+<svg viewBox="0 0 1600 900" width="100%" height="100%" role="img" aria-label="The agentic developer workflow, an agent at every stage" style="position:absolute;inset:0;width:100%;height:100%;max-width:none;max-height:none;object-fit:contain;background:#0B1533" font-family="Arial, Helvetica, sans-serif">
   <rect width="1600" height="900" fill="#0B1533"/>
   <defs>
     <g id="abot"><rect x="-17" y="-15" width="34" height="27" rx="7" fill="#34D399"/><rect x="-10" y="-7" width="20" height="12" rx="2.5" fill="#0B1533"/><text x="0" y="3" text-anchor="middle" font-size="9" font-weight="800" fill="#34D399">AI</text><line x1="0" y1="-15" x2="0" y2="-24" stroke="#34D399" stroke-width="2.5"/><circle cx="0" cy="-26" r="3.2" fill="#34D399"/></g>
@@ -357,7 +357,7 @@ Note: Story two. "Organize my wife's desktop" - permission was supposedly tempor
 
 <!-- chrome: false -->
 
-<svg viewBox="0 0 1600 900" width="100%" height="100%" role="img" aria-label="You can't inherit trust, you manufacture it" style="position:absolute;inset:0;width:100%;height:100%;object-fit:contain;background:#0B1533" font-family="Arial, Helvetica, sans-serif">
+<svg viewBox="0 0 1600 900" width="100%" height="100%" role="img" aria-label="You can't inherit trust, you manufacture it" style="position:absolute;inset:0;width:100%;height:100%;max-width:none;max-height:none;object-fit:contain;background:#0B1533" font-family="Arial, Helvetica, sans-serif">
   <rect width="1600" height="900" fill="#0B1533"/>
   <text x="100" y="112" font-size="62" font-weight="800" fill="#ffffff">You can't <tspan fill="#F0533F">inherit</tspan> trust.</text>
   <text x="100" y="186" font-size="62" font-weight="800" fill="#34D399">You manufacture it.</text>
@@ -686,7 +686,7 @@ Note: Everything so far you did by hand for one agent on one laptop. That doesn'
 
 <!-- chrome: false -->
 
-<svg viewBox="0 0 1600 900" width="100%" height="100%" role="img" aria-label="Anatomy of an sbx kit" style="position:absolute;inset:0;width:100%;height:100%;object-fit:contain;background:#0B1533" font-family="Arial, Helvetica, sans-serif">
+<svg viewBox="0 0 1600 900" width="100%" height="100%" role="img" aria-label="Anatomy of an sbx kit" style="position:absolute;inset:0;width:100%;height:100%;max-width:none;max-height:none;object-fit:contain;background:#0B1533" font-family="Arial, Helvetica, sans-serif">
   <rect width="1600" height="900" fill="#0B1533"/>
   <text x="100" y="110" font-size="52" font-weight="800" fill="#ffffff">Anatomy of an <tspan fill="#1E9BF0">sbx kit</tspan></text>
   <text x="100" y="158" font-size="26" fill="#9AA6C2">Declarative: a spec.yaml (+ files/). The sbx engine turns it into a sandbox at create time.</text>
@@ -768,7 +768,7 @@ Note: Everything up to here got a provable artifact through the gate. But a buil
 
 <!-- chrome: false -->
 
-<svg viewBox="0 0 1600 900" width="100%" height="100%" role="img" aria-label="Operate agentic services in production" style="position:absolute;inset:0;width:100%;height:100%;object-fit:contain;background:#0B1533" font-family="Arial, Helvetica, sans-serif">
+<svg viewBox="0 0 1600 900" width="100%" height="100%" role="img" aria-label="Operate agentic services in production" style="position:absolute;inset:0;width:100%;height:100%;max-width:none;max-height:none;object-fit:contain;background:#0B1533" font-family="Arial, Helvetica, sans-serif">
   <rect width="1600" height="900" fill="#0B1533"/>
   <text x="100" y="110" font-size="52" font-weight="800" fill="#ffffff">Operational AI: <tspan fill="#1E9BF0">run the governed service</tspan></text>
   <text x="100" y="158" font-size="26" fill="#9AA6C2">The road doesn't stop at the gate - it extends into deploy, scale, and observe.</text>
@@ -812,7 +812,7 @@ Note: This is Operational AI in one frame - the same discipline, now at run time
 
 <!-- chrome: false -->
 
-<svg viewBox="0 0 1600 900" width="100%" height="100%" role="img" aria-label="Agents at ops time - the counterpart to DHI MCP" style="position:absolute;inset:0;width:100%;height:100%;object-fit:contain;background:#0B1533" font-family="Arial, Helvetica, sans-serif">
+<svg viewBox="0 0 1600 900" width="100%" height="100%" role="img" aria-label="Agents at ops time - the counterpart to DHI MCP" style="position:absolute;inset:0;width:100%;height:100%;max-width:none;max-height:none;object-fit:contain;background:#0B1533" font-family="Arial, Helvetica, sans-serif">
   <rect width="1600" height="900" fill="#0B1533"/>
   <text x="100" y="104" font-size="50" font-weight="800" fill="#ffffff">Agents at ops time - <tspan fill="#1E9BF0">the counterpart to DHI MCP</tspan></text>
   <text x="100" y="150" font-size="25" fill="#9AA6C2">DHI MCP is a developer tool - it governs the build. Observability MCP governs the fire drill.</text>
@@ -868,7 +868,7 @@ Note: The payoff, and the callback to where we opened. When the next 2:47 AM hap
 
 <!-- chrome: false -->
 
-<svg viewBox="0 0 1600 900" width="100%" height="100%" role="img" aria-label="The catalog agent's allow and deny decisions in Datadog" style="position:absolute;inset:0;width:100%;height:100%;object-fit:contain;background:#0B1533" font-family="Arial, Helvetica, sans-serif">
+<svg viewBox="0 0 1600 900" width="100%" height="100%" role="img" aria-label="The catalog agent's allow and deny decisions in Datadog" style="position:absolute;inset:0;width:100%;height:100%;max-width:none;max-height:none;object-fit:contain;background:#0B1533" font-family="Arial, Helvetica, sans-serif">
   <rect width="1600" height="900" fill="#0B1533"/>
   <text x="80" y="88" font-size="44" font-weight="800" fill="#ffffff">The catalog agent, on the record - <tspan fill="#A78BFA">in Datadog.</tspan></text>
   <text x="80" y="130" font-size="22" fill="#9AA6C2">One org policy allowlists what the build agent needs, denies the rest by default - and streams every decision to the SOC's Datadog.</text>
@@ -935,7 +935,7 @@ Note: This is the demo, made concrete - Datadog and Docker AI Governance. The wh
 
 <!-- chrome: false -->
 
-<svg viewBox="0 0 1600 900" width="100%" height="100%" role="img" aria-label="Your security framework in seven steps" style="position:absolute;inset:0;width:100%;height:100%;object-fit:contain;background:#0B1533" font-family="Arial, Helvetica, sans-serif">
+<svg viewBox="0 0 1600 900" width="100%" height="100%" role="img" aria-label="Your security framework in seven steps" style="position:absolute;inset:0;width:100%;height:100%;max-width:none;max-height:none;object-fit:contain;background:#0B1533" font-family="Arial, Helvetica, sans-serif">
   <rect width="1600" height="900" fill="#0B1533"/>
   <text x="100" y="120" font-size="52" font-weight="800" fill="#ffffff">Your security framework - <tspan fill="#1E9BF0">seven steps</tspan></text>
   <g>
