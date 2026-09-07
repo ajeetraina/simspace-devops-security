@@ -788,7 +788,7 @@ Note: Everything up to here got a provable artifact through the gate. But a buil
     <rect x="1210" y="230" width="290" height="150" rx="16" fill="#0E2A1E" stroke="#34D399" stroke-width="2"/>
     <text x="1240" y="278" font-size="24" font-weight="800" fill="#34D399">OBSERVE</text>
     <text x="1240" y="320" font-size="22" fill="#ffffff">logs · metrics · traces</text>
-    <text x="1240" y="350" font-size="22" fill="#ffffff">via Grafana MCP</text>
+    <text x="1240" y="350" font-size="22" fill="#ffffff">via Datadog MCP</text>
   </g>
   <g stroke="#3A4A6E" stroke-width="4" fill="#3A4A6E">
     <line x1="432" y1="305" x2="466" y2="305"/><polygon points="466,297 482,305 466,313"/>
@@ -825,8 +825,8 @@ Note: This is Operational AI in one frame - the same discipline, now at run time
   <text x="132" y="480" font-size="22" fill="#9AA6C2">writes a single FROM line.</text>
   <rect x="860" y="196" width="640" height="336" rx="18" fill="#12325E" stroke="#1E9BF0" stroke-width="2"/>
   <text x="892" y="244" font-size="22" font-weight="800" fill="#1E9BF0" letter-spacing="2">OPS TIME · DIAGNOSE</text>
-  <text x="892" y="300" font-size="30" font-weight="700" fill="#ffffff">Agent + Grafana MCP</text>
-  <text x="892" y="344" font-size="21" fill="#7FB2E6">logs (Loki) · metrics (Prometheus) · traces (Tempo)</text>
+  <text x="892" y="300" font-size="30" font-weight="700" fill="#ffffff">Agent + Datadog MCP</text>
+  <text x="892" y="344" font-size="21" fill="#7FB2E6">Logs · Metrics · APM traces · Monitors</text>
   <text x="892" y="402" font-size="23" fill="#C8D3F5">"why did catalog-service p99 spike</text>
   <text x="892" y="434" font-size="23" fill="#C8D3F5">after the 02:47 deploy? what's in the logs?"</text>
   <text x="892" y="500" font-size="22" fill="#9AA6C2">Reads the running system to find the cause.</text>
@@ -839,7 +839,7 @@ Note: This is Operational AI in one frame - the same discipline, now at run time
   </g>
 </svg>
 
-Note: DHI MCP was a developer tool - it governs the build, before FROM. Its ops-time counterpart is observability MCP. When catalog-service goes slow at 3am, you don't want a human grepping logs - you want an agent that can read the logs, metrics and traces and tell you the cause. Here that's Grafana - Loki for logs, Prometheus for metrics, Tempo for traces - wired in as a kit. But it's the exact same boundary as the build agent: sandboxed, through the one gateway, Cedar-scoped to read-only query tools, every call audited. It can diagnose - it cannot silence an alert or deploy a change. And when it proposes a fix, that fix goes back through the same CI gate from Move 3. Diagnose freely; act only through the gate.
+Note: DHI MCP was a developer tool - it governs the build, before FROM. Its ops-time counterpart is observability MCP. When catalog-service goes slow at 3am, you don't want a human grepping logs - you want an agent that can read the logs, metrics and traces and tell you the cause. Here that's Datadog - Logs, Metrics and APM traces, with Monitors and Watchdog - wired in as a kit. But it's the exact same boundary as the build agent: sandboxed, through the one gateway, Cedar-scoped to read-only query tools, every call audited. It can diagnose - it cannot silence an alert or deploy a change. And when it proposes a fix, that fix goes back through the same CI gate from Move 3. Diagnose freely; act only through the gate.
 
 ---
 
@@ -848,9 +848,9 @@ Note: DHI MCP was a developer tool - it governs the build, before FROM. Its ops-
 ```console
 $ # 3:00 AM: catalog-service is slow. The ops agent already looked - now you audit it:
 $ sbx audit log --since 02:00
-  02:47  invokeTool  grafana__query_prometheus    allow
-  02:51  invokeTool  grafana__query_loki_logs     allow
-  02:52  invokeTool  grafana__create_incident     DENY  (policy: read-only)
+  02:47  invokeTool  datadog__query_metrics       allow
+  02:51  invokeTool  datadog__search_logs         allow
+  02:52  invokeTool  datadog__create_incident     DENY  (policy: read-only)
   02:53  network     paste.example.com            DENY  (not in allowlist)
 
 $ # and provenance for the fix it proposed - the same query as the 02:47 build:
@@ -858,11 +858,78 @@ $ docker scout attest get --predicate-type slsa --verify catalog-service@sha256:
   ✓ signed · builder docker.com/dhi/builder · source git+github.com/acme/catalog@<sha>
 ```
 
-**The audit shows the _connection_, not the _payload_** - that `query_loki_logs` was *called and allowed*, never the log lines it returned. It's a governance/forensics trail (who reached what, allowed or denied), **not** DLP. Policy is authored once in **Docker Hub AI Governance**, synced at `docker login`, and **fails closed**.
+**The audit shows the _connection_, not the _payload_** - that `search_logs` was *called and allowed*, never the log lines it returned. It's a governance/forensics trail (who reached what, allowed or denied), **not** DLP. Policy is authored once in **Docker Hub AI Governance**, synced at `docker login`, and **fails closed**.
 
 And it doesn't stay in Docker: that same decision stream forwards **server-side from Docker Cloud** to your SIEM - Splunk, Datadog, Dynatrace, or any HTTPS endpoint - so the evidence lands where your SOC already lives, with nothing for the agent to disable. `source:docker-audit @decision:AUDIT_DECISION_DENY`
 
-Note: The payoff, and the callback to where we opened. When the next 2:47 AM happens, you don't run a forensics project - you ask. The sbx audit log shows every action the ops agent took: the Grafana queries it ran, allowed; the create_incident it tried, denied by the read-only policy; the paste-site it reached for, denied by the allowlist. And docker scout attest verifies the fix's provenance - builder and source commit, signed. But be honest about what the audit is: it records the connection, not the payload - that query_loki_logs was called and allowed, not which log lines came back. It answers "what did the agent reach, and was it allowed?" - a governance trail, not content inspection or DLP. For request and response bodies you need app-level observability, a different layer. Same as always: policy authored once in Docker Hub, synced at login, fails closed, can't be overridden locally. And one line to land for the SOC: this stream doesn't stay in Docker - it forwards server-side from Docker Cloud to whatever SIEM your security team already lives in, Splunk, Datadog or Dynatrace, so the deny you just saw is searchable next to everything else they watch, and there's nothing on the agent's side to switch off. Who approved that build - and who touched it at 3am? Now both are a query.
+Note: The payoff, and the callback to where we opened. When the next 2:47 AM happens, you don't run a forensics project - you ask. The sbx audit log shows every action the ops agent took: the Datadog queries it ran, allowed; the create_incident it tried, denied by the read-only policy; the paste-site it reached for, denied by the allowlist. And docker scout attest verifies the fix's provenance - builder and source commit, signed. But be honest about what the audit is: it records the connection, not the payload - that search_logs was called and allowed, not which log lines came back. It answers "what did the agent reach, and was it allowed?" - a governance trail, not content inspection or DLP. For request and response bodies you need app-level observability, a different layer. Same as always: policy authored once in Docker Hub, synced at login, fails closed, can't be overridden locally. And one line to land for the SOC: this stream doesn't stay in Docker - it forwards server-side from Docker Cloud to whatever SIEM your security team already lives in, Splunk, Datadog or Dynatrace, so the deny you just saw is searchable next to everything else they watch, and there's nothing on the agent's side to switch off. Who approved that build - and who touched it at 3am? Now both are a query.
+
+---
+
+<!-- chrome: false -->
+
+<svg viewBox="0 0 1600 900" width="100%" height="100%" role="img" aria-label="The catalog agent's allow and deny decisions in Datadog" style="position:absolute;inset:0;width:100%;height:100%;object-fit:contain;background:#0B1533" font-family="Arial, Helvetica, sans-serif">
+  <rect width="1600" height="900" fill="#0B1533"/>
+  <text x="80" y="88" font-size="44" font-weight="800" fill="#ffffff">The catalog agent, on the record - <tspan fill="#A78BFA">in Datadog.</tspan></text>
+  <text x="80" y="130" font-size="22" fill="#9AA6C2">One org policy allowlists what the build agent needs, denies the rest by default - and streams every decision to the SOC's Datadog.</text>
+  <rect x="80" y="170" width="1440" height="40" rx="8" fill="#12203F"/>
+  <g font-size="15" font-weight="800" fill="#7F8DB0" letter-spacing="1.5">
+    <text x="150" y="196">AGENT ACTION</text>
+    <text x="650" y="196">GOVERNANCE</text>
+    <text x="940" y="196">WHY IT MATTERS</text>
+  </g>
+  <g>
+    <rect x="80" y="214" width="1440" height="70" fill="#0E2415"/>
+    <circle cx="118" cy="249" r="13" fill="#34D399"/>
+    <path d="M112,249 l4,5 l8,-10" stroke="#0B1533" stroke-width="2.6" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+    <text x="150" y="256" font-size="19" fill="#ffffff" font-family="Menlo, monospace">registry.npmjs.org, pypi.org</text>
+    <text x="650" y="256" font-size="19"><tspan font-weight="800" fill="#34D399">ALLOW</tspan><tspan fill="#6E86B8"> · allowlist</tspan></text>
+    <text x="940" y="256" font-size="18" fill="#C8D3F5">Install catalog service deps</text>
+  </g>
+  <g>
+    <rect x="80" y="288" width="1440" height="70" fill="#0E2415"/>
+    <circle cx="118" cy="323" r="13" fill="#34D399"/>
+    <path d="M112,323 l4,5 l8,-10" stroke="#0B1533" stroke-width="2.6" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+    <text x="150" y="330" font-size="19" fill="#ffffff" font-family="Menlo, monospace">api.anthropic.com</text>
+    <text x="650" y="330" font-size="19"><tspan font-weight="800" fill="#34D399">ALLOW</tspan><tspan fill="#6E86B8"> · allowlist</tspan></text>
+    <text x="940" y="330" font-size="18" fill="#C8D3F5">LLM writes product descriptions</text>
+  </g>
+  <g>
+    <rect x="80" y="362" width="1440" height="70" fill="#24121A"/>
+    <circle cx="118" cy="397" r="13" fill="#F0533F"/>
+    <line x1="112" y1="391" x2="124" y2="403" stroke="#0B1533" stroke-width="2.6" stroke-linecap="round"/>
+    <line x1="124" y1="391" x2="112" y2="403" stroke="#0B1533" stroke-width="2.6" stroke-linecap="round"/>
+    <text x="150" y="404" font-size="19" fill="#ffffff" font-family="Menlo, monospace">catalog-db.internal:5432</text>
+    <text x="650" y="404" font-size="19"><tspan font-weight="800" fill="#F0533F">DENY</tspan><tspan fill="#6E86B8"> · default-deny</tspan></text>
+    <text x="940" y="404" font-size="18" fill="#C8D3F5">Direct DB access - <tspan font-weight="700" fill="#ffffff">data-exfil prevented</tspan></text>
+  </g>
+  <g>
+    <rect x="80" y="436" width="1440" height="70" fill="#24121A"/>
+    <circle cx="118" cy="471" r="13" fill="#F0533F"/>
+    <line x1="112" y1="465" x2="124" y2="477" stroke="#0B1533" stroke-width="2.6" stroke-linecap="round"/>
+    <line x1="124" y1="465" x2="112" y2="477" stroke="#0B1533" stroke-width="2.6" stroke-linecap="round"/>
+    <text x="150" y="478" font-size="19" fill="#ffffff" font-family="Menlo, monospace">api.stripe.com:443</text>
+    <text x="650" y="478" font-size="19"><tspan font-weight="800" fill="#F0533F">DENY</tspan><tspan fill="#6E86B8"> · default-deny</tspan></text>
+    <text x="940" y="478" font-size="18" fill="#C8D3F5">Payments API - <tspan font-weight="700" fill="#ffffff">scope creep blocked</tspan></text>
+  </g>
+  <g>
+    <rect x="80" y="510" width="1440" height="70" fill="#24121A"/>
+    <circle cx="118" cy="545" r="13" fill="#F0533F"/>
+    <line x1="112" y1="539" x2="124" y2="551" stroke="#0B1533" stroke-width="2.6" stroke-linecap="round"/>
+    <line x1="124" y1="539" x2="112" y2="551" stroke="#0B1533" stroke-width="2.6" stroke-linecap="round"/>
+    <text x="150" y="552" font-size="19" fill="#ffffff" font-family="Menlo, monospace">images.unsplash.com:443</text>
+    <text x="650" y="552" font-size="19"><tspan font-weight="800" fill="#F0533F">DENY</tspan><tspan fill="#6E86B8"> · default-deny</tspan></text>
+    <text x="940" y="552" font-size="18" fill="#C8D3F5">Untrusted CDN - <tspan font-weight="700" fill="#ffffff">supply-chain risk</tspan></text>
+  </g>
+  <rect x="80" y="606" width="1160" height="46" rx="8" fill="#111A30" stroke="#2A3A5C" stroke-width="1.5"/>
+  <text x="104" y="635" font-family="Menlo, monospace" font-size="18" fill="#7FB2E6">source:docker-audit @org_name:whalecollab @decision:<tspan fill="#F0533F">AUDIT_DECISION_DENY</tspan></text>
+  <text x="1270" y="635" font-size="18" font-weight="800" fill="#A78BFA">Datadog › Logs › Explorer</text>
+  <text x="80" y="708" font-size="23" font-weight="700" fill="#ffffff">It reached for your database and Stripe - governance denied both automatically, <tspan fill="#34D399">no human in the loop.</tspan></text>
+  <text x="80" y="742" font-size="23" fill="#C8D3F5">The SOC saw it in Datadog within seconds - <tspan font-weight="700" fill="#ffffff">no source code, no prompt</tspan> in the record.</text>
+  <text x="80" y="792" font-size="20" font-style="italic" fill="#7F8DB0">Governance stops the connection; the kit stops the intent - together, defense in depth.</text>
+</svg>
+
+Note: This is the demo, made concrete - Datadog and Docker AI Governance. The whalecollab org gives a coding agent one job: build and maintain the Product Catalog service. Governance allowlists exactly what that job needs - npm and pypi to install dependencies, api.anthropic.com so the LLM can write product copy - and denies everything else by default. So when the agent reaches for the production database on 5432, the Stripe payments API, or an unvetted image CDN - whether nudged by a prompt injection, a poisoned dependency, or just an over-eager plan - each one is denied at the connection, no human in the loop. And every decision streams to the security team's Datadog: they filter source:docker-audit, org whalecollab, decision DENY, and watch the denials land live - without ever seeing a line of source code or a single prompt. Governance is the platform guardrail every sandbox inherits and the SOC sees; the kit is how a team ships that same agent with an extra in-agent safety layer. Governance stops the connection, the kit stops the intent - defense in depth.
 
 ---
 
