@@ -357,53 +357,6 @@ Note: Story two. "Organize my wife's desktop" - permission was supposedly tempor
 
 <!-- chrome: false -->
 
-<svg viewBox="0 0 1600 900" width="100%" height="100%" role="img" aria-label="You can't inherit trust, you manufacture it" style="position:absolute;inset:0;width:100%;height:100%;max-width:none;max-height:none;object-fit:contain;background:#0B1533" font-family="Arial, Helvetica, sans-serif">
-  <rect width="1600" height="900" fill="#0B1533"/>
-  <text x="100" y="112" font-size="62" font-weight="800" fill="#ffffff">You can't <tspan fill="#F0533F">inherit</tspan> trust.</text>
-  <text x="100" y="186" font-size="62" font-weight="800" fill="#34D399">You manufacture it.</text>
-  <text x="100" y="234" font-size="26" fill="#9AA6C2">Every control we trusted ran at human speed. Agents run at machine speed - so the old trust never transfers.</text>
-
-  <rect x="100" y="264" width="640" height="226" rx="18" fill="#12203F" stroke="#26365C" stroke-width="2"/>
-  <text x="132" y="310" font-size="22" font-weight="800" fill="#F0A84A" letter-spacing="2">INHERITED TRUST · HUMAN SPEED</text>
-  <g font-size="25" fill="#C8D3F5">
-    <text x="140" y="366">A reviewer reads the PR</text>
-    <text x="140" y="416">CI runs the config a human wrote</text>
-    <text x="140" y="466">A named owner signs off</text>
-  </g>
-  <g stroke="#E06A5A" stroke-width="3" opacity="0.9">
-    <line x1="140" y1="358" x2="452" y2="358"/>
-    <line x1="140" y1="408" x2="568" y2="408"/>
-    <line x1="140" y1="458" x2="452" y2="458"/>
-  </g>
-
-  <rect x="860" y="264" width="640" height="226" rx="18" fill="#2A1420" stroke="#5A2A2A" stroke-width="2"/>
-  <text x="892" y="310" font-size="22" font-weight="800" fill="#F0533F" letter-spacing="2">THE AGENT · MACHINE SPEED, EVERY REPO</text>
-  <g font-size="25" fill="#ffffff">
-    <text x="892" y="366">Picks the base image</text>
-    <text x="892" y="416">Pulls 812 lines of dependencies</text>
-    <text x="892" y="466">Rewrites the Dockerfile, triggers the build</text>
-  </g>
-
-  <text x="800" y="532" text-anchor="middle" font-size="29" font-weight="700" fill="#ffffff">The supply chain didn't change - the <tspan fill="#F0533F">review step</tspan> did. It got skipped.</text>
-
-  <rect x="100" y="562" width="1400" height="232" rx="18" fill="#0E1B3A" stroke="#1E9BF0" stroke-width="2"/>
-  <text x="132" y="606" font-size="22" font-weight="800" fill="#1E9BF0" letter-spacing="2">SO YOU MANUFACTURE IT · ONE CONTROL PER QUESTION</text>
-  <g>
-    <g transform="translate(132,628)"><rect width="316" height="142" rx="14" fill="#12325E"/><circle cx="50" cy="52" r="26" fill="#1E9BF0"/><text x="50" y="52" text-anchor="middle" dominant-baseline="central" font-size="30" font-weight="800" fill="#0B1533">1</text><text x="92" y="46" dominant-baseline="central" font-size="30" font-weight="800" fill="#ffffff">Evidence</text><text x="26" y="106" font-size="21" fill="#9AA6C2">SBOM · VEX · SLSA</text></g>
-    <g transform="translate(472,628)"><rect width="316" height="142" rx="14" fill="#12325E"/><circle cx="50" cy="52" r="26" fill="#1E9BF0"/><text x="50" y="52" text-anchor="middle" dominant-baseline="central" font-size="30" font-weight="800" fill="#0B1533">2</text><text x="92" y="46" dominant-baseline="central" font-size="30" font-weight="800" fill="#ffffff">Baseline</text><text x="26" y="106" font-size="21" fill="#9AA6C2">Docker Hardened Image</text></g>
-    <g transform="translate(812,628)"><rect width="316" height="142" rx="14" fill="#12325E"/><circle cx="50" cy="52" r="26" fill="#1E9BF0"/><text x="50" y="52" text-anchor="middle" dominant-baseline="central" font-size="30" font-weight="800" fill="#0B1533">3</text><text x="92" y="46" dominant-baseline="central" font-size="30" font-weight="800" fill="#ffffff">Gate</text><text x="26" y="106" font-size="21" fill="#9AA6C2">policy · sign · admit</text></g>
-    <g transform="translate(1152,628)"><rect width="316" height="142" rx="14" fill="#0E2A1E" stroke="#34D399" stroke-width="2"/><circle cx="50" cy="52" r="26" fill="#34D399"/><text x="50" y="52" text-anchor="middle" dominant-baseline="central" font-size="30" font-weight="800" fill="#0B1533">4</text><text x="92" y="46" dominant-baseline="central" font-size="30" font-weight="800" fill="#ffffff">Boundary</text><text x="26" y="106" font-size="21" fill="#9AA6C2">sandbox at runtime</text></g>
-  </g>
-
-  <text x="100" y="852" font-size="28" font-weight="700" fill="#ffffff">Don't trust the agent. <tspan fill="#34D399" font-weight="800">Trust the system</tspan> - enough to close your laptop while the work runs.</text>
-</svg>
-
-Note: This is the hinge of the talk. For decades we inherited trust from people and process - a reviewer, a CI job, a named owner - and every bit of it ran at human speed. Agents run faster than any of it, so you can't inherit that trust anymore. You manufacture it. And notice the goal was never to trust the agent - it's to trust the system around it enough that you can close your laptop and the work keeps going. Everything after this slide is how you manufacture that trust - and those four blocks at the bottom are the four questions we're about to walk.
-
----
-
-<!-- chrome: false -->
-
 <img src="assets/slide-09.webp" alt="The ungoverned agent: agent running straight on your host with no boundary, FROM node:20 chosen with no guidance, 6 high CVEs" width="1600" height="900" loading="eager" decoding="async" style="position:absolute;inset:0;width:100%;height:100%;max-width:none;max-height:none;object-fit:fill" />
 
 Note: This is our ungoverned baseline - the agent running straight on your host, exactly how a lot of teams run today. It sits right on your machine, with the host daemon and host credentials, no boundary at all. We hand it a simple prompt - "containerize this app" - and with full permissions and open registries, it grabs whatever it wants: FROM node:20, chosen with no guidance. The result is the number we keep coming back to: 0 critical, 6 high, 30 medium, 54 low CVEs, 431 packages, no SBOM, no attestation, running as root. That's the start line.
